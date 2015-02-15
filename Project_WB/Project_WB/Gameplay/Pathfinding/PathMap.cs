@@ -188,6 +188,10 @@ namespace Project_WB.Gameplay.Pathfinding
 		#region Methods
 
 		public void SetMaps(int startingMap, params MapData[] mapDatas) {
+			if (maps == null) {
+				maps = new List<MapData>();
+			}
+
 			maps.Clear();
 
 			maps.AddRange(mapDatas);

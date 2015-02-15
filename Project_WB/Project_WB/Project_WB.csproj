@@ -90,9 +90,11 @@
   <ItemGroup>
     <Compile Include="Camera2D.cs" />
     <Compile Include="DebugOverlay.cs" />
+    <Compile Include="Gameplay\Entity.cs" />
     <Compile Include="Gameplay\Pathfinding\PathMap.cs" />
     <Compile Include="Gameplay\Pathfinding\MapData.cs" />
     <Compile Include="Gameplay\Pathfinding\PathFinder.cs" />
+    <Compile Include="Gameplay\Sprite.cs" />
     <Compile Include="Gameplay\TestThing.cs" />
     <Compile Include="LicensesAndAknowledgements.cs" />
     <Compile Include="LoadingScreen.cs" />

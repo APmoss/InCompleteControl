@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GameStateManagement;
 using Squared.Tiled;
 using Project_WB.Gameplay.Pathfinding;
@@ -16,11 +17,15 @@ namespace Project_WB.Gameplay {
 
 		Map map;
 
+		TestCharacter character;
+		bool follow = false;
+
 		//TODO: remove this
 		TimeSpan elapsed = TimeSpan.Zero;
 		TimeSpan targetElapsed = TimeSpan.FromSeconds(1);
 
 		List<Point> highlightedTiles = new List<Point>();
+		List<Point> barrierList = new List<Point>();
 
 		public TestThing() {
 			
@@ -30,30 +35,36 @@ namespace Project_WB.Gameplay {
 			cam = new Camera2D(ScreenManager.Game.GraphicsDevice.Viewport);
 			
 			map = Map.Load(Path.Combine(ScreenManager.Game.Content.RootDirectory, @"maps\test.tmx"), ScreenManager.Game.Content);
-			
+
+			for (int i = 0; i < map.Layers["collision"].Width; i++) {
+				for (int j = 0; j < map.Layers["collision"].Height; j++) {
+					if (map.Layers["collision"].GetTile(i, j) == 116) {
+						barrierList.Add(new Point(i, j));
+					}
+				}
+			}
+
+			character = new TestCharacter(new Rectangle(128, 256, 32, 32), ScreenManager.Game.Content.Load<Texture2D>("maps/tilesets/tilesetAv1.0"), new Point(17, 15));
+
 			base.Activate(instancePreserved);
 		}
 
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
 			cam.Update();
 
-			//elapsed += gameTime.ElapsedGameTime;
+			//Maybe use
+			elapsed += gameTime.ElapsedGameTime;
 
-			if (elapsed > targetElapsed) {
-				elapsed -= targetElapsed;
+			character.Update(gameTime);
 
-				//Point mouseTile = new Point((int)Math.Round(mouse.X / 32.0) * 32, (int)Math.Round(mouse.Y / 32.0) * 32);
-
-				//Update pathfinding
-				PathMap m = new PathMap();
-				//m.SetMaps(0, new MapData(15, 15, 8, ))
-
-				PathFinder p = new PathFinder();
-				//p.Initialize(
+			if (follow) {
+				cam.DestPosition = character.Position;
 			}
-			
+
 			DebugOverlay.DebugText.AppendFormat("Mouse X: {0}  |  Y: {1}", mouse.X, mouse.Y).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("MTile X: {0}  |  Y: {1}", mouseTile.X, mouseTile.Y).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("ChrSpd: {0}", character.Speed).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("SecretToUniverse: {0}", new Random().Next(5000)).AppendLine();
 
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
@@ -86,6 +97,49 @@ namespace Project_WB.Gameplay {
 				cam.DestScale = 1;
 				cam.DestRotationDegrees = 0;
 			}
+			if (input.IsNewKeyPress(Keys.H, null, out p)) {
+				map.Layers["collision"].Opacity = (map.Layers["collision"].Opacity == .65f ? 0 : .65f);
+			}
+
+			if (input.IsNewKeyPress(Keys.O, null, out p)) {
+				character.Speed -= .1f;
+			}
+			if (input.IsNewKeyPress(Keys.P, null, out p)) {
+				character.Speed += .1f;
+			}
+			if (input.IsKeyPressed(Keys.F, null, out p)) {
+				follow = !follow;
+			}
+
+			if (input.IsNewKeyPress(Keys.T, null, out p) || (Mouse.GetState().RightButton == ButtonState.Pressed && mouse.RightButton == ButtonState.Released)) {
+				if (mouseTile.X >= 0 && mouseTile.X < 50 && mouseTile.Y >= 0 && mouseTile.Y < 50) {
+					//Update pathfinding
+					PathMap m = new PathMap();
+					m.SetMaps(0, new MapData(50, 50, character.TilePosition, mouseTile, barrierList));
+					m.ReloadMap();
+
+					PathFinder pf = new PathFinder();
+					pf.Initialize(m);
+					pf.Reset();
+
+					pf.IsSearching = true;
+
+					while (pf.SearchStatus != SearchStatus.PathFound && pf.SearchStatus != SearchStatus.NoPath) {
+						pf.Update(gameTime);
+					}
+
+					if (pf.SearchStatus == SearchStatus.PathFound) {
+						character.Waypoints = pf.FinalPath().ToList();
+						character.Angry = false;
+					}
+					else {
+						character.Angry = true;
+					}
+				}
+				else {
+					character.Angry = true;
+				}
+			}
 
 			if (Mouse.GetState().ScrollWheelValue > mouse.ScrollWheelValue) {
 				cam.DestScale += .1f;
@@ -114,9 +168,56 @@ namespace Project_WB.Gameplay {
 											new Rectangle(mouseTile.X * 32, mouseTile.Y * 32, 32, 32),
 											Color.White * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 
+			character.Draw(gameTime, ScreenManager);
+
 			ScreenManager.SpriteBatch.End();
 
 			base.Draw(gameTime);
+		}
+	}
+
+	class TestCharacter : Sprite {
+		public Point TilePosition = Point.Zero;
+		public List<Point> Waypoints = new List<Point>();
+		public bool Angry = false;
+		public float Speed = .5f;
+
+		public TestCharacter(Rectangle sourceRectangle, Texture2D spriteSheet, Point tilePosition) : base(sourceRectangle, spriteSheet) {
+			this.TilePosition = tilePosition;
+			Position = new Vector2(TilePosition.X * 32, TilePosition.Y * 32);
+		}
+
+		public override void Update(GameTime gameTime) {
+			if(Waypoints.Count > 0) {
+				if (Vector2.Distance(Position, new Vector2(Waypoints[0].X * 32, Waypoints[0].Y * 32)) < 2) {
+					TilePosition = Waypoints[0];
+					Waypoints.RemoveAt(0);
+				}
+				else {
+					Position = new Vector2(MathHelper.Lerp(Position.X, Waypoints[0].X * 32, Speed),
+											MathHelper.Lerp(Position.Y, Waypoints[0].Y * 32, Speed));
+				}
+			}
+
+			base.Update(gameTime);
+		}
+
+		public override void Draw(GameTime gameTime, ScreenManager screenManager) {
+			for (int i = 0; i < Waypoints.Count; i++) {
+				Point point = Waypoints[i];
+
+				Color c = (i == Waypoints.Count - 1 ? Color.Blue : Color.Green);
+
+				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, new Rectangle(point.X * 32, point.Y * 32, 32, 32),
+											c * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
+			}
+
+			if (Angry) {
+				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, new Rectangle((int)Position.X - 32, (int)Position.Y - 32, 32 * 3, 32 * 3),
+												Color.Red * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
+			}
+			
+			base.Draw(gameTime, screenManager);
 		}
 	}
 }

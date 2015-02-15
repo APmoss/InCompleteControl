@@ -99,7 +99,7 @@ namespace Project_WB.Gameplay.Pathfinding
 		// The map we're searching
 		private PathMap map;        
 		// Seconds per search step        
-		public float timeStep = .5f;
+		public float timeStep = 0;
 
 		#endregion
 		
@@ -117,7 +117,7 @@ namespace Project_WB.Gameplay.Pathfinding
 		{
 			get { return searchMethod; }
 		}
-		private SearchMethod searchMethod = SearchMethod.BestFirst;
+		private SearchMethod searchMethod = SearchMethod.AStar;
 
 		public float Scale
 		{
@@ -141,13 +141,11 @@ namespace Project_WB.Gameplay.Pathfinding
 			get { return searchStatus == SearchStatus.Searching; }
 			set 
 			{
-				if (searchStatus == SearchStatus.Searching)
-				{
-					searchStatus = SearchStatus.Stopped;
-				}
-				else if (searchStatus == SearchStatus.Stopped)
-				{
+				if (value) {
 					searchStatus = SearchStatus.Searching;
+				}
+				else {
+					searchStatus = SearchStatus.Stopped;
 				}
 			}
 		}
