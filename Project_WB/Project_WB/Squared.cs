@@ -687,7 +687,7 @@ namespace Squared.Tiled {
 				XmlReaderSettings settings = new XmlReaderSettings();
 				
 				// Obsolete
-				//settings.ProhibitDtd = false;
+				// settings.ProhibitDtd = false;
 				settings.DtdProcessing = DtdProcessing.Parse;
 
 				using (var stream = System.IO.File.OpenText(filename))
@@ -803,7 +803,15 @@ namespace Squared.Tiled {
 		}
 
 		public void Draw (SpriteBatch batch, Rectangle rectangle, Vector2 viewportPosition) {
-			foreach (Layer layers in Layers.Values)
+			// Must reverse order to correct drawing order (bottom from top)
+			// In array- [0] = topLayer
+			//           [1] = bottomLayer
+			//
+			// Therefore drawing must be reversed-
+			// Drawing-  draw([1] bottomLayer)
+			//           draw([0] topLayer)
+
+			foreach (Layer layers in Layers.Values.Reverse())
 			{
 				layers.Draw(batch, Tilesets.Values, rectangle, viewportPosition, TileWidth, TileHeight);
 			}

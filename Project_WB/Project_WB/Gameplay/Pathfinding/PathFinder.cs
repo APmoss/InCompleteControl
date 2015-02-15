@@ -97,7 +97,7 @@ namespace Project_WB.Gameplay.Pathfinding
 		// Holds all the paths we've creted so far
 		private Dictionary<Point, Point> paths;
 		// The map we're searching
-		private Map map;        
+		private PathMap map;        
 		// Seconds per search step        
 		public float timeStep = .5f;
 
@@ -169,7 +169,7 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// Setup search
 		/// </summary>
 		/// <param name="mazeMap">Map to search</param>
-		public void Initialize(Map mazeMap)
+		public void Initialize(PathMap mazeMap)
 		{
 			searchStatus = SearchStatus.Stopped;
 			openList = new List<SearchNode>();
@@ -248,7 +248,7 @@ namespace Project_WB.Gameplay.Pathfinding
 			closedList.Clear();
 			paths.Clear();
 			openList.Add(new SearchNode(map.StartTile,
-				Map.StepDistance(map.StartTile, map.EndTile)
+				PathMap.StepDistance(map.StartTile, map.EndTile)
 				, 0));
 		}
 

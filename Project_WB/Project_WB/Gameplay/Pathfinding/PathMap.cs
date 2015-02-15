@@ -28,7 +28,7 @@ namespace Project_WB.Gameplay.Pathfinding
 	}
 	#endregion
 
-	public class Map
+	public class PathMap
 	{
 		#region Fields
 
@@ -186,6 +186,14 @@ namespace Project_WB.Gameplay.Pathfinding
 		#endregion
 
 		#region Methods
+
+		public void SetMaps(int startingMap, params MapData[] mapDatas) {
+			maps.Clear();
+
+			maps.AddRange(mapDatas);
+
+			this.currentMap = startingMap;
+		}
 
 		/// <summary>
 		/// Translates a map tile location into a screen position
