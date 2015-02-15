@@ -683,6 +683,8 @@ namespace Squared.Tiled {
 		public int TileWidth, TileHeight;
 
 		public static Map Load (string filename, ContentManager content) {
+			filename = Path.Combine(content.RootDirectory, filename);
+
 			var result = new Map();
 				XmlReaderSettings settings = new XmlReaderSettings();
 				

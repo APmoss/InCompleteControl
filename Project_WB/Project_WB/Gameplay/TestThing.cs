@@ -34,7 +34,7 @@ namespace Project_WB.Gameplay {
 		public override void Activate(bool instancePreserved) {
 			cam = new Camera2D(ScreenManager.Game.GraphicsDevice.Viewport);
 			
-			map = Map.Load(Path.Combine(ScreenManager.Game.Content.RootDirectory, @"maps\test.tmx"), ScreenManager.Game.Content);
+			map = Map.Load(@"maps\test.tmx", ScreenManager.Game.Content);
 
 			for (int i = 0; i < map.Layers["collision"].Width; i++) {
 				for (int j = 0; j < map.Layers["collision"].Height; j++) {
@@ -113,23 +113,12 @@ namespace Project_WB.Gameplay {
 
 			if (input.IsNewKeyPress(Keys.T, null, out p) || (Mouse.GetState().RightButton == ButtonState.Pressed && mouse.RightButton == ButtonState.Released)) {
 				if (mouseTile.X >= 0 && mouseTile.X < 50 && mouseTile.Y >= 0 && mouseTile.Y < 50) {
-					//Update pathfinding
-					PathMap m = new PathMap();
-					m.SetMaps(0, new MapData(50, 50, character.TilePosition, mouseTile, barrierList));
-					m.ReloadMap();
-
 					PathFinder pf = new PathFinder();
-					pf.Initialize(m);
-					pf.Reset();
 
-					pf.IsSearching = true;
+					LinkedList<Point> solution = new LinkedList<Point>();
 
-					while (pf.SearchStatus != SearchStatus.PathFound && pf.SearchStatus != SearchStatus.NoPath) {
-						pf.Update(gameTime);
-					}
-
-					if (pf.SearchStatus == SearchStatus.PathFound) {
-						character.Waypoints = pf.FinalPath().ToList();
+					if (pf.QuickFind(new MapData(50, 50, character.TilePosition, mouseTile, barrierList), out solution)) {
+						character.Waypoints = solution.ToList();
 						character.Angry = false;
 					}
 					else {

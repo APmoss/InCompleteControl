@@ -19,8 +19,7 @@ using Microsoft.Xna.Framework.Content;
 namespace Project_WB.Gameplay.Pathfinding
 {
 	#region Search Status Enum
-	public enum SearchStatus
-	{
+	public enum SearchStatus {
 		Stopped,
 		Searching,
 		NoPath,
@@ -29,8 +28,7 @@ namespace Project_WB.Gameplay.Pathfinding
 	#endregion
 
 	#region Search Method Enum
-	public enum SearchMethod
-	{
+	public enum SearchMethod {
 		BreadthFirst,
 		BestFirst,
 		AStar,
@@ -38,14 +36,12 @@ namespace Project_WB.Gameplay.Pathfinding
 	}
 	#endregion
 
-	class PathFinder
-	{
+	class PathFinder {
 		#region Search Node Struct
 		/// <summary>
 		/// Reresents one node in the search space
 		/// </summary>
-		private struct SearchNode
-		{
+		private struct SearchNode {
 			/// <summary>
 			/// Location on the map
 			/// </summary>
@@ -61,9 +57,7 @@ namespace Project_WB.Gameplay.Pathfinding
 			/// </summary>
 			public int DistanceTraveled;
 
-			public SearchNode(
-				Point mapPosition, int distanceToGoal, int distanceTraveled)
-			{
+			public SearchNode(Point mapPosition, int distanceToGoal, int distanceTraveled) {
 				Position = mapPosition;
 				DistanceToGoal = distanceToGoal;
 				DistanceTraveled = distanceTraveled;
@@ -106,29 +100,25 @@ namespace Project_WB.Gameplay.Pathfinding
 		#region Properties
 
 		// Tells us if the search is stopped, started, finished or failed
-		public SearchStatus SearchStatus
-		{
+		public SearchStatus SearchStatus {
 			get { return searchStatus; }
 		}
 		private SearchStatus searchStatus;
 
 		// Tells us which search type we're using right now
-		public SearchMethod SearchMethod
-		{
+		public SearchMethod SearchMethod {
 			get { return searchMethod; }
 		}
 		private SearchMethod searchMethod = SearchMethod.AStar;
 
-		public float Scale
-		{
+		public float Scale {
 			get { return scale; }
 			set { scale = value * searchNodeDrawScale; }
 		}
 		private float scale;
 		
 		// Seconds per search step
-		public float TimeStep
-		{
+		public float TimeStep {
 			get { return timeStep; }
 			set { timeStep = value; }
 		}
@@ -136,11 +126,9 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// <summary>
 		/// Toggles searching on and off
 		/// </summary>
-		public bool IsSearching
-		{
+		public bool IsSearching {
 			get { return searchStatus == SearchStatus.Searching; }
-			set 
-			{
+			set {
 				if (value) {
 					searchStatus = SearchStatus.Searching;
 				}
@@ -153,8 +141,7 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// <summary>
 		/// How many search steps have elapsed on this map
 		/// </summary>
-		public int TotalSearchSteps
-		{
+		public int TotalSearchSteps {
 			get { return totalSearchSteps; }
 		}
 		private int totalSearchSteps = 0;
@@ -167,23 +154,22 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// Setup search
 		/// </summary>
 		/// <param name="mazeMap">Map to search</param>
-		public void Initialize(PathMap mazeMap)
-		{
+		public void Initialize(PathMap mazeMap) {
 			searchStatus = SearchStatus.Stopped;
 			openList = new List<SearchNode>();
 			closedList = new List<SearchNode>();
 			paths = new Dictionary<Point, Point>();
 			map = mazeMap;
+
+			Reset();
 		}
 
 		/// <summary>
 		/// Load the Draw texture
 		/// </summary>
-		public void LoadContent(ContentManager content)
-		{
+		public void LoadContent(ContentManager content) {
 			nodeTexture = content.Load<Texture2D>("dot");
-			nodeTextureCenter =
-				new Vector2(nodeTexture.Width / 2, nodeTexture.Height / 2);
+			nodeTextureCenter =	new Vector2(nodeTexture.Width / 2, nodeTexture.Height / 2);
 		}
 
 		#endregion
@@ -193,13 +179,10 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// <summary>
 		/// Search Update
 		/// </summary>
-		public void Update(GameTime gameTime)
-		{
-			if (searchStatus == SearchStatus.Searching)
-			{
+		public void Update(GameTime gameTime) {
+			if (searchStatus == SearchStatus.Searching) {
 				timeSinceLastSearchStep += (float)gameTime.ElapsedGameTime.TotalSeconds;
-				if (timeSinceLastSearchStep >= timeStep)
-				{
+				if (timeSinceLastSearchStep >= timeStep) {
 					DoSearchStep();
 					timeSinceLastSearchStep = 0f;
 				}
@@ -209,19 +192,15 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// <summary>
 		/// Draw the search space
 		/// </summary>
-		public void Draw(SpriteBatch spriteBatch)
-		{
-			if (searchStatus != SearchStatus.PathFound)
-			{
+		public void Draw(SpriteBatch spriteBatch) {
+			if (searchStatus != SearchStatus.PathFound) {
 				spriteBatch.Begin();
-				foreach (SearchNode node in openList)
-				{
+				foreach (SearchNode node in openList) {
 					spriteBatch.Draw(nodeTexture, 
 						map.MapToWorld(node.Position, true), null, openColor, 0f,
 						nodeTextureCenter, scale, SpriteEffects.None, 0f);
 				}
-				foreach (SearchNode node in closedList)
-				{
+				foreach (SearchNode node in closedList) {
 					spriteBatch.Draw(nodeTexture, 
 						map.MapToWorld(node.Position, true), null, closedColor, 0f,
 						nodeTextureCenter, scale, SpriteEffects.None, 0f);
@@ -234,11 +213,32 @@ namespace Project_WB.Gameplay.Pathfinding
 
 		#region Methods
 
+		public bool QuickFind(MapData mapData, out LinkedList<Point> solution) {
+			solution = new LinkedList<Point>();
+
+			PathMap pm = new PathMap();
+			pm.SetMaps(0, mapData);
+
+			Initialize(pm);
+
+			IsSearching = true;
+
+			while (searchStatus != SearchStatus.PathFound && searchStatus != SearchStatus.NoPath) {
+				Update(new GameTime());
+			}
+			if (searchStatus == SearchStatus.PathFound) {
+				solution = FinalPath();
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
 		/// <summary>
 		/// Reset the search
 		/// </summary>
-		public void Reset()
-		{
+		public void Reset() {
 			searchStatus = SearchStatus.Stopped;
 			totalSearchSteps = 0;
 			Scale = map.Scale;
@@ -253,8 +253,7 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// <summary>
 		/// Cycle through the search method to the next type
 		/// </summary>
-		public void NextSearchType()
-		{
+		public void NextSearchType() {
 			searchMethod = (SearchMethod)(((int)searchMethod + 1) % 
 				(int)SearchMethod.Max);
 		}
@@ -264,35 +263,29 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// closed list and adds any nodes adjacent to the visited node to the 
 		/// open list.
 		/// </summary>
-		private void DoSearchStep()
-		{
+		private void DoSearchStep() {
 			SearchNode newOpenListNode;
 
 			bool foundNewNode = SelectNodeToVisit(out newOpenListNode);
-			if (foundNewNode)
-			{
+			if (foundNewNode) {
 				Point currentPos = newOpenListNode.Position;
-				foreach (Point point in map.OpenMapTiles(currentPos))
-				{
+				foreach (Point point in map.OpenMapTiles(currentPos)) {
 					SearchNode mapTile = new SearchNode(point, 
 						map.StepDistanceToEnd(point), 
 						newOpenListNode.DistanceTraveled + 1);
 					if (!InList(openList,point) &&
-						!InList(closedList,point))
-					{
+						!InList(closedList,point)) {
 						openList.Add(mapTile);
 						paths[point] = newOpenListNode.Position;
 					}
 				}
-				if (currentPos == map.EndTile)
-				{
+				if (currentPos == map.EndTile) {
 					searchStatus = SearchStatus.PathFound;
 				}
 				openList.Remove(newOpenListNode);
 				closedList.Add(newOpenListNode);
 			}
-			else
-			{
+			else {
 				searchStatus = SearchStatus.NoPath;
 			}
 		}
@@ -300,13 +293,10 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// <summary>
 		/// Determines if the given Point is inside the SearchNode list given
 		/// </summary>
-		private static bool InList(List<SearchNode> list, Point point)
-		{
+		private static bool InList(List<SearchNode> list, Point point) {
 			bool inList = false;
-			foreach (SearchNode node in list)
-			{
-				if (node.Position == point)
-				{
+			foreach (SearchNode node in list) {
+				if (node.Position == point) {
 					inList = true;
 				}
 			}
@@ -320,16 +310,13 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// <param name="result">The node to be visited</param>
 		/// <returns>Whether or not SelectNodeToVisit found a node to examine
 		/// </returns>
-		private bool SelectNodeToVisit(out SearchNode result)
-		{
+		private bool SelectNodeToVisit(out SearchNode result) {
 			result = new SearchNode();
 			bool success = false;
 			float smallestDistance = float.PositiveInfinity;
 			float currentDistance = 0f;
-			if (openList.Count > 0)
-			{
-				switch (searchMethod)
-				{
+			if (openList.Count > 0) {
+				switch (searchMethod) {
 					// Breadth first search looks at every possible path in the 
 					// order that we see them in.
 					case SearchMethod.BreadthFirst:
@@ -341,8 +328,7 @@ namespace Project_WB.Gameplay.Pathfinding
 					// the goal regardless of how long that path is.
 					case SearchMethod.BestFirst:
 						totalSearchSteps++;
-						foreach (SearchNode node in openList)
-						{
+						foreach (SearchNode node in openList) {
 							currentDistance = node.DistanceToGoal;
 							if(currentDistance < smallestDistance){
 								success = true;
@@ -357,25 +343,21 @@ namespace Project_WB.Gameplay.Pathfinding
 					// the best path.
 					case SearchMethod.AStar:
 						totalSearchSteps++;
-						foreach (SearchNode node in openList)
-						{
+						foreach (SearchNode node in openList) {
 							currentDistance = Heuristic(node);
 							// The heuristic value gives us our optimistic estimate 
 							// for the path length, while any path with the same 
 							// heuristic value is equally ‘good’ in this case we’re 
 							// favoring paths that have the same heuristic value 
 							// but are longer.
-							if (currentDistance <= smallestDistance)
-							{
-								if (currentDistance < smallestDistance)
-								{
+							if (currentDistance <= smallestDistance) {
+								if (currentDistance < smallestDistance) {
 									success = true;
 									result = node;
 									smallestDistance = currentDistance;
 								}
 								else if (currentDistance == smallestDistance &&
-									node.DistanceTraveled > result.DistanceTraveled)
-								{
+									node.DistanceTraveled > result.DistanceTraveled) {
 									success = true;
 									result = node;
 									smallestDistance = currentDistance;
@@ -394,8 +376,7 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// </summary>
 		/// <param name="location">Location to examine</param>
 		/// <returns>Path length estimate</returns>
-		private static float Heuristic(SearchNode location)
-		{
+		private static float Heuristic(SearchNode location) {
 			return location.DistanceTraveled + location.DistanceToGoal;
 		}
 
@@ -403,15 +384,12 @@ namespace Project_WB.Gameplay.Pathfinding
 		/// Generates the path from start to end.
 		/// </summary>
 		/// <returns>The path from start to end</returns>
-		public LinkedList<Point> FinalPath()
-		{
+		public LinkedList<Point> FinalPath() {
 			LinkedList<Point> path = new LinkedList<Point>();
-			if (searchStatus == SearchStatus.PathFound)
-			{
+			if (searchStatus == SearchStatus.PathFound) {
 				Point curPrev = map.EndTile;
 				path.AddFirst(curPrev);
-				while (paths.ContainsKey(curPrev))
-				{
+				while (paths.ContainsKey(curPrev)) {
 					curPrev = paths[curPrev];
 					path.AddFirst(curPrev);
 				}

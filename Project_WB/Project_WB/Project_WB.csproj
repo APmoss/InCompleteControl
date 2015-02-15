@@ -90,6 +90,8 @@
   <ItemGroup>
     <Compile Include="Camera2D.cs" />
     <Compile Include="DebugOverlay.cs" />
+    <Compile Include="Gameplay\AnimatedSprite.cs" />
+    <Compile Include="Gameplay\Battle.cs" />
     <Compile Include="Gameplay\Entity.cs" />
     <Compile Include="Gameplay\Pathfinding\PathMap.cs" />
     <Compile Include="Gameplay\Pathfinding\MapData.cs" />
@@ -158,7 +160,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="ClassLayout.cd" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Strings.es.resx" />
     <EmbeddedResource Include="Strings.fr.resx" />

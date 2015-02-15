@@ -197,6 +197,8 @@ namespace Project_WB.Gameplay.Pathfinding
 			maps.AddRange(mapDatas);
 
 			this.currentMap = startingMap;
+
+			ReloadMap();
 		}
 
 		/// <summary>

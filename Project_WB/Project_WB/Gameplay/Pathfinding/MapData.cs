@@ -16,24 +16,16 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 #endregion
 
-namespace Project_WB.Gameplay.Pathfinding
-{
-	public class MapData
-	{
+namespace Project_WB.Gameplay.Pathfinding {
+	public class MapData {
 		public int NumberRows;
 		public int NumberColumns;
 		public Point Start;
 		public Point End;
 		public List<Point> Barriers;
 
-		public MapData()
-		{
-		}
-
-		public MapData(
-			int columns, int rows, Point startPosition,
-			Point endPosition, List<Point> barriersList)
-		{
+		public MapData(int columns, int rows, Point startPosition,
+						Point endPosition, List<Point> barriersList) {
 			NumberColumns = columns;
 			NumberRows = rows;
 			Start = startPosition;

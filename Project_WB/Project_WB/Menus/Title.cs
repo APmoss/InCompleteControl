@@ -30,7 +30,14 @@ namespace Project_WB.Menus {
 			//TODO: Change the drawing stuff
 			ScreenManager.SpriteBatch.Begin();
 
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(100, 300), Color.Red * TransitionAlpha);
+			if (ScreenState == GameStateManagement.ScreenState.TransitionOn || ScreenState == GameStateManagement.ScreenState.TransitionOff) {
+				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(100, 300),
+					Color.Red * TransitionAlpha);
+			}
+			else {
+				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(100, 300),
+					Color.Red * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
+			}
 
 			ScreenManager.SpriteBatch.End();
 

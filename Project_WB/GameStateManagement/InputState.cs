@@ -22,9 +22,11 @@ namespace GameStateManagement {
 	public class InputState {
 		public const int MaxInputs = 4;
 
+		public readonly MouseState[] CurrentMouseStates;
 		public readonly KeyboardState[] CurrentKeyboardStates;
 		public readonly GamePadState[] CurrentGamePadStates;
 
+		public readonly MouseState[] LastMouseStates;
 		public readonly KeyboardState[] LastKeyboardStates;
 		public readonly GamePadState[] LastGamePadStates;
 
@@ -39,9 +41,11 @@ namespace GameStateManagement {
 		/// Constructs a new input state.
 		/// </summary>
 		public InputState() {
+			CurrentMouseStates = new MouseState[MaxInputs];
 			CurrentKeyboardStates = new KeyboardState[MaxInputs];
 			CurrentGamePadStates = new GamePadState[MaxInputs];
 
+			LastMouseStates = new MouseState[MaxInputs];
 			LastKeyboardStates = new KeyboardState[MaxInputs];
 			LastGamePadStates = new GamePadState[MaxInputs];
 
@@ -53,9 +57,11 @@ namespace GameStateManagement {
 		/// </summary>
 		public void Update() {
 			for (int i = 0; i < MaxInputs; i++) {
+				LastMouseStates[i] = CurrentMouseStates[i];
 				LastKeyboardStates[i] = CurrentKeyboardStates[i];
 				LastGamePadStates[i] = CurrentGamePadStates[i];
 
+				CurrentMouseStates[i] = Mouse.GetState();
 				CurrentKeyboardStates[i] = Keyboard.GetState((PlayerIndex)i);
 				CurrentGamePadStates[i] = GamePad.GetState((PlayerIndex)i);
 
