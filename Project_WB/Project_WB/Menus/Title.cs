@@ -30,7 +30,7 @@ namespace Project_WB.Menus {
 			//TODO: Change the drawing stuff
 			ScreenManager.SpriteBatch.Begin();
 
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(4, 300), Color.Red * TransitionAlpha);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(100, 300), Color.Red * TransitionAlpha);
 
 			ScreenManager.SpriteBatch.End();
 

@@ -88,8 +88,13 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera2D.cs" />
     <Compile Include="DebugOverlay.cs" />
+    <Compile Include="Gameplay\Pathfinding\Map.cs" />
+    <Compile Include="Gameplay\Pathfinding\MapData.cs" />
+    <Compile Include="Gameplay\Pathfinding\PathFinder.cs" />
     <Compile Include="Gameplay\TestThing.cs" />
+    <Compile Include="LicensesAndAknowledgements.cs" />
     <Compile Include="LoadingScreen.cs" />
     <Compile Include="Menus\Register.cs" />
     <Compile Include="Menus\SignIn.cs" />
@@ -104,6 +109,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="Squared.cs" />
     <Compile Include="WB_Game.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -121,10 +127,6 @@
       <Name>Project_WBContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
       <Project>{FC955E9E-F8D5-41D1-AB18-C78F6A757572}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\TiledSharp\TiledSharp.csproj">
-      <Project>{E4130F8D-D301-4E0C-916D-489C4A23C9B1}</Project>
-      <Name>TiledSharp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

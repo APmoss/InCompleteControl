@@ -33,6 +33,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="maps\tilesets\tilesetAv1.0.png">
+      <Name>tilesetAv1.0</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="textures\pixel.png">
       <Name>pixel</Name>
       <Importer>TextureImporter</Importer>
@@ -80,6 +85,10 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="maps\test.tmx">
+      <Name>test</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

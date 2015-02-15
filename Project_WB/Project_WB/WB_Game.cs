@@ -97,8 +97,8 @@ namespace Project_WB {
 		private void AddInitialScreens() {
 			screenManager.AddScreen(new DebugOverlay(), null);
 			//TODO: Start at splash
-			//screenManager.AddScreen(new Menus.Splash(), null);
-			screenManager.AddScreen(new Menus.SignIn(), null);
+			screenManager.AddScreen(new Menus.Splash(), null);
+			//screenManager.AddScreen(new Menus.SignIn(), null);
 			//screenManager.AddScreen(new Menus.Register(), null);
 		}
 	}

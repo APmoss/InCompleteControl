@@ -95,6 +95,8 @@ namespace Project_WB.Menus {
 					else if (languageList.SelectedItems[0] == 2) {
 						System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
 					}
+
+					ResetText();
 				}
 			};
 
@@ -138,6 +140,25 @@ namespace Project_WB.Menus {
 			scrn.Desktop.Children.Add(languageLabel);
 			scrn.Desktop.Children.Add(languageList);
 			scrn.Desktop.Children.Add(loginWindow);
+		}
+		#endregion
+
+		#region Methods
+		void ResetText() {
+			languageLabel = new LabelControl(Strings.Language + ":");
+
+			languageList.Items.Clear();
+			languageList.Items.Add(Strings.English + " (English)");
+			languageList.Items.Add(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164));
+			languageList.Items.Add(Strings.French + string.Format(" (Fran{0}ais)", (char)135));
+
+			usernameLabel.Text = Strings.Username;
+
+			passwordLabel.Text = Strings.Password;
+
+			loginButton.Text = Strings.SignIn;
+
+			registerButton.Text = Strings.Register;
 		}
 		#endregion
 	}
