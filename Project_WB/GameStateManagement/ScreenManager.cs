@@ -18,7 +18,8 @@ using Microsoft.Xna.Framework.Input.Touch;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Xml.Linq;
-using Ruminate.GUI.Framework;
+using Nuclex.Input;
+using Nuclex.UserInterface;
 #endregion
 
 namespace GameStateManagement
@@ -47,6 +48,8 @@ namespace GameStateManagement
 		bool isInitialized;
 
 		bool traceEnabled;
+
+		InputManager inputManager;
 
 		#endregion
 
@@ -95,7 +98,7 @@ namespace GameStateManagement
 		/// <summary>
 		/// A preloaded, default gui with the default skin, text, etc.
 		/// </summary>
-		public Gui DefaultGui {
+		public GuiManager DefaultGui {
 			get; private set;
 		}
 
@@ -122,6 +125,15 @@ namespace GameStateManagement
 		/// </summary>
 		public override void Initialize()
 		{
+			inputManager = new InputManager(Game.Services, Game.Window.Handle);
+			Game.Components.Add(inputManager);
+
+			DefaultGui = new GuiManager(Game.Services);
+
+			DefaultGui.Visualizer = Nuclex.UserInterface.Visuals.Flat.FlatGuiVisualizer.FromFile(Game.Services, "content/gui/grey/Suave.skin.xml");
+			
+			DefaultGui.Initialize();
+
 			base.Initialize();
 
 			isInitialized = true;
@@ -139,13 +151,6 @@ namespace GameStateManagement
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 			fontLibrary.LoadFonts(content);
 			blankTexture = content.Load<Texture2D>("textures/pixel");
-
-			Texture2D imageMap = content.Load<Texture2D>("gui/grey/imageMap");
-			
-			string map = File.OpenText("Content/gui/grey/map.txt").ReadToEnd();
-			SpriteFont font = FontLibrary.SmallSegoeUIMono;
-
-			DefaultGui = new Gui(Game, new Skin(imageMap, map), new TextRenderer(font, Color.Black));
 
 			// Tell each of the screens to load their content.
 			foreach (GameScreen screen in screens)

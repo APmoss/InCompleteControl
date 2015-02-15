@@ -11,7 +11,7 @@ using System;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
-using Ruminate.GUI.Framework;
+using Nuclex.UserInterface;
 
 namespace GameStateManagement
 {
@@ -231,15 +231,15 @@ namespace GameStateManagement
 		bool isSerializable = true;
 
 		/// <summary>
-		/// Each gamescreen has the potential to contain a gui, just
+		/// Each gamescreen has the potential to contain a gui screen, just
 		/// add the essential gui commands.
 		/// </summary>
-		public Gui Gui {
+		public GuiManager Gui {
 			get { return gui; }
-			protected set { gui = value; }
+			set { gui = value; }
 		}
 
-		Gui gui;
+		GuiManager gui;
 
 		/// <summary>
 		/// Activates the screen. Called when the screen is added to the screen manager or if the game resumes

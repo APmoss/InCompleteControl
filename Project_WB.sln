@@ -7,12 +7,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project_WBContent", "Projec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSM", "Project_WB\GameStateManagement\GSM.csproj", "{0A551D79-F37E-4529-9CA0-3FD2E9EA715E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGui", "Project_WB\RuminateFramework\RGui.csproj", "{EF8797CB-7BB0-420B-AC25-091F253E1AC6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalLibs", "ExternalLibs", "{126CD985-5FF2-4961-92E1-229067E0D95C}"
 	ProjectSection(SolutionItems) = preProject
 		Project_WB\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.dll = Project_WB\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.dll
 		Project_WB\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.xml = Project_WB\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.xml
+		Project_WB\ExternalLibs\Nuclex.Input.dll = Project_WB\ExternalLibs\Nuclex.Input.dll
+		Project_WB\ExternalLibs\Nuclex.Input.xml = Project_WB\ExternalLibs\Nuclex.Input.xml
+		Project_WB\ExternalLibs\Nuclex.Support.dll = Project_WB\ExternalLibs\Nuclex.Support.dll
+		Project_WB\ExternalLibs\Nuclex.Support.xml = Project_WB\ExternalLibs\Nuclex.Support.xml
+		Project_WB\ExternalLibs\Nuclex.UserInterface.dll = Project_WB\ExternalLibs\Nuclex.UserInterface.dll
+		Project_WB\ExternalLibs\Nuclex.UserInterface.xml = Project_WB\ExternalLibs\Nuclex.UserInterface.xml
+		Project_WB\ExternalLibs\nunit.framework.dll = Project_WB\ExternalLibs\nunit.framework.dll
+		Project_WB\ExternalLibs\nunit.framework.xml = Project_WB\ExternalLibs\nunit.framework.xml
+		Project_WB\ExternalLibs\SlimDX.DirectInput.dll = Project_WB\ExternalLibs\SlimDX.DirectInput.dll
+		Project_WB\ExternalLibs\SlimDX.DirectInput.xml = Project_WB\ExternalLibs\SlimDX.DirectInput.xml
 	EndProjectSection
 EndProject
 Global
@@ -31,10 +39,6 @@ Global
 		{0A551D79-F37E-4529-9CA0-3FD2E9EA715E}.Debug|x86.Build.0 = Debug|x86
 		{0A551D79-F37E-4529-9CA0-3FD2E9EA715E}.Release|x86.ActiveCfg = Release|x86
 		{0A551D79-F37E-4529-9CA0-3FD2E9EA715E}.Release|x86.Build.0 = Release|x86
-		{EF8797CB-7BB0-420B-AC25-091F253E1AC6}.Debug|x86.ActiveCfg = Debug|x86
-		{EF8797CB-7BB0-420B-AC25-091F253E1AC6}.Debug|x86.Build.0 = Debug|x86
-		{EF8797CB-7BB0-420B-AC25-091F253E1AC6}.Release|x86.ActiveCfg = Release|x86
-		{EF8797CB-7BB0-420B-AC25-091F253E1AC6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
