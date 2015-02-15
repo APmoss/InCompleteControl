@@ -32,7 +32,7 @@ namespace Project_WB.Menus {
 		}
 		#endregion
 
-		#region Overridden Methodsa
+		#region Overridden Methods
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
 			Gui.Update(gameTime);
 
@@ -53,10 +53,12 @@ namespace Project_WB.Menus {
 		#region SetGui
 		Screen scrn;
 		LabelControl versionLabel;
+		LabelControl languageLabel;
+		ListControl languageList;
 		LabelControl usernameLabel;
 		InputControl usernameBox;
 		LabelControl passwordLabel;
-		InputControl passwordBox;
+		PasswordInputControl passwordBox;
 		ButtonControl loginButton;
 		ButtonControl registerButton;
 		WindowControl loginWindow;
@@ -71,31 +73,59 @@ namespace Project_WB.Menus {
 			versionLabel = new LabelControl(Stcs.InternalVersion.ToString());
 			versionLabel.Bounds = new UniRectangle(10, Stcs.YRes - 20, 300, 20);
 
-			usernameLabel = new LabelControl("BAKERNET Username");
+			languageLabel = new LabelControl(Strings.Language + ":");
+			languageLabel.Bounds = new UniRectangle(Stcs.XRes - 210, Stcs.YRes - 115, 200, 20);
+
+			languageList = new ListControl();
+			languageList.Bounds = new UniRectangle(Stcs.XRes - 210, Stcs.YRes - 85, 200, 75);
+			languageList.SelectionMode = ListSelectionMode.Single;
+			languageList.Items.Add(Strings.English + " (English)");
+			languageList.Items.Add(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164));
+			languageList.Items.Add(Strings.French + string.Format(" (Fran{0}ais)", (char)135));
+			languageList.SelectionChanged += delegate {
+				string culture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+
+				if (languageList.SelectedItems.Count == 1) {
+					if (languageList.SelectedItems[0] == 0) {
+						System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+					}
+					else if (languageList.SelectedItems[0] == 1) {
+						System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("es-ES");
+					}
+					else if (languageList.SelectedItems[0] == 2) {
+						System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
+					}
+				}
+			};
+
+			usernameLabel = new LabelControl(Strings.Username);
 			usernameLabel.Bounds = new UniRectangle(10, 35, 330, 20);
 
 			usernameBox = new InputControl();
 			usernameBox.Bounds = new UniRectangle(10, 60, 330, 30);
 			
-			passwordLabel = new LabelControl("Password");
+			passwordLabel = new LabelControl(Strings.Password);
 			passwordLabel.Bounds = new UniRectangle(10, 100, 330, 20);
 			
-			passwordBox = new InputControl();
+			passwordBox = new PasswordInputControl('*');
 			passwordBox.Bounds = new UniRectangle(10, 125, 330, 30);
 
 			loginButton = new ButtonControl();
-			loginButton.Text = "Login";
+			loginButton.Text = Strings.SignIn;
 			loginButton.Bounds = new UniRectangle(10, 170, 160, 35);
+			loginButton.Pressed += delegate {
+				ScreenManager.AddScreen(new Gameplay.TestThing(), null);
+			};
 
 			registerButton = new ButtonControl();
-			registerButton.Text = "Register";
+			registerButton.Text = Strings.Register;
 			registerButton.Bounds = new UniRectangle(180, 170, 160, 35);
 			registerButton.Pressed += delegate {
 				ScreenManager.AddScreen(new Register(), null);
 			};
 
 			loginWindow = new WindowControl();
-			loginWindow.Bounds = new UniRectangle(Stcs.XRes / 2 - 175, Stcs.YRes - 350, 350, 300);
+			loginWindow.Bounds = new UniRectangle(Stcs.XRes / 2 - 175, Stcs.YRes - 235, 350, 225);
 			loginWindow.Title = "BAKERNET Account Login";
 			loginWindow.Children.Add(usernameLabel);
 			loginWindow.Children.Add(usernameBox);
@@ -105,6 +135,8 @@ namespace Project_WB.Menus {
 			loginWindow.Children.Add(registerButton);
 			
 			scrn.Desktop.Children.Add(versionLabel);
+			scrn.Desktop.Children.Add(languageLabel);
+			scrn.Desktop.Children.Add(languageList);
 			scrn.Desktop.Children.Add(loginWindow);
 		}
 		#endregion

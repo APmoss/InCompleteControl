@@ -16,6 +16,7 @@ namespace Project_WB.Menus {
 			TransitionOffTime = TimeSpan.FromSeconds(.3);
 		}
 
+		#region Overridden Methods
 		public override void Activate(bool instancePreserved) {
 			SetGui();
 
@@ -47,7 +48,7 @@ namespace Project_WB.Menus {
 															warningStar.Bounds.ToOffset(600, 600).Top + registerWindow.Bounds.Location.Y.Offset),
 												Color.Red, 0, new Vector2(25, 15), .5f, Microsoft.Xna.Framework.Graphics.SpriteEffects.None, 0);
 
-			if (warningLabel.Text != "") {
+			if (!string.IsNullOrEmpty(warningLabel.Text)) {
 				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Consolas, "*",
 												new Vector2(warningLabel.Bounds.ToOffset(600, 600).Left + registerWindow.Bounds.Location.X.Offset,
 															warningLabel.Bounds.ToOffset(600, 600).Top + registerWindow.Bounds.Location.Y.Offset),
@@ -58,7 +59,9 @@ namespace Project_WB.Menus {
 
 			base.Draw(gameTime);
 		}
+		#endregion
 
+		#region Verification
 		protected void VerifyAndCreate() {
 			string message = string.Empty;
 
@@ -163,19 +166,19 @@ namespace Project_WB.Menus {
 				return false;
 			}
 			// Password is too short/long
-			if (passwordBox.Text.Length < 6 || passwordBox.Text.Length > 16) {
+			if (passwordBox.GetInternalText().Length < 6 || passwordBox.GetInternalText().Length > 16) {
 				message = "Password is too short/long.";
 				warningStar.Bounds = passwordBox.Bounds;
 				return false;
 			}
 			// Password is in bad format (not one capital, lowercase, number)
-			if (!validatePassword(passwordBox.Text)) {
+			if (!validatePassword(passwordBox.GetInternalText())) {
 				message = "Password must contain at least one capital, one lowercase, and one number.";
 				warningStar.Bounds = passwordBox.Bounds;
 				return false;
 			}
 			// Passwords do not match
-			if (passwordBox.Text != confirmPassword.Text) {
+			if (passwordBox.GetInternalText() != confirmPassword.GetInternalText()) {
 				message = "Passwords do not match.";
 				warningStar.Bounds = confirmPassword.Bounds;
 				return false;
@@ -183,6 +186,7 @@ namespace Project_WB.Menus {
 			
 			// Aaaand... It's good!
 			message = "All good!";
+			warningLabel.Text = message;
 			return true;
 		}
 
@@ -213,6 +217,7 @@ namespace Project_WB.Menus {
 			}
 			return false;
 		}
+		#endregion
 
 		#region SetGui
 		Screen scrn;
@@ -227,7 +232,7 @@ namespace Project_WB.Menus {
 		LabelControl usernameLabel;
 		InputControl usernameBox, confirmUsername;
 		LabelControl passwordLabel;
-		InputControl passwordBox, confirmPassword;
+		PasswordInputControl passwordBox, confirmPassword;
 		ButtonControl confirmButton, cancelButton;
 		LabelControl disclaimer;
 		LabelControl warningLabel, warningStar;
@@ -250,31 +255,31 @@ namespace Project_WB.Menus {
 			countryList.Items.Add("Not the United States");
 			countryList.Items.Add("Narnia");
 			countryList.Items.Add("Chernarus");
-
-			birthLabel = new LabelControl("Date of Birth (ex.- 8 | 16 | 1995)");
+			
+			birthLabel = new LabelControl(Strings.DateOfBirth + " (ex.- 8 | 16 | 1995)");
 			birthLabel.Bounds = new UniRectangle(10, 145, 580, 20);
 
 			monthBox = new InputControl();
-			monthBox.Text = "Month";
+			monthBox.Text = Strings.Month;
 			monthBox.Bounds = new UniRectangle(10, 170, 55, 30);
 
 			dateBox = new InputControl();
-			dateBox.Text = "Date";
+			dateBox.Text = Strings.Date;
 			dateBox.Bounds = new UniRectangle(75, 170, 55, 30);
 
 			yearBox = new InputControl();
-			yearBox.Text = "Year";
+			yearBox.Text = Strings.Year;
 			yearBox.Bounds = new UniRectangle(140, 170, 75, 30);
 
-			nameLabel = new LabelControl("Name (ex.- Byran Baker)");
+			nameLabel = new LabelControl(Strings.Name + " (ex.- Byran Baker)");
 			nameLabel.Bounds = new UniRectangle(10, 210, 580, 20);
 
 			firstNameBox = new InputControl();
-			firstNameBox.Text = "First";
+			firstNameBox.Text = Strings.FirstName;
 			firstNameBox.Bounds = new UniRectangle(10, 235, 285, 30);
 
 			lastNameBox = new InputControl();
-			lastNameBox.Text = "Last";
+			lastNameBox.Text = Strings.LastName;
 			lastNameBox.Bounds = new UniRectangle(305, 235, 285, 30);
 
 			emailLabel = new LabelControl("E-Mail Address");
@@ -288,7 +293,7 @@ namespace Project_WB.Menus {
 			confirmEmail.Text = "Confirm E-Mail Address";
 			confirmEmail.Bounds = new UniRectangle(305, 300, 285, 30);
 
-			usernameLabel = new LabelControl("Username (must be 6-16 characters long)");
+			usernameLabel = new LabelControl(Strings.Username + " (must be 6-16 characters long)");
 			usernameLabel.Bounds = new UniRectangle(10, 340, 580, 20);
 
 			usernameBox = new InputControl();
@@ -299,15 +304,13 @@ namespace Project_WB.Menus {
 			confirmUsername.Text = "Confirm Username";
 			confirmUsername.Bounds = new UniRectangle(305, 365, 285, 30);
 
-			passwordLabel = new LabelControl("Password (6-16 characters, at least one capital, one lowercase, and one number");
+			passwordLabel = new LabelControl(Strings.Password + " (6-16 characters, at least one capital, one lowercase, and one number");
 			passwordLabel.Bounds = new UniRectangle(10, 405, 580, 20);
 
-			passwordBox = new InputControl();
-			passwordBox.Text = "Password";
+			passwordBox = new PasswordInputControl('*');
 			passwordBox.Bounds = new UniRectangle(10, 430, 285, 30);
 
-			confirmPassword = new InputControl();
-			confirmPassword.Text = "Confirm Password";
+			confirmPassword = new PasswordInputControl('*');
 			confirmPassword.Bounds = new UniRectangle(305, 430, 285, 30);
 
 			confirmButton = new ButtonControl();

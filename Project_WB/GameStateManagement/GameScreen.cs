@@ -13,13 +13,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 using Nuclex.UserInterface;
 
-namespace GameStateManagement
-{
+namespace GameStateManagement {
 	/// <summary>
 	/// Enum describes the screen transition state.
 	/// </summary>
-	public enum ScreenState
-	{
+	public enum ScreenState {
 		TransitionOn,
 		Active,
 		TransitionOff,
@@ -34,8 +32,7 @@ namespace GameStateManagement
 	/// want to quit" message box, and the main game itself are all implemented
 	/// as screens.
 	/// </summary>
-	public abstract class GameScreen
-	{
+	public abstract class GameScreen {
 		/// <summary>
 		/// Normally when one screen is brought up over the top of another,
 		/// the first screen will transition off to make room for the new
@@ -43,8 +40,7 @@ namespace GameStateManagement
 		/// popup, in which case screens underneath it do not need to bother
 		/// transitioning off.
 		/// </summary>
-		public bool IsPopup
-		{
+		public bool IsPopup {
 			get { return isPopup; }
 			protected set { isPopup = value; }
 		}
@@ -68,8 +64,7 @@ namespace GameStateManagement
 		/// Indicates how long the screen takes to
 		/// transition on when it is activated.
 		/// </summary>
-		public TimeSpan TransitionOnTime
-		{
+		public TimeSpan TransitionOnTime {
 			get { return transitionOnTime; }
 			protected set { transitionOnTime = value; }
 		}
@@ -81,8 +76,7 @@ namespace GameStateManagement
 		/// Indicates how long the screen takes to
 		/// transition off when it is deactivated.
 		/// </summary>
-		public TimeSpan TransitionOffTime
-		{
+		public TimeSpan TransitionOffTime {
 			get { return transitionOffTime; }
 			protected set { transitionOffTime = value; }
 		}
@@ -95,8 +89,7 @@ namespace GameStateManagement
 		/// from zero (fully active, no transition) to one (transitioned
 		/// fully off to nothing).
 		/// </summary>
-		public float TransitionPosition
-		{
+		public float TransitionPosition {
 			get { return transitionPosition; }
 			protected set { transitionPosition = value; }
 		}
@@ -109,8 +102,7 @@ namespace GameStateManagement
 		/// from 1 (fully active, no transition) to 0 (transitioned
 		/// fully off to nothing).
 		/// </summary>
-		public float TransitionAlpha
-		{
+		public float TransitionAlpha {
 			get { return 1f - TransitionPosition; }
 		}
 
@@ -118,8 +110,7 @@ namespace GameStateManagement
 		/// <summary>
 		/// Gets the current screen transition state.
 		/// </summary>
-		public ScreenState ScreenState
-		{
+		public ScreenState ScreenState {
 			get { return screenState; }
 			protected set { screenState = value; }
 		}
@@ -135,8 +126,7 @@ namespace GameStateManagement
 		/// if set, the screen will automatically remove itself as soon as the
 		/// transition finishes.
 		/// </summary>
-		public bool IsExiting
-		{
+		public bool IsExiting {
 			get { return isExiting; }
 			protected internal set { isExiting = value; }
 		}
@@ -147,10 +137,8 @@ namespace GameStateManagement
 		/// <summary>
 		/// Checks whether this screen is active and can respond to user input.
 		/// </summary>
-		public bool IsActive
-		{
-			get
-			{
+		public bool IsActive {
+			get {
 				return !otherScreenHasFocus &&
 					   (screenState == ScreenState.TransitionOn ||
 						screenState == ScreenState.Active);
@@ -163,8 +151,7 @@ namespace GameStateManagement
 		/// <summary>
 		/// Gets the manager that this screen belongs to.
 		/// </summary>
-		public ScreenManager ScreenManager
-		{
+		public ScreenManager ScreenManager {
 			get { return screenManager; }
 			internal set { screenManager = value; }
 		}
@@ -180,8 +167,7 @@ namespace GameStateManagement
 		/// this menu is given control over all subsequent screens, so other gamepads
 		/// are inactive until the controlling player returns to the main menu.
 		/// </summary>
-		public PlayerIndex? ControllingPlayer
-		{
+		public PlayerIndex? ControllingPlayer {
 			get { return controllingPlayer; }
 			internal set { controllingPlayer = value; }
 		}
@@ -196,18 +182,15 @@ namespace GameStateManagement
 		/// These gestures are handled by the ScreenManager when screens change and
 		/// all gestures are placed in the InputState passed to the HandleInput method.
 		/// </summary>
-		public GestureType EnabledGestures
-		{
+		public GestureType EnabledGestures {
 			get { return enabledGestures; }
-			protected set
-			{
+			protected set {
 				enabledGestures = value;
 
 				// the screen manager handles this during screen changes, but
 				// if this screen is active and the gesture types are changing,
 				// we have to update the TouchPanel ourself.
-				if (ScreenState == ScreenState.Active)
-				{
+				if (ScreenState == ScreenState.Active) {
 					TouchPanel.EnabledGestures = value;
 				}
 			}
@@ -222,8 +205,7 @@ namespace GameStateManagement
 		/// If this is false, the screen will be ignored during serialization.
 		/// By default, all screens are assumed to be serializable.
 		/// </summary>
-		public bool IsSerializable
-		{
+		public bool IsSerializable {
 			get { return isSerializable; }
 			protected set { isSerializable = value; }
 		}
@@ -269,45 +251,36 @@ namespace GameStateManagement
 		/// Unlike HandleInput, this method is called regardless of whether the screen
 		/// is active, hidden, or in the middle of a transition.
 		/// </summary>
-		public virtual void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
-		{
+		public virtual void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
 			this.otherScreenHasFocus = otherScreenHasFocus;
 
-			if (isExiting)
-			{
+			if (isExiting) {
 				// If the screen is going away to die, it should transition off.
 				screenState = ScreenState.TransitionOff;
 
-				if (!UpdateTransition(gameTime, transitionOffTime, 1))
-				{
+				if (!UpdateTransition(gameTime, transitionOffTime, 1)) {
 					// When the transition finishes, remove the screen.
 					ScreenManager.RemoveScreen(this);
 				}
 			}
-			else if (coveredByOtherScreen)
-			{
+			else if (coveredByOtherScreen) {
 				// If the screen is covered by another, it should transition off.
-				if (UpdateTransition(gameTime, transitionOffTime, 1))
-				{
+				if (UpdateTransition(gameTime, transitionOffTime, 1)) {
 					// Still busy transitioning.
 					screenState = ScreenState.TransitionOff;
 				}
-				else
-				{
+				else {
 					// Transition finished!
 					screenState = ScreenState.Hidden;
 				}
 			}
-			else
-			{
+			else {
 				// Otherwise the screen should transition on and become active.
-				if (UpdateTransition(gameTime, transitionOnTime, -1))
-				{
+				if (UpdateTransition(gameTime, transitionOnTime, -1)) {
 					// Still busy transitioning.
 					screenState = ScreenState.TransitionOn;
 				}
-				else
-				{
+				else {
 					// Transition finished!
 					screenState = ScreenState.Active;
 				}
@@ -318,8 +291,7 @@ namespace GameStateManagement
 		/// <summary>
 		/// Helper for updating the screen transition position.
 		/// </summary>
-		bool UpdateTransition(GameTime gameTime, TimeSpan time, int direction)
-		{
+		bool UpdateTransition(GameTime gameTime, TimeSpan time, int direction) {
 			// How much should we move by?
 			float transitionDelta;
 
@@ -333,8 +305,7 @@ namespace GameStateManagement
 
 			// Did we reach the end of the transition?
 			if (((direction < 0) && (transitionPosition <= 0)) ||
-				((direction > 0) && (transitionPosition >= 1)))
-			{
+				((direction > 0) && (transitionPosition >= 1))) {
 				transitionPosition = MathHelper.Clamp(transitionPosition, 0, 1);
 				return false;
 			}
@@ -363,15 +334,12 @@ namespace GameStateManagement
 		/// instantly kills the screen, this method respects the transition timings
 		/// and will give the screen a chance to gradually transition off.
 		/// </summary>
-		public void ExitScreen()
-		{
-			if (TransitionOffTime == TimeSpan.Zero)
-			{
+		public void ExitScreen() {
+			if (TransitionOffTime == TimeSpan.Zero) {
 				// If the screen has a zero transition time, remove it immediately.
 				ScreenManager.RemoveScreen(this);
 			}
-			else
-			{
+			else {
 				// Otherwise flag that it should transition off and then exit.
 				isExiting = true;
 			}

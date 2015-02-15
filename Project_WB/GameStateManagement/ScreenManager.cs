@@ -22,16 +22,14 @@ using Nuclex.Input;
 using Nuclex.UserInterface;
 #endregion
 
-namespace GameStateManagement
-{
+namespace GameStateManagement {
 	/// <summary>
 	/// The screen manager is a component which manages one or more GameScreen
 	/// instances. It maintains a stack of screens, calls their Update and Draw
 	/// methods at the appropriate times, and automatically routes input to the
 	/// topmost active screen.
 	/// </summary>
-	public class ScreenManager : DrawableGameComponent
-	{
+	public class ScreenManager : DrawableGameComponent {
 		#region Fields
 
 		private const string StateFilename = "ScreenManagerState.xml";
@@ -60,8 +58,7 @@ namespace GameStateManagement
 		/// A default SpriteBatch shared by all the screens. This saves
 		/// each screen having to bother creating their own local instance.
 		/// </summary>
-		public SpriteBatch SpriteBatch
-		{
+		public SpriteBatch SpriteBatch {
 			get { return spriteBatch; }
 		}
 
@@ -80,8 +77,7 @@ namespace GameStateManagement
 		/// each time it is updated. This can be useful for making sure
 		/// everything is being added and removed at the right times.
 		/// </summary>
-		public bool TraceEnabled
-		{
+		public bool TraceEnabled {
 			get { return traceEnabled; }
 			set { traceEnabled = value; }
 		}
@@ -90,8 +86,7 @@ namespace GameStateManagement
 		/// <summary>
 		/// Gets a blank texture that can be used by the screens.
 		/// </summary>
-		public Texture2D BlankTexture
-		{
+		public Texture2D BlankTexture {
 			get { return blankTexture; }
 		}
 
@@ -112,8 +107,7 @@ namespace GameStateManagement
 		/// Constructs a new screen manager component.
 		/// </summary>
 		public ScreenManager(Game game)
-			: base(game)
-		{
+			: base(game) {
 			// we must set EnabledGestures before we can query for them, but
 			// we don't assume the game wants to read them.
 			TouchPanel.EnabledGestures = GestureType.None;
@@ -123,8 +117,7 @@ namespace GameStateManagement
 		/// <summary>
 		/// Initializes the screen manager component.
 		/// </summary>
-		public override void Initialize()
-		{
+		public override void Initialize() {
 			inputManager = new InputManager(Game.Services, Game.Window.Handle);
 			Game.Components.Add(inputManager);
 
@@ -143,8 +136,7 @@ namespace GameStateManagement
 		/// <summary>
 		/// Load your graphics content.
 		/// </summary>
-		protected override void LoadContent()
-		{
+		protected override void LoadContent() {
 			// Load content belonging to the screen manager.
 			ContentManager content = Game.Content;
 
@@ -153,8 +145,7 @@ namespace GameStateManagement
 			blankTexture = content.Load<Texture2D>("textures/pixel");
 
 			// Tell each of the screens to load their content.
-			foreach (GameScreen screen in screens)
-			{
+			foreach (GameScreen screen in screens) {
 				screen.Activate(false);
 			}
 		}
@@ -163,11 +154,9 @@ namespace GameStateManagement
 		/// <summary>
 		/// Unload your graphics content.
 		/// </summary>
-		protected override void UnloadContent()
-		{
+		protected override void UnloadContent() {
 			// Tell each of the screens to unload their content.
-			foreach (GameScreen screen in screens)
-			{
+			foreach (GameScreen screen in screens) {
 				screen.Unload();
 			}
 		}
@@ -181,8 +170,7 @@ namespace GameStateManagement
 		/// <summary>
 		/// Allows each screen to run logic.
 		/// </summary>
-		public override void Update(GameTime gameTime)
-		{
+		public override void Update(GameTime gameTime) {
 			// Read the keyboard and gamepad.
 			input.Update();
 
@@ -197,8 +185,7 @@ namespace GameStateManagement
 			bool coveredByOtherScreen = false;
 
 			// Loop as long as there are screens waiting to be updated.
-			while (tempScreensList.Count > 0)
-			{
+			while (tempScreensList.Count > 0) {
 				// Pop the topmost screen off the waiting list.
 				GameScreen screen = tempScreensList[tempScreensList.Count - 1];
 
@@ -208,12 +195,10 @@ namespace GameStateManagement
 				screen.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
 				if (screen.ScreenState == ScreenState.TransitionOn ||
-					screen.ScreenState == ScreenState.Active)
-				{
+					screen.ScreenState == ScreenState.Active) {
 					// If this is the first active screen we came across,
 					// give it a chance to handle input.
-					if (!otherScreenHasFocus || screen.OverrideInput)
-					{
+					if (!otherScreenHasFocus || screen.OverrideInput) {
 						screen.HandleInput(gameTime, input);
 
 						otherScreenHasFocus = true;
@@ -235,8 +220,7 @@ namespace GameStateManagement
 		/// <summary>
 		/// Prints a list of all the screens, for debugging.
 		/// </summary>
-		void TraceScreens()
-		{
+		void TraceScreens() {
 			List<string> screenNames = new List<string>();
 
 			foreach (GameScreen screen in screens)
@@ -249,10 +233,8 @@ namespace GameStateManagement
 		/// <summary>
 		/// Tells each screen to draw itself.
 		/// </summary>
-		public override void Draw(GameTime gameTime)
-		{
-			foreach (GameScreen screen in screens)
-			{
+		public override void Draw(GameTime gameTime) {
+			foreach (GameScreen screen in screens) {
 				if (screen.ScreenState == ScreenState.Hidden)
 					continue;
 
@@ -269,15 +251,13 @@ namespace GameStateManagement
 		/// <summary>
 		/// Adds a new screen to the screen manager.
 		/// </summary>
-		public void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer)
-		{
+		public void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer) {
 			screen.ControllingPlayer = controllingPlayer;
 			screen.ScreenManager = this;
 			screen.IsExiting = false;
 
 			// If we have a graphics device, tell the screen to load content.
-			if (isInitialized)
-			{
+			if (isInitialized) {
 				screen.Activate(false);
 			}
 
@@ -294,11 +274,9 @@ namespace GameStateManagement
 		/// the screen can gradually transition off rather than just being
 		/// instantly removed.
 		/// </summary>
-		public void RemoveScreen(GameScreen screen)
-		{
+		public void RemoveScreen(GameScreen screen) {
 			// If we have a graphics device, tell the screen to unload content.
-			if (isInitialized)
-			{
+			if (isInitialized) {
 				screen.Unload();
 			}
 
@@ -307,8 +285,7 @@ namespace GameStateManagement
 
 			// if there is a screen still in the manager, update TouchPanel
 			// to respond to gestures that screen is interested in.
-			if (screens.Count > 0)
-			{
+			if (screens.Count > 0) {
 				TouchPanel.EnabledGestures = screens[screens.Count - 1].EnabledGestures;
 			}
 		}
@@ -328,8 +305,7 @@ namespace GameStateManagement
 		/// than the real master list, because screens should only ever be added
 		/// or removed using the AddScreen and RemoveScreen methods.
 		/// </summary>
-		public GameScreen[] GetScreens()
-		{
+		public GameScreen[] GetScreens() {
 			return screens.ToArray();
 		}
 
@@ -338,8 +314,7 @@ namespace GameStateManagement
 		/// Helper draws a translucent black fullscreen sprite, used for fading
 		/// screens in and out, and for darkening the background behind popups.
 		/// </summary>
-		public void FadeBackBuffer(float alpha, Color color)
-		{
+		public void FadeBackBuffer(float alpha, Color color) {
 			spriteBatch.Begin();
 			spriteBatch.Draw(blankTexture, GraphicsDevice.Viewport.Bounds, color * alpha);
 			spriteBatch.End();
@@ -348,14 +323,12 @@ namespace GameStateManagement
 		/// <summary>
 		/// Informs the screen manager to serialize its state to disk.
 		/// </summary>
-		public void Deactivate()
-		{
+		public void Deactivate() {
 #if !WINDOWS_PHONE
 			return;
 #else
 			// Open up isolated storage
-			using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
-			{
+			using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication()) {
 				// Create an XML document to hold the list of screen types currently in the stack
 				XDocument doc = new XDocument();
 				XElement root = new XElement("ScreenManager");
@@ -368,11 +341,9 @@ namespace GameStateManagement
 					tempScreensList.Add(screen);
 
 				// Iterate the screens to store in our XML file and deactivate them
-				foreach (GameScreen screen in tempScreensList)
-				{
+				foreach (GameScreen screen in tempScreensList) {
 					// Only add the screen to our XML if it is serializable
-					if (screen.IsSerializable)
-					{
+					if (screen.IsSerializable) {
 						// We store the screen's controlling player so we can rehydrate that value
 						string playerValue = screen.ControllingPlayer.HasValue
 							? screen.ControllingPlayer.Value.ToString()
@@ -389,23 +360,20 @@ namespace GameStateManagement
 				}
 
 				// Save the document
-				using (IsolatedStorageFileStream stream = storage.CreateFile(StateFilename))
-				{
+				using (IsolatedStorageFileStream stream = storage.CreateFile(StateFilename)) {
 					doc.Save(stream);
 				}
 			}
 #endif
 		}
 
-		public bool Activate(bool instancePreserved)
-		{
+		public bool Activate(bool instancePreserved) {
 #if !WINDOWS_PHONE
 			return false;
 #else
 			// If the game instance was preserved, the game wasn't dehydrated so our screens still exist.
 			// We just need to activate them and we're ready to go.
-			if (instancePreserved)
-			{
+			if (instancePreserved) {
 				// Make a copy of the master screen list, to avoid confusion if
 				// the process of activating one screen adds or removes others.
 				tempScreensList.Clear();
@@ -419,31 +387,26 @@ namespace GameStateManagement
 
 			// Otherwise we need to refer to our saved file and reconstruct the screens that were present
 			// when the game was deactivated.
-			else
-			{
+			else {
 				// Try to get the screen factory from the services, which is required to recreate the screens
 				IScreenFactory screenFactory = Game.Services.GetService(typeof(IScreenFactory)) as IScreenFactory;
-				if (screenFactory == null)
-				{
+				if (screenFactory == null) {
 					throw new InvalidOperationException(
 						"Game.Services must contain an IScreenFactory in order to activate the ScreenManager.");
 				}
 
 				// Open up isolated storage
-				using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
-				{
+				using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication()) {
 					// Check for the file; if it doesn't exist we can't restore state
 					if (!storage.FileExists(StateFilename))
 						return false;
 
 					// Read the state file so we can build up our screens
-					using (IsolatedStorageFileStream stream = storage.OpenFile(StateFilename, FileMode.Open))
-					{
+					using (IsolatedStorageFileStream stream = storage.OpenFile(StateFilename, FileMode.Open)) {
 						XDocument doc = XDocument.Load(stream);
 
 						// Iterate the document to recreate the screen stack
-						foreach (XElement screenElem in doc.Root.Elements("GameScreen"))
-						{
+						foreach (XElement screenElem in doc.Root.Elements("GameScreen")) {
 							// Use the factory to create the screen
 							Type screenType = Type.GetType(screenElem.Attribute("Type").Value);
 							GameScreen screen = screenFactory.CreateScreen(screenType);
