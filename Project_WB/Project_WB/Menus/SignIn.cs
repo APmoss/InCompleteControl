@@ -56,7 +56,7 @@ namespace Project_WB.Menus {
 		LabelControl usernameLabel;
 		InputControl usernameBox;
 		LabelControl passwordLabel;
-		PasswordInputControl passwordBox;
+		InputControl passwordBox;
 		ButtonControl loginButton;
 		ButtonControl registerButton;
 		WindowControl loginWindow;
@@ -71,28 +71,24 @@ namespace Project_WB.Menus {
 			versionLabel = new LabelControl(Stcs.InternalVersion.ToString());
 			versionLabel.Bounds = new UniRectangle(10, Stcs.YRes - 20, 300, 20);
 
-			System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
-			//System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("es-ES");
-			//System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
-
-			usernameLabel = new LabelControl(Strings.Username);
+			usernameLabel = new LabelControl("BAKERNET Username");
 			usernameLabel.Bounds = new UniRectangle(10, 35, 330, 20);
 
 			usernameBox = new InputControl();
 			usernameBox.Bounds = new UniRectangle(10, 60, 330, 30);
 			
-			passwordLabel = new LabelControl(Strings.Password);
+			passwordLabel = new LabelControl("Password");
 			passwordLabel.Bounds = new UniRectangle(10, 100, 330, 20);
 			
-			passwordBox = new PasswordInputControl('*');
+			passwordBox = new InputControl();
 			passwordBox.Bounds = new UniRectangle(10, 125, 330, 30);
 
 			loginButton = new ButtonControl();
-			loginButton.Text = Strings.SignIn;
+			loginButton.Text = "Login";
 			loginButton.Bounds = new UniRectangle(10, 170, 160, 35);
 
 			registerButton = new ButtonControl();
-			registerButton.Text = Strings.Register;
+			registerButton.Text = "Register";
 			registerButton.Bounds = new UniRectangle(180, 170, 160, 35);
 			registerButton.Pressed += delegate {
 				ScreenManager.AddScreen(new Register(), null);
