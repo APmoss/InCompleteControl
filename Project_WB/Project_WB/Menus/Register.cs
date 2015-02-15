@@ -13,8 +13,6 @@ namespace Project_WB.Menus {
 			//TODO: change back to .3
 			TransitionOnTime = TimeSpan.FromSeconds(1);
 			TransitionOffTime = TimeSpan.FromSeconds(.3);
-
-			//IsPopup = true;
 		}
 
 		public override void Activate(bool instancePreserved) {
@@ -57,6 +55,10 @@ namespace Project_WB.Menus {
 		InputControl firstNameBox, lastNameBox;
 		LabelControl emailLabel;
 		InputControl emailBox, confirmEmailBox;
+		LabelControl usernameLabel;
+		InputControl usernameBox, confirmUsername;
+		LabelControl passwordLabel;
+		InputControl passwordBox, confirmPassword;
 		ButtonControl cancelButton;
 		WindowControl registerWindow;
 
@@ -93,7 +95,7 @@ namespace Project_WB.Menus {
 			yearBox.Text = "Year";
 			yearBox.Bounds = new UniRectangle(140, 170, 75, 30);
 
-			nameLabel = new LabelControl("Name");
+			nameLabel = new LabelControl("Name (ex.- Byran Baker");
 			nameLabel.Bounds = new UniRectangle(10, 210, 580, 20);
 
 			firstNameBox = new InputControl();
@@ -114,6 +116,27 @@ namespace Project_WB.Menus {
 			confirmEmailBox = new InputControl();
 			confirmEmailBox.Text = "Confirm E-Mail Address";
 			confirmEmailBox.Bounds = new UniRectangle(305, 300, 285, 30);
+
+			usernameLabel = new LabelControl("Username (must be 2-16 characters)");
+			usernameLabel.Bounds = new UniRectangle(10, 340, 580, 20);
+
+			usernameBox = new InputControl();
+			usernameBox.Text = "BAKERNET Username";
+			usernameBox.Bounds =  new UniRectangle(10, 365, 285, 30);
+
+			confirmUsername = new InputControl();
+			confirmUsername.Text = "Confirm Username";
+			confirmUsername.Bounds = new UniRectangle(305, 365, 285, 30);
+
+			passwordLabel = new LabelControl("Password (must be at least 6 characters & contain at least 1 number");
+			passwordLabel.Bounds = new UniRectangle(10, 405, 580, 20);
+
+			passwordBox = new InputControl();
+			passwordBox.Text = "Password";
+			passwordBox.Bounds = new UniRectangle(10, 430, 285, 30);
+
+			confirmPassword = new InputControl();
+			confirmPassword.Text = ""
 
 			cancelButton = new ButtonControl();
 			cancelButton.Text = "Cancel";
@@ -137,6 +160,9 @@ namespace Project_WB.Menus {
 			registerWindow.Children.Add(emailLabel);
 			registerWindow.Children.Add(emailBox);
 			registerWindow.Children.Add(confirmEmailBox);
+			registerWindow.Children.Add(usernameLabel);
+			registerWindow.Children.Add(usernameBox);
+			registerWindow.Children.Add(confirmUsername);
 			registerWindow.Children.Add(cancelButton);
 
 			scrn.Desktop.Children.Add(registerWindow);
