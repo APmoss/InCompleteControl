@@ -42,8 +42,16 @@ namespace Project_WB {
 			return
 				Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) *
 				Matrix.CreateRotationZ(MathHelper.ToRadians(rotationDegrees)) *
-				Matrix.CreateScale(scale * scale) *
+				Matrix.CreateScale(scale) *
 				Matrix.CreateTranslation(new Vector3(viewport.Width / 2, viewport.Height / 2, 0));
+		}
+
+		public float GetScale() {
+			return scale;
+		}
+
+		public Vector2 ToRelativePosition(Vector2 position) {
+			return Vector2.Transform(position, Matrix.Invert(GetMatrixTransformation()));
 		}
 	}
 }

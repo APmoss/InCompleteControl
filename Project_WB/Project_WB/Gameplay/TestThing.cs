@@ -81,6 +81,12 @@ namespace Project_WB.Gameplay {
 				cam.DestRotationDegrees -= 1;
 			}
 
+			if (input.IsKeyPressed(Keys.R, null, out p)) {
+				cam.DestPosition = Vector2.Zero;
+				cam.DestScale = 1;
+				cam.DestRotationDegrees = 0;
+			}
+
 			if (Mouse.GetState().ScrollWheelValue > mouse.ScrollWheelValue) {
 				cam.DestScale += .1f;
 			}
@@ -89,20 +95,23 @@ namespace Project_WB.Gameplay {
 			}
 			mouse = Mouse.GetState();
 
-			mouseTile = new Point((int)Math.Round((mouse.X - 16) / 32.0),
-									(int)Math.Round((mouse.Y - 16) / 32.0));
-			
+			var v = cam.ToRelativePosition(new Vector2(mouse.X - 16 * cam.GetScale(), mouse.Y - 16 * cam.GetScale()));
+
+			mouseTile = new Point((int)Math.Round(v.X / 32),
+									(int)Math.Round(v.Y / 32));
+
 			base.HandleInput(gameTime, input);
 		}
 
-		public override void Draw(Microsoft.Xna.Framework.GameTime gameTime) {
+		public override void Draw(GameTime gameTime) {
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.GetMatrixTransformation());
 			//ScreenManager.SpriteBatch.Begin();
 
-			map.Draw(ScreenManager.SpriteBatch, new Rectangle(0, 0, 700, 1200), new Vector2(0, 0));
+			map.Draw(ScreenManager.SpriteBatch, new Rectangle(0, 0, 1600, 1600), new Vector2(0, 0));
 			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "???", Vector2.Zero, Color.Blue);
 
-			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle(mouseTile.X * 32, mouseTile.Y * 32, 32, 32),
+			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture,
+											new Rectangle(mouseTile.X * 32, mouseTile.Y * 32, 32, 32),
 											Color.White * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 
 			ScreenManager.SpriteBatch.End();
