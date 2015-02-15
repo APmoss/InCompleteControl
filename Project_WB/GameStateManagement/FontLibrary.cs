@@ -14,13 +14,13 @@ namespace GameStateManagement {
 			get; protected set;
 		}
 		public SpriteFont Centaur {
-			get; private set;
+			get; protected set;
 		}
 		public SpriteFont HighTowerText {
-			get; private set;
+			get; protected set;
 		}
 		public SpriteFont SmallSegoeUIMono {
-			get; private set;
+			get; protected set;
 		}
 		#endregion
 

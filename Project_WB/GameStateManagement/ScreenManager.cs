@@ -40,6 +40,7 @@ namespace GameStateManagement {
 		InputState input = new InputState();
 
 		SpriteBatch spriteBatch;
+		SoundLibrary soundLibrary = new SoundLibrary();
 		FontLibrary fontLibrary = new FontLibrary();
 		Texture2D blankTexture;
 
@@ -60,6 +61,14 @@ namespace GameStateManagement {
 		/// </summary>
 		public SpriteBatch SpriteBatch {
 			get { return spriteBatch; }
+		}
+
+
+		/// <summary>
+		/// A library containing a dictionary of sounds accessed using the GetSound() method.
+		/// </summary>
+		public SoundLibrary SoundLibrary {
+			get { return soundLibrary; }
 		}
 
 
@@ -141,6 +150,7 @@ namespace GameStateManagement {
 			ContentManager content = Game.Content;
 
 			spriteBatch = new SpriteBatch(GraphicsDevice);
+			soundLibrary.LoadSounds(content);
 			fontLibrary.LoadFonts(content);
 			blankTexture = content.Load<Texture2D>("textures/pixel");
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Project_WB.Gameplay {
 	class AnimatedSprite : Sprite {
@@ -17,6 +18,19 @@ namespace Project_WB.Gameplay {
 		protected List<Rectangle> DownSourceRectangles = new List<Rectangle>();
 		protected List<Rectangle> LeftSourceRectangles = new List<Rectangle>();
 		protected List<Rectangle> RightSourceRectangles = new List<Rectangle>();
+
+		public AnimatedSprite(List<Rectangle> upSourceRectangles,
+								List<Rectangle> downSourceRectangles,
+								List<Rectangle> leftSourceRectangles,
+								List<Rectangle> rightSourceRectangles,
+								Texture2D spriteSheet) : base(new Rectangle(), spriteSheet) {
+
+			// Check if the parameters are valid. If good, set our values, otherwise just use an empty rectangle.
+			this.UpSourceRectangles = upSourceRectangles.Count > 0 ? upSourceRectangles : new List<Rectangle>();
+			this.DownSourceRectangles = downSourceRectangles.Count > 0 ? downSourceRectangles : new List<Rectangle>();
+			this.LeftSourceRectangles = leftSourceRectangles.Count > 0 ? leftSourceRectangles : new List<Rectangle>();
+			this.RightSourceRectangles = rightSourceRectangles.Count > 0 ? rightSourceRectangles : new List<Rectangle>();
+		}
 
 		public override void Update(GameTime gameTime) {
 			elapsedAnimationTime += gameTime.ElapsedGameTime;

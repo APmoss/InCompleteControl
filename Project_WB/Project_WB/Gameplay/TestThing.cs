@@ -139,16 +139,21 @@ namespace Project_WB.Gameplay {
 			mouse = Mouse.GetState();
 
 			var v = cam.ToRelativePosition(new Vector2(mouse.X - 16 * cam.GetScale(), mouse.Y - 16 * cam.GetScale()));
+			
+			Point oldMouseTile = mouseTile;
 
 			mouseTile = new Point((int)Math.Round(v.X / 32),
 									(int)Math.Round(v.Y / 32));
+
+			if (oldMouseTile != mouseTile) {
+				//ScreenManager.SoundLibrary.GetSound("tileChange1").Play();
+			}
 
 			base.HandleInput(gameTime, input);
 		}
 
 		public override void Draw(GameTime gameTime) {
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.GetMatrixTransformation());
-			//ScreenManager.SpriteBatch.Begin();
 
 			map.Draw(ScreenManager.SpriteBatch, new Rectangle(0, 0, 1600, 1600), new Vector2(0, 0));
 			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "???", Vector2.Zero, Color.Blue);
