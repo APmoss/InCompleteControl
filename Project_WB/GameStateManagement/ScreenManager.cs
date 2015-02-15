@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Xml.Linq;
+using Ruminate.GUI.Framework;
 #endregion
 
 namespace GameStateManagement
@@ -91,6 +92,13 @@ namespace GameStateManagement
 			get { return blankTexture; }
 		}
 
+		/// <summary>
+		/// A preloaded, default gui with the default skin, text, etc.
+		/// </summary>
+		public Gui DefaultGui {
+			get; private set;
+		}
+
 
 		#endregion
 
@@ -131,6 +139,13 @@ namespace GameStateManagement
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 			fontLibrary.LoadFonts(content);
 			blankTexture = content.Load<Texture2D>("textures/pixel");
+
+			Texture2D imageMap = content.Load<Texture2D>("gui/grey/imageMap");
+			
+			string map = File.OpenText("Content/gui/grey/map.txt").ReadToEnd();
+			SpriteFont font = FontLibrary.SmallSegoeUIMono;
+
+			DefaultGui = new Gui(Game, new Skin(imageMap, map), new TextRenderer(font, Color.Black));
 
 			// Tell each of the screens to load their content.
 			foreach (GameScreen screen in screens)

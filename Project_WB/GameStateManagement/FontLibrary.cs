@@ -19,6 +19,9 @@ namespace GameStateManagement {
 		public SpriteFont HighTowerText {
 			get; private set;
 		}
+		public SpriteFont SmallSegoeUIMono {
+			get; private set;
+		}
 		#endregion
 
 		#region Public Methods
@@ -31,6 +34,7 @@ namespace GameStateManagement {
 				Consolas = content.Load<SpriteFont>("fonts/consolas");
 				Centaur = content.Load<SpriteFont>("fonts/centaur");
 				HighTowerText = content.Load<SpriteFont>("fonts/highTowerText");
+				SmallSegoeUIMono = content.Load<SpriteFont>("fonts/smallSegoeUiMono");
 			}
 		}
 		#endregion

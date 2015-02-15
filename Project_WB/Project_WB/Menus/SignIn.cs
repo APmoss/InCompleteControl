@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameStateManagement;
-using Ruminate.GUI.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System.IO;
-using Ruminate.GUI.Content;
+using GameStateManagement;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Ruminate.GUI.Content;
+using Ruminate.GUI.Framework;
 
 namespace Project_WB.Menus {
 	/// <summary>
@@ -13,8 +13,11 @@ namespace Project_WB.Menus {
 	/// code associated with signing in.
 	/// </summary>
 	class SignIn : GameScreen {
-		// Handles all gui widgets
-		Gui gui;
+		#region Fields
+		TextBox usernameBox = new TextBox(2, 15);
+		TextBox passwordBox = new TextBox(2, 15);
+		#endregion
+
 
 		public SignIn() {
 			TransitionOnTime = TimeSpan.FromSeconds(.3);
@@ -22,35 +25,38 @@ namespace Project_WB.Menus {
 		}
 
 		public override void Activate(bool instancePreserved) {
-			Texture2D imageMap = ScreenManager.Game.Content.Load<Texture2D>("gui/grey/imageMap");
-
-			//string s = Environment.CurrentDirectory;
-
-			string map = File.OpenText(@"C:\Users\Alex\Desktop\Project_WB\Project_WB\Project_WBContent\gui\grey\map.txt").ReadToEnd(); //Path.Combine(Environment.CurrentDirectory, "\\Project_WBContent\\gui\\grey\\map")).ReadToEnd();
-
-			SpriteFont font = ScreenManager.Game.Content.Load<SpriteFont>("fonts/smallSegoeUiMono");
-			gui = new Gui(ScreenManager.Game, new Skin(imageMap, map), new TextRenderer(font, Color.Black));
-
-			gui.Widgets = new Widget[] {
-				new Button(200, 200, "Login and stuff???"),
-				new Panel(400, 400, 200, 200) {
-					Children = new Widget[] {
-						new TextBox(2, 100)
+			Gui = ScreenManager.DefaultGui;
+			
+			Gui.AddWidget(new Panel(Stcs.XRes / 2 - 125, Stcs.YRes - 600, 250, 550) {
+				Children = new Widget[] { 
+					new Label(2, 2, "Username:"),
+					new Panel(2, 32, 220, 35) {
+						Children = new Widget[] {
+							usernameBox
+						}
+					},
+					new Label(2, 82, "Password:"),
+					new Panel(2, 112, 220, 35) {
+						Children = new Widget[] {
+							passwordBox
+						}
 					}
 				}
-			};
+			});
 
 			base.Activate(instancePreserved);
 		}
 
-		public override void Update(Microsoft.Xna.Framework.GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
-			gui.Update();
+		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+			Gui.Update();
+
+			DebugOverlay.DebugText.Append(usernameBox.IsFocused).AppendLine();
 
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
 
-		public override void Draw(Microsoft.Xna.Framework.GameTime gameTime) {
-			gui.Draw();
+		public override void Draw(GameTime gameTime) {
+			Gui.Draw();
 			
 			base.Draw(gameTime);
 		}

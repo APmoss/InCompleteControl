@@ -69,7 +69,7 @@
     <Compile Include="fonts\smallSegoeUiMono.spritefont">
       <Name>smallSegoeUiMono</Name>
       <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
+      <Processor>NuclexSpriteFontDescriptionProcessor</Processor>
     </Compile>
     <None Include="gui\grey\map.txt">
       <Name>map</Name>

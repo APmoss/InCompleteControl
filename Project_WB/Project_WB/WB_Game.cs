@@ -72,6 +72,8 @@ namespace Project_WB {
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update(GameTime gameTime) {
 			DebugOverlay.DebugText.Append("-I like jellybeans.").AppendLine();
+			DebugOverlay.DebugText.AppendFormat("X: {0}({1}) | Y: {2}({3})", graphics.PreferredBackBufferWidth, Window.ClientBounds.Width,
+																			graphics.PreferredBackBufferHeight, Window.ClientBounds.Height).AppendLine();
 			
 			base.Update(gameTime);
 		}
@@ -92,7 +94,9 @@ namespace Project_WB {
 		/// </summary>
 		private void AddInitialScreens() {
 			screenManager.AddScreen(new DebugOverlay(), null);
-			screenManager.AddScreen(new Menus.Splash(), null);
+			//TODO: Start at splash
+			//screenManager.AddScreen(new Menus.Splash(), null);
+			screenManager.AddScreen(new Menus.SignIn(), null);
 		}
 	}
 }

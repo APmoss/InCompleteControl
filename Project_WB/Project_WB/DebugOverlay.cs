@@ -68,13 +68,13 @@ namespace Project_WB {
 				ScreenManager.SpriteBatch.Begin();
 
 				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Consolas, output, Vector2.Zero, Color.DarkGray, 0, Vector2.Zero, .4f, SpriteEffects.None, 0);
-				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Consolas, output, new Vector2(2), Color.LightGray, 0, Vector2.Zero, .4f, SpriteEffects.None, 0);
+				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Consolas, output, new Vector2(1), Color.LightGray, 0, Vector2.Zero, .4f, SpriteEffects.None, 0);
 
 				ScreenManager.SpriteBatch.End();
-			}
 
-			// Clear the debug text to allow future appends
-			DebugText.Clear();
+				// Clear the debug text to allow future appends
+				DebugText.Clear();
+			}
 
 			base.Draw(gameTime);
 		}
