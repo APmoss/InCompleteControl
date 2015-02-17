@@ -60,7 +60,7 @@ using Microsoft.Xna.Framework;
 using System.IO;
 using System.IO.Compression;
 
-namespace Squared.Tiled {
+namespace Project_WB.Framework.Squared.Tiled {
 	public class Tileset {
 		public class TilePropertyList : Dictionary<string, string> {
 		}

@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 #endregion
 
-namespace Project_WB.Gameplay.Pathfinding
+namespace Project_WB.Framework.Pathfinding
 {
 	#region Search Status Enum
 	public enum SearchStatus {

@@ -5,7 +5,7 @@ using System.Text;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
 
-namespace Project_WB {
+namespace Project_WB.Menus {
 	/// <summary>
 	/// The loading screen is the screen we see when the game must handle content
 	/// that may take longer than usual. Access it using the LoadingScreen.Load() method.

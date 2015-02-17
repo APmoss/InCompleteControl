@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Project_WB {
+namespace Project_WB.Framework {
 	/// <summary>
 	/// An overlay that contains many useful debug tools, such as a framerate counter.
 	/// </summary>

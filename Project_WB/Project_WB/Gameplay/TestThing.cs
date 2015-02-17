@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using GameStateManagement;
-using Squared.Tiled;
-using Project_WB.Gameplay.Pathfinding;
+using Project_WB.Framework.Squared.Tiled;
+using Project_WB.Framework.Pathfinding;
+using Project_WB.Framework;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

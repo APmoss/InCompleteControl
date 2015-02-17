@@ -15,6 +15,8 @@ namespace Project_WB.Gameplay {
 		Rectangle sourceRectangle = Rectangle.Empty;
 		Texture2D spriteSheet;
 
+		public Sprite() { }
+
 		public Sprite(Rectangle sourceRectangle, Texture2D spriteSheet) {
 			this.sourceRectangle = sourceRectangle;
 			this.spriteSheet = spriteSheet;

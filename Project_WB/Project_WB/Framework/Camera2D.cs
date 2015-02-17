@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Project_WB {
+namespace Project_WB.Framework {
 	class Camera2D {
 		private const float MAX_SCALE = 500;
 		private const float MIN_SCALE = .001f;

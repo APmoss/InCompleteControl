@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Project_WB.Gameplay.Pathfinding;
-using Squared.Tiled;
+using Project_WB.Framework;
+using Project_WB.Framework.Pathfinding;
+using Project_WB.Framework.Squared.Tiled;
 
 namespace Project_WB.Gameplay {
 	class Battle : GameScreen {

@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 #endregion
 
-namespace Project_WB.Gameplay.Pathfinding {
+namespace Project_WB.Framework.Pathfinding {
 	public class MapData {
 		public int NumberRows;
 		public int NumberColumns;

@@ -19,11 +19,13 @@ namespace Project_WB.Gameplay {
 		protected List<Rectangle> LeftSourceRectangles = new List<Rectangle>();
 		protected List<Rectangle> RightSourceRectangles = new List<Rectangle>();
 
+		public AnimatedSprite() { }
+
 		public AnimatedSprite(List<Rectangle> upSourceRectangles,
 								List<Rectangle> downSourceRectangles,
 								List<Rectangle> leftSourceRectangles,
 								List<Rectangle> rightSourceRectangles,
-								Texture2D spriteSheet) : base(new Rectangle(), spriteSheet) {
+								Texture2D spriteSheet) {
 
 			// Check if the parameters are valid. If good, set our values, otherwise just use an empty rectangle.
 			this.UpSourceRectangles = upSourceRectangles.Count > 0 ? upSourceRectangles : new List<Rectangle>();
