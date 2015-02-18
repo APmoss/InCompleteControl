@@ -5,6 +5,7 @@ using GameStateManagement;
 using Project_WB.Framework.Squared.Tiled;
 using Project_WB.Framework.Pathfinding;
 using Project_WB.Framework;
+using Project_WB.Framework.Audio;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,6 +14,8 @@ using Microsoft.Xna.Framework.Input;
 namespace Project_WB.Gameplay {
 	class TestThing : GameScreen {
 		Camera2D cam;
+		AudioManager audioManager;
+		EnvironmentSound testSound;
 		MouseState mouse = new MouseState();
 		Point mouseTile = Point.Zero;
 
@@ -34,7 +37,10 @@ namespace Project_WB.Gameplay {
 
 		public override void Activate(bool instancePreserved) {
 			cam = new Camera2D(ScreenManager.Game.GraphicsDevice.Viewport);
-			
+			audioManager = new AudioManager(cam);
+			testSound = new EnvironmentSound(ScreenManager.SoundLibrary.GetSound("creepyNoise"), new Vector2(256/32, 1344/32), true);
+			audioManager.AddSounds(testSound);
+
 			map = Map.Load(@"maps\test.tmx", ScreenManager.Game.Content);
 
 			for (int i = 0; i < map.Layers["collision"].Width; i++) {
@@ -52,6 +58,7 @@ namespace Project_WB.Gameplay {
 
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
 			cam.Update();
+			audioManager.Update(gameTime);
 
 			//Maybe use
 			elapsed += gameTime.ElapsedGameTime;
@@ -66,6 +73,7 @@ namespace Project_WB.Gameplay {
 			DebugOverlay.DebugText.AppendFormat("MTile X: {0}  |  Y: {1}", mouseTile.X, mouseTile.Y).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("ChrSpd: {0}", character.Speed).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("SecretToUniverse: {0}", new Random().Next(5000)).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("CameraVelocity: {0}", cam.GetCurrentVelocity()).AppendLine();
 
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
@@ -157,7 +165,7 @@ namespace Project_WB.Gameplay {
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.GetMatrixTransformation());
 
 			map.Draw(ScreenManager.SpriteBatch, new Rectangle(0, 0, 1600, 1600), new Vector2(0, 0));
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "???", Vector2.Zero, Color.Blue);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Consolas, "!", new Vector2(260, 1354), Color.Blue);
 
 			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture,
 											new Rectangle(mouseTile.X * 32, mouseTile.Y * 32, 32, 32),
