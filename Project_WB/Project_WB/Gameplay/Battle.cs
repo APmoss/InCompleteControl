@@ -22,15 +22,12 @@ namespace Project_WB.Gameplay {
 			mouse = Mouse.GetState();
 			oldMouse = mouse;
 			camera = new Camera2D(ScreenManager.Game.GraphicsDevice.Viewport);
-
 			
 			base.Activate(instancePreserved);
 		}
 
 		public override void HandleInput(GameTime gameTime, InputState input) {
 			mouse = Mouse.GetState();
-
-
 
 			oldMouse = mouse;
 

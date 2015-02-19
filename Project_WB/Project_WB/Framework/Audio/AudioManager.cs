@@ -16,8 +16,11 @@ namespace Project_WB.Framework.Audio {
 		// The collection of all audio items. The size is limited based on
 		// the maximum number of sound channels.
 		List<AudioItem> audioItems = new List<AudioItem>();
-		// The audio listener, that hears at the center of the screen (along with the camera)
-		AudioListener listener = new AudioListener();
+		// The audio listeners, that hear around the center of the screen (along with the camera)
+		AudioListener leftListener = new AudioListener();
+		AudioListener rightListener = new AudioListener();
+		// The distance between the left and right listeners
+		int listenerDistance = 4;
 		// A local copy of the camera, so we can tell where to listen from
 		Camera2D camera;
 
@@ -115,7 +118,10 @@ namespace Project_WB.Framework.Audio {
 			this.camera = camera;
 
 			var relativePosition = camera.ToRelativePosition(new Vector2(camera.Viewport.Width / 2, camera.Viewport.Height / 2));
-			this.listener.Position = new Vector3(relativePosition, 0);
+			var halfListenerDistance = listenerDistance / 2;
+
+			leftListener.Position = new Vector3(relativePosition.X - halfListenerDistance, relativePosition.Y, 0);
+			rightListener.Position = new Vector3(relativePosition.X + halfListenerDistance, relativePosition.Y, 0);
 
 			foreach (var sound in audioItems) {
 				if (sound is EnvironmentSound) {
@@ -128,20 +134,25 @@ namespace Project_WB.Framework.Audio {
 
 		#region Methods
 		public void Update(GameTime gameTime) {
-			// Update the position of the listener
+			// Update the position of the listeners
 			var relativePosition = camera.ToRelativePosition(new Vector2(camera.Viewport.Width / 2, camera.Viewport.Height / 2));
 			relativePosition.X /= 32;
 			relativePosition.Y /= 32;
-			listener.Position = new Vector3(relativePosition, 0);
+			var halfListenerDistance = listenerDistance / 2;
+
+			leftListener.Position = new Vector3(relativePosition.X - halfListenerDistance, relativePosition.Y, 0);
+			rightListener.Position = new Vector3(relativePosition.X + halfListenerDistance, relativePosition.Y, 0);
 			// TODO: Change velocity
-			listener.Velocity = new Vector3(camera.GetCurrentVelocity() * 16, 0);
+			//listener.Velocity = new Vector3(camera.GetCurrentVelocity() * 16, 0);
+			leftListener.Velocity = new Vector3(camera.GetCurrentVelocity(), 0);
+			rightListener.Velocity = new Vector3(camera.GetCurrentVelocity(), 0);
 
 			foreach (var sound in audioItems) {
 				//music
 				//interface
 				if (sound is EnvironmentSound) {
 					sound.SoundInstance.Volume = environmentVolume;
-					sound.SoundInstance.Apply3D(listener, ((EnvironmentSound)sound).Emitter);
+					sound.SoundInstance.Apply3D(new AudioListener[] { leftListener, rightListener }, ((EnvironmentSound)sound).Emitter);
 				}
 				//voice
 			}
@@ -153,7 +164,7 @@ namespace Project_WB.Framework.Audio {
 					//interface
 					if (sound is EnvironmentSound) {
 						sound.SoundInstance.Volume = environmentVolume;
-						sound.SoundInstance.Apply3D(listener, ((EnvironmentSound)sound).Emitter);
+						sound.SoundInstance.Apply3D(new AudioListener[] { leftListener, rightListener }, ((EnvironmentSound)sound).Emitter);
 					}
 					//voice
 

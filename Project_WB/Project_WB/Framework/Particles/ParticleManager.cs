@@ -9,7 +9,7 @@ namespace Project_WB.Framework.Particles {
 		//TODO: finish documentation
 
 		#region Fields
-		int maxParticleCount = 1024;
+		int maxParticleCount = (32768 * 2);
 
 		List<Particle> particles = new List<Particle>();
 
@@ -58,11 +58,30 @@ namespace Project_WB.Framework.Particles {
 												particle.Tint, particle.RotationDegrees, particleOrigin, particle.Scale, particle.SpriteEffects, 0);
 			}
 		}
+		public void Draw(GameTime gameTime, ScreenManager screenManager, Rectangle drawableArea) {
+			foreach (var particle in particles) {
+				if (drawableArea.Contains((int)particle.Position.X, (int)particle.Position.Y)) {
+					var particleOrigin = new Vector2(particle.GetNextSourceRectangle().Width / 2, particle.GetNextSourceRectangle().Height / 2);
+					screenManager.SpriteBatch.Draw(particleSheet, particle.Position, particle.GetNextSourceRectangle(),
+													particle.Tint, particle.RotationDegrees, particleOrigin, particle.Scale, particle.SpriteEffects, 0);
+				}
+			}
+		}
 
 		public void AddParticle(Particle particle) {
 			if(particles.Count + 1 <= maxParticleCount) {
 				particles.Add(particle);
 			}
+		}
+
+		public List<Vector2> GetParticlePositions() {
+			List<Vector2> positions = new List<Vector2>();
+			
+			foreach (var particle in particles) {
+				positions.Add(particle.Position);
+			}
+
+			return positions;
 		}
 		#endregion
 	}

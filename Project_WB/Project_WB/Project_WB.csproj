@@ -94,7 +94,9 @@
     <Compile Include="Framework\Camera2D.cs" />
     <Compile Include="Framework\DebugOverlay.cs" />
     <Compile Include="Framework\Particles\AnimatedParticle.cs" />
+    <Compile Include="Framework\Particles\Emitters\StarEmitter.cs" />
     <Compile Include="Framework\Particles\Particle.cs" />
+    <Compile Include="Framework\Particles\ParticleEmitter.cs" />
     <Compile Include="Framework\Particles\ParticleManager.cs" />
     <Compile Include="Gameplay\AnimatedSprite.cs" />
     <Compile Include="Gameplay\Battle.cs" />
@@ -177,6 +179,7 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

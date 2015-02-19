@@ -14,12 +14,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Project_WB.Gameplay {
 	class TestThing : GameScreen {
+		#region Fields
 		Camera2D cam;
 		AudioManager audioManager;
 		ParticleManager particleManager;
 		EnvironmentSound testSound;
 		MouseState mouse = new MouseState();
 		Point mouseTile = Point.Zero;
+		Texture2D maru;
+		Effect testEffect;
+		TimeSpan searchTime = TimeSpan.Zero;
+		RenderTarget2D mainTarget;
+		RenderTarget2D lightMask;
 
 		Map map;
 
@@ -35,11 +41,13 @@ namespace Project_WB.Gameplay {
 
 		List<Point> highlightedTiles = new List<Point>();
 		List<Point> barrierList = new List<Point>();
+		#endregion
 
 		public TestThing() {
 			
 		}
 
+		#region Methods
 		public override void Activate(bool instancePreserved) {
 			cam = new Camera2D(ScreenManager.Game.GraphicsDevice.Viewport);
 			audioManager = new AudioManager(cam);
@@ -49,6 +57,10 @@ namespace Project_WB.Gameplay {
 
 			map = Map.Load(@"maps\test.tmx", ScreenManager.Game.Content);
 
+			maru = ScreenManager.Game.Content.Load<Texture2D>("textures/maru1");
+
+			testEffect = ScreenManager.Game.Content.Load<Effect>("effects/radialLight");
+
 			for (int i = 0; i < map.Layers["collision"].Width; i++) {
 				for (int j = 0; j < map.Layers["collision"].Height; j++) {
 					if (map.Layers["collision"].GetTile(i, j) == 116) {
@@ -57,7 +69,12 @@ namespace Project_WB.Gameplay {
 				}
 			}
 
-			character = new TestCharacter(new Rectangle(128, 256, 32, 32), ScreenManager.Game.Content.Load<Texture2D>("maps/tilesets/tilesetAv1.0"), new Point(17, 15));
+			character = new TestCharacter(new Rectangle(128, 256, 32, 32), ScreenManager.Game.Content.Load<Texture2D>("maps/tilesets/tilesetAv1.0"), new Point(17, 15), maru);
+
+			ScreenManager.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
+
+			mainTarget = new RenderTarget2D(ScreenManager.GraphicsDevice, Stcs.XRes, Stcs.YRes);
+			lightMask = new RenderTarget2D(ScreenManager.GraphicsDevice, Stcs.XRes, Stcs.YRes);
 
 			base.Activate(instancePreserved);
 		}
@@ -77,18 +94,18 @@ namespace Project_WB.Gameplay {
 
 			if (mouse.LeftButton == ButtonState.Pressed) {
 				for (int i = 0; i < particleLoops; i++) {
-					double angle = MathHelper.ToRadians(r.Next(0, 360));
+					double angle = MathHelper.ToRadians(r.Next(0, 1440) / 4);
 					Vector2 vel = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
-					vel *= (float)(r.NextDouble() + 1);
+					vel *= (float)(r.NextDouble() * 2 + 1);
 
 					particleManager.AddParticle(new Particle(new Rectangle(0, 0, 16, 16)) {
 						LifeSpan = new TimeSpan(0, 0, 2),
 						Position = cam.ToRelativePosition(new Vector2(mouse.X, mouse.Y)),
 						Velocity = vel,
 						Tint = new Color() {
-							R = (byte)r.Next(50, 200),
-							G = (byte)r.Next(50, 200),
-							B = (byte)r.Next(50, 200),
+							R = (byte)r.Next(0, 150),
+							G = (byte)r.Next(0, 150),
+							B = (byte)r.Next(0, 150),
 						}
 					});
 				}
@@ -96,13 +113,14 @@ namespace Project_WB.Gameplay {
 
 			particleManager.Update(gameTime);
 
-			DebugOverlay.DebugText.AppendFormat("Mouse X: {0}  |  Y: {1}", mouse.X, mouse.Y).AppendLine();
-			DebugOverlay.DebugText.AppendFormat("MTile X: {0}  |  Y: {1}", mouseTile.X, mouseTile.Y).AppendLine();
-			DebugOverlay.DebugText.AppendFormat("ChrSpd: {0}", character.Speed).AppendLine();
-			DebugOverlay.DebugText.AppendFormat("SecretToUniverse: {0}", new Random().Next(5000)).AppendLine();
-			DebugOverlay.DebugText.AppendFormat("ParticleTotal: {0}", particleManager.ParticleCount).AppendLine();
-			DebugOverlay.DebugText.AppendFormat("ParticleLoops: {0}", particleLoops).AppendLine();
-
+			DebugOverlay.DebugText.AppendFormat("-Mouse X: {0}  |  Y: {1}", mouse.X, mouse.Y).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("-MTile X: {0}  |  Y: {1}", mouseTile.X, mouseTile.Y).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("-ChrSpd: {0}", character.Speed).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("-SecretToUniverse: {0}", new Random().Next(5000)).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("-ParticleTotal: {0}", particleManager.ParticleCount).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("-ParticleLoops: {0}", particleLoops).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("-SearchTime: {0}", searchTime.TotalMilliseconds).AppendLine();
+			
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
 
@@ -148,25 +166,42 @@ namespace Project_WB.Gameplay {
 				follow = !follow;
 			}
 
-			if (input.IsNewKeyPress(Keys.OemPlus, null, out p)) {
+			if (input.IsKeyPressed(Keys.OemPlus, null, out p)) {
 				particleLoops++;
-			} if (input.IsNewKeyPress(Keys.OemMinus, null, out p)) {
+			} if (input.IsKeyPressed(Keys.OemMinus, null, out p)) {
 				particleLoops--;
 			}
 
 			if (input.IsNewKeyPress(Keys.T, null, out p) || (Mouse.GetState().RightButton == ButtonState.Pressed && mouse.RightButton == ButtonState.Released)) {
-				if (mouseTile.X >= 0 && mouseTile.X < 50 && mouseTile.Y >= 0 && mouseTile.Y < 50) {
+				if ((mouseTile.X >= 0 && mouseTile.X < 50 && mouseTile.Y >= 0 && mouseTile.Y < 50) && 
+					(!barrierList.Contains(mouseTile))) {
 					PathFinder pf = new PathFinder();
 
 					LinkedList<Point> solution = new LinkedList<Point>();
 
-					if (pf.QuickFind(new MapData(50, 50, character.TilePosition, mouseTile, barrierList), out solution)) {
-						character.Waypoints = solution.ToList();
-						character.Angry = false;
+					var before = DateTime.Now;
+
+					if (input.IsKeyPressed(Keys.LeftShift, null, out p) && character.Waypoints.Count > 0) {
+						if (pf.QuickFind(new MapData(50, 50, character.Waypoints.Last(), mouseTile, barrierList), out solution)) {
+							solution.RemoveFirst();
+							character.Waypoints.AddRange(solution.ToList());
+							character.Angry = false;
+						}
+						else {
+							character.Angry = true;
+						}
 					}
 					else {
-						character.Angry = true;
+						if (pf.QuickFind(new MapData(50, 50, character.TilePosition, mouseTile, barrierList), out solution)) {
+							character.Waypoints = solution.ToList();
+							character.Angry = false;
+						}
+						else {
+							character.Angry = true;
+						}
 					}
+
+					searchTime = DateTime.Now - before;
 				}
 				else {
 					character.Angry = true;
@@ -196,6 +231,11 @@ namespace Project_WB.Gameplay {
 		}
 
 		public override void Draw(GameTime gameTime) {
+			ScreenManager.GraphicsDevice.SetRenderTarget(mainTarget);
+			ScreenManager.GraphicsDevice.Clear(Color.Black);
+			
+			//testEffect.Parameters["mousePos"].SetValue(new Vector2(mouse.X / Stcs.XRes, mouse.Y / Stcs.YRes));
+
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, cam.GetMatrixTransformation());
 
 			map.Draw(ScreenManager.SpriteBatch, new Rectangle(0, 0, 1600, 1600), new Vector2(0, 0));
@@ -204,15 +244,58 @@ namespace Project_WB.Gameplay {
 			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture,
 											new Rectangle(mouseTile.X * 32, mouseTile.Y * 32, 32, 32),
 											Color.White * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
-
+			
 			character.Draw(gameTime, ScreenManager);
 
-			particleManager.Draw(gameTime, ScreenManager);
+			particleManager.Draw(gameTime, ScreenManager, cam.GetViewingRectangle());
 
+			ScreenManager.SpriteBatch.End();
+			ScreenManager.GraphicsDevice.SetRenderTarget(null);
+			DrawLightMask();
+
+			ScreenManager.GraphicsDevice.Clear(Color.Black);
+
+			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend); //, null, null, null, null, cam.GetMatrixTransformation());
+			testEffect.Parameters["lightMask"].SetValue(lightMask);
+			testEffect.CurrentTechnique.Passes[0].Apply();
+			ScreenManager.SpriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
 			ScreenManager.SpriteBatch.End();
 
 			base.Draw(gameTime);
 		}
+
+		public void DrawLightMask() {
+			ScreenManager.GraphicsDevice.SetRenderTarget(lightMask);
+			ScreenManager.GraphicsDevice.Clear(Color.Black);
+
+			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, cam.GetMatrixTransformation());
+			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, cam.GetViewingRectangle(), new Color(70, 0, 0, 200));
+			ScreenManager.SpriteBatch.End();
+
+			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, cam.GetMatrixTransformation());
+
+			foreach (var particlePosition in particleManager.GetParticlePositions()) {
+				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)particlePosition.X - 8, (int)particlePosition.Y - 8, 16, 16), Color.White);
+			}
+
+			ScreenManager.SpriteBatch.End();
+
+			ScreenManager.GraphicsDevice.SetRenderTarget(null);
+		}
+
+		public Texture2D CreateRadialLightTexture(int definiteRadius, int blurRadius) {
+			Color[] colorData = new Color[(int)Math.Pow((definiteRadius + blurRadius) * 2, 2)];
+
+			float step = 1 / (definiteRadius + blurRadius);
+
+			//for (int angle = 0; angle < MathHelper.TwoPi; angle += step) {
+			//    int x = (int)Math.Round((definiteRadius + blurRadius) * 2 * Math.Cos(angle));
+			//    int y = (int)Math.Round((definiteRadius + blurRadius) * 2 * Math.Sin(angle));
+			//}
+
+			return null;
+		}
+		#endregion
 	}
 
 	class TestCharacter : Sprite {
@@ -220,10 +303,12 @@ namespace Project_WB.Gameplay {
 		public List<Point> Waypoints = new List<Point>();
 		public bool Angry = false;
 		public float Speed = .5f;
+		Texture2D maru;
 
-		public TestCharacter(Rectangle sourceRectangle, Texture2D spriteSheet, Point tilePosition) : base(sourceRectangle, spriteSheet) {
+		public TestCharacter(Rectangle sourceRectangle, Texture2D spriteSheet, Point tilePosition, Texture2D maru) : base(sourceRectangle, spriteSheet) {
 			this.TilePosition = tilePosition;
 			Position = new Vector2(TilePosition.X * 32, TilePosition.Y * 32);
+			this.maru = maru;
 		}
 
 		public override void Update(GameTime gameTime) {
@@ -249,13 +334,18 @@ namespace Project_WB.Gameplay {
 
 				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, new Rectangle(point.X * 32, point.Y * 32, 32, 32),
 											c * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
+
+				screenManager.SpriteBatch.DrawString(screenManager.FontLibrary.Consolas, i.ToString(), new Vector2(Waypoints[i].X * 32, Waypoints[i].Y * 32),
+											Color.Red, 0, Vector2.Zero, .25f, Microsoft.Xna.Framework.Graphics.SpriteEffects.None, 0);
 			}
 
 			if (Angry) {
 				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, new Rectangle((int)Position.X - 32, (int)Position.Y - 32, 32 * 3, 32 * 3),
 												Color.Red * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 			}
-			
+
+			screenManager.SpriteBatch.Draw(maru, new Rectangle((int)Position.X, (int)Position.Y, 32, 32), Color.White);
+
 			base.Draw(gameTime, screenManager);
 		}
 	}

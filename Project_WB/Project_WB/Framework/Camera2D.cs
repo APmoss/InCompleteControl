@@ -76,6 +76,18 @@ namespace Project_WB.Framework {
 		}
 
 		/// <summary>
+		/// Returns a rectangle that covers the current viewing area.
+		/// Since rectangles are axis-aligned, it will stretch to the furthest coordinates.
+		/// </summary>
+		/// <returns></returns>
+		public Rectangle GetViewingRectangle() {
+			//TODO: Implement transformation modifications
+			int x = (int)(position.X - Viewport.Width / (2 * scale)) + 10;
+			int y = (int)(position.Y - Viewport.Height / (2 * scale)) + 10;
+			return new Rectangle(x, y, (int)(Viewport.Width / scale) - 20, (int)(Viewport.Height / scale) - 20);
+		}
+
+		/// <summary>
 		/// Returns the current velociy of the camera as a vector.
 		/// </summary>
 		/// <returns></returns>
@@ -103,6 +115,10 @@ namespace Project_WB.Framework {
 			// Transform with the inverse of the transformation matrix.
 			// Without inverse, you would convert relative position to screen position.
 			return Vector2.Transform(position, Matrix.Invert(GetMatrixTransformation()));
+		}
+		// Overloaded with X and Y coordinates
+		public Vector2 ToRelativePosition(int x, int y) {
+			return ToRelativePosition(new Vector2(x, y));
 		}
 		#endregion
 	}
