@@ -5,10 +5,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Project_WB.Gameplay {
 	class AnimatedSprite : Sprite {
+		//TODO: finish documentation
+
 		protected enum AnimationState {
 			Normal, MovingUp, MovingDown, MovingLeft, MovingRight, Frozen
 		}
 
+		#region Fields
 		int currentFrame = 0;
 		TimeSpan elapsedAnimationTime = TimeSpan.Zero;
 		public TimeSpan TargetAnimationTime = TimeSpan.FromSeconds(.25);
@@ -18,14 +21,15 @@ namespace Project_WB.Gameplay {
 		protected List<Rectangle> DownSourceRectangles = new List<Rectangle>();
 		protected List<Rectangle> LeftSourceRectangles = new List<Rectangle>();
 		protected List<Rectangle> RightSourceRectangles = new List<Rectangle>();
+		#endregion
 
-		public AnimatedSprite() { }
+		public AnimatedSprite(Texture2D spriteSheet) : base(spriteSheet) { }
 
 		public AnimatedSprite(List<Rectangle> upSourceRectangles,
 								List<Rectangle> downSourceRectangles,
 								List<Rectangle> leftSourceRectangles,
 								List<Rectangle> rightSourceRectangles,
-								Texture2D spriteSheet) {
+								Texture2D spriteSheet) : base(spriteSheet) {
 
 			// Check if the parameters are valid. If good, set our values, otherwise just use an empty rectangle.
 			this.UpSourceRectangles = upSourceRectangles.Count > 0 ? upSourceRectangles : new List<Rectangle>();
@@ -34,6 +38,7 @@ namespace Project_WB.Gameplay {
 			this.RightSourceRectangles = rightSourceRectangles.Count > 0 ? rightSourceRectangles : new List<Rectangle>();
 		}
 
+		#region Methods
 		public override void Update(GameTime gameTime) {
 			elapsedAnimationTime += gameTime.ElapsedGameTime;
 
@@ -72,5 +77,6 @@ namespace Project_WB.Gameplay {
 			
 			base.Update(gameTime);
 		}
+		#endregion
 	}
 }

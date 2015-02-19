@@ -9,6 +9,7 @@ namespace Project_WB.Framework.Audio {
 	/// </summary>
 	class AudioManager {
 		//TODO: finish documentation
+
 		#region Fields
 		// Private variable (description in property)
 		int maxSoundChannels = 64;
@@ -40,8 +41,8 @@ namespace Project_WB.Framework.Audio {
 
 				if (audioItems.Count > maxSoundChannels) {
 					int excessSounds = audioItems.Count - maxSoundChannels;
-
-					audioItems.RemoveRange(audioItems.Count - excessSounds - 1, excessSounds);
+					
+					audioItems.RemoveRange(audioItems.Count - excessSounds, excessSounds);
 				}
 			}
 		}
@@ -145,20 +146,25 @@ namespace Project_WB.Framework.Audio {
 				//voice
 			}
 		}
-		public void AddSounds(params AudioItem[] audioItems) {
-			foreach (var sound in audioItems) {
-				//music
-				//interface
-				if (sound is EnvironmentSound) {
-					sound.SoundInstance.Volume = environmentVolume;
-					sound.SoundInstance.Apply3D(listener, ((EnvironmentSound)sound).Emitter);
+		public void AddSounds(params AudioItem[] sounds) {
+			foreach (var sound in sounds) {
+				if (audioItems.Count + 1 <= maxSoundChannels) {
+					//music
+					//interface
+					if (sound is EnvironmentSound) {
+						sound.SoundInstance.Volume = environmentVolume;
+						sound.SoundInstance.Apply3D(listener, ((EnvironmentSound)sound).Emitter);
+					}
+					//voice
+
+					sound.SoundInstance.Play();
+
+					audioItems.Add(sound);
 				}
-				//voice
-
-				sound.SoundInstance.Play();
+				else {
+					break;
+				}
 			}
-
-			this.audioItems.AddRange(audioItems);
 		}
 		#endregion
 	}

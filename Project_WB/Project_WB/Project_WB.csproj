@@ -93,6 +93,9 @@
     <Compile Include="Framework\Audio\EnvironmentSound.cs" />
     <Compile Include="Framework\Camera2D.cs" />
     <Compile Include="Framework\DebugOverlay.cs" />
+    <Compile Include="Framework\Particles\AnimatedParticle.cs" />
+    <Compile Include="Framework\Particles\Particle.cs" />
+    <Compile Include="Framework\Particles\ParticleManager.cs" />
     <Compile Include="Gameplay\AnimatedSprite.cs" />
     <Compile Include="Gameplay\Battle.cs" />
     <Compile Include="Gameplay\Entity.cs" />

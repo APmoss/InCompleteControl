@@ -6,6 +6,7 @@ using Project_WB.Framework.Squared.Tiled;
 using Project_WB.Framework.Pathfinding;
 using Project_WB.Framework;
 using Project_WB.Framework.Audio;
+using Project_WB.Framework.Particles;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,6 +16,7 @@ namespace Project_WB.Gameplay {
 	class TestThing : GameScreen {
 		Camera2D cam;
 		AudioManager audioManager;
+		ParticleManager particleManager;
 		EnvironmentSound testSound;
 		MouseState mouse = new MouseState();
 		Point mouseTile = Point.Zero;
@@ -23,6 +25,9 @@ namespace Project_WB.Gameplay {
 
 		TestCharacter character;
 		bool follow = false;
+
+		Random r = new Random();
+		int particleLoops = 1;
 
 		//TODO: remove this
 		TimeSpan elapsed = TimeSpan.Zero;
@@ -38,6 +43,7 @@ namespace Project_WB.Gameplay {
 		public override void Activate(bool instancePreserved) {
 			cam = new Camera2D(ScreenManager.Game.GraphicsDevice.Viewport);
 			audioManager = new AudioManager(cam);
+			particleManager = new ParticleManager(ScreenManager.Game.Content.Load<Texture2D>("textures/particles"));
 			testSound = new EnvironmentSound(ScreenManager.SoundLibrary.GetSound("creepyNoise"), new Vector2(256/32, 1344/32), true);
 			audioManager.AddSounds(testSound);
 
@@ -69,11 +75,33 @@ namespace Project_WB.Gameplay {
 				cam.DestPosition = character.Position;
 			}
 
+			if (mouse.LeftButton == ButtonState.Pressed) {
+				for (int i = 0; i < particleLoops; i++) {
+					double angle = MathHelper.ToRadians(r.Next(0, 360));
+					Vector2 vel = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+					vel *= (float)(r.NextDouble() + 1);
+
+					particleManager.AddParticle(new Particle(new Rectangle(0, 0, 16, 16)) {
+						LifeSpan = new TimeSpan(0, 0, 2),
+						Position = cam.ToRelativePosition(new Vector2(mouse.X, mouse.Y)),
+						Velocity = vel,
+						Tint = new Color() {
+							R = (byte)r.Next(50, 200),
+							G = (byte)r.Next(50, 200),
+							B = (byte)r.Next(50, 200),
+						}
+					});
+				}
+			}
+
+			particleManager.Update(gameTime);
+
 			DebugOverlay.DebugText.AppendFormat("Mouse X: {0}  |  Y: {1}", mouse.X, mouse.Y).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("MTile X: {0}  |  Y: {1}", mouseTile.X, mouseTile.Y).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("ChrSpd: {0}", character.Speed).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("SecretToUniverse: {0}", new Random().Next(5000)).AppendLine();
-			DebugOverlay.DebugText.AppendFormat("CameraVelocity: {0}", cam.GetCurrentVelocity()).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("ParticleTotal: {0}", particleManager.ParticleCount).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("ParticleLoops: {0}", particleLoops).AppendLine();
 
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
@@ -118,6 +146,12 @@ namespace Project_WB.Gameplay {
 			}
 			if (input.IsKeyPressed(Keys.F, null, out p)) {
 				follow = !follow;
+			}
+
+			if (input.IsNewKeyPress(Keys.OemPlus, null, out p)) {
+				particleLoops++;
+			} if (input.IsNewKeyPress(Keys.OemMinus, null, out p)) {
+				particleLoops--;
 			}
 
 			if (input.IsNewKeyPress(Keys.T, null, out p) || (Mouse.GetState().RightButton == ButtonState.Pressed && mouse.RightButton == ButtonState.Released)) {
@@ -172,6 +206,8 @@ namespace Project_WB.Gameplay {
 											Color.White * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 
 			character.Draw(gameTime, ScreenManager);
+
+			particleManager.Draw(gameTime, ScreenManager);
 
 			ScreenManager.SpriteBatch.End();
 

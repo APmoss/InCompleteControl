@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Project_WB.Gameplay {
 	class Sprite : Entity {
+		//TODO: finish documentation
+
+		#region Fields
 		public Vector2 Position = Vector2.Zero;
 		public Color Tint = Color.White;
 		public float Scale = 1;
@@ -13,15 +16,19 @@ namespace Project_WB.Gameplay {
 		public SpriteEffects SpriteEffects = SpriteEffects.None;
 
 		Rectangle sourceRectangle = Rectangle.Empty;
-		Texture2D spriteSheet;
+		protected Texture2D spriteSheet;
+		#endregion
 
-		public Sprite() { }
+		public Sprite(Texture2D spriteSheet) {
+			this.spriteSheet = spriteSheet;
+		}
 
 		public Sprite(Rectangle sourceRectangle, Texture2D spriteSheet) {
 			this.sourceRectangle = sourceRectangle;
 			this.spriteSheet = spriteSheet;
 		}
 
+		#region Methods
 		public override void Update(GameTime gameTime) {
 			base.Update(gameTime);
 		}
@@ -31,5 +38,6 @@ namespace Project_WB.Gameplay {
 			
 			base.Draw(gameTime, screenManager);
 		}
+		#endregion
 	}
 }
