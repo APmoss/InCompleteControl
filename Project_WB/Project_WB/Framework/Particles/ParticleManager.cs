@@ -74,14 +74,12 @@ namespace Project_WB.Framework.Particles {
 			}
 		}
 
-		public List<Vector2> GetParticlePositions() {
-			List<Vector2> positions = new List<Vector2>();
-			
-			foreach (var particle in particles) {
-				positions.Add(particle.Position);
-			}
-
-			return positions;
+		/// <summary>
+		/// Return a copy if the particle list to prevent modifications.
+		/// </summary>
+		/// <returns></returns>
+		public Particle[] GetParticles() {
+			return particles.ToArray();
 		}
 		#endregion
 	}

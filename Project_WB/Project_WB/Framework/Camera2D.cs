@@ -21,10 +21,13 @@ namespace Project_WB.Framework {
 		public Viewport Viewport;
 
 		// The actual position of the camera
+		Vector2 lastPosition = Vector2.Zero;
 		Vector2 position = Vector2.Zero;
 		// The actual scale of the camera
+		float lastScale = 1f;
 		float scale = 1f;
 		// The actual rotation of the camera
+		float lastRotationDegrees = 0f;
 		float rotationDegrees = 0f;
 
 		/// <summary>
@@ -47,6 +50,11 @@ namespace Project_WB.Framework {
 
 		#region Methods
 		public void Update() {
+			// Update the old transformations
+			lastPosition = position;
+			lastScale = scale;
+			lastRotationDegrees = rotationDegrees;
+
 			// Perform a linear interpolation from the current camera position to the destination
 			position = Vector2.Lerp(position, DestPosition, TransitionStrength);
 
@@ -71,6 +79,23 @@ namespace Project_WB.Framework {
 				Matrix.CreateRotationZ(MathHelper.ToRadians(rotationDegrees)) *
 				// Apply scale
 				Matrix.CreateScale(scale) *
+				// Translate to the center of the screen (all camera modifcations are relative to the center)
+				Matrix.CreateTranslation(new Vector3(Viewport.Width / 2, Viewport.Height / 2, 0));
+		}
+
+		/// <summary>
+		/// Returns a matrix that applies the OLD translations, the scale, and the rotation.
+		/// Used when considering old mouse positions, compared to new mouse positions.
+		/// </summary>
+		/// <returns></returns>
+		protected Matrix GetOldMatrixTransformation() {
+			return
+				// Translate to the old position
+				Matrix.CreateTranslation(new Vector3(-lastPosition.X, -lastPosition.Y, 0)) *
+				// Rotate in old radians
+				Matrix.CreateRotationZ(MathHelper.ToRadians(lastRotationDegrees)) *
+				// Apply old scale
+				Matrix.CreateScale(lastScale) *
 				// Translate to the center of the screen (all camera modifcations are relative to the center)
 				Matrix.CreateTranslation(new Vector3(Viewport.Width / 2, Viewport.Height / 2, 0));
 		}
@@ -109,16 +134,47 @@ namespace Project_WB.Framework {
 		/// For example, a mouse position will be the same if you move around in the world,
 		/// but applying this will convert the mouse's static position to "follow" with the world.
 		/// </summary>
-		/// <param name="position"></param>
+		/// <param name="screenPosition"></param>
 		/// <returns></returns>
-		public Vector2 ToRelativePosition(Vector2 position) {
+		public Vector2 ToRelativePosition(Vector2 screenPosition) {
 			// Transform with the inverse of the transformation matrix.
 			// Without inverse, you would convert relative position to screen position.
-			return Vector2.Transform(position, Matrix.Invert(GetMatrixTransformation()));
+			return Vector2.Transform(screenPosition, Matrix.Invert(GetMatrixTransformation()));
 		}
 		// Overloaded with X and Y coordinates
 		public Vector2 ToRelativePosition(int x, int y) {
 			return ToRelativePosition(new Vector2(x, y));
+		}
+
+		/// <summary>
+		/// The exact same mothod as ToRelativePosition, but using old camera transformations.
+		/// Use this when comparing old mouse positions to new mouse positions.
+		/// </summary>
+		/// <param name="screenPosition"></param>
+		/// <returns></returns>
+		public Vector2 ToOldRelativePosition(Vector2 screenPosition) {
+			return Vector2.Transform(screenPosition, Matrix.Invert(GetOldMatrixTransformation()));
+		}
+		// Overloaded using X and Y coordinates
+		public Vector2 ToOldRelativePosition(int x, int y) {
+			return ToOldRelativePosition(new Vector2(x, y));
+		}
+
+		/// <summary>
+		/// Returns an object's position on the screen, particularly the window.
+		/// Similar to ToRelativePosition, but transforms a world position into the point
+		/// in line with the top left of the window.
+		/// </summary>
+		/// <param name="relativePosition"></param>
+		/// <returns></returns>
+		public Vector2 ToScreenPosition(Vector2 relativePosition) {
+			// Transform WITHOUT the inverse of the transformation matrix.
+			// With inverse, you would convert screen position to relative position.
+			return Vector2.Transform(relativePosition, GetMatrixTransformation());
+		}
+		// Overloaded with X and Y coordinates
+		public Vector2 ToScreenPosition(int x, int y) {
+			return ToScreenPosition(new Vector2(x, y));
 		}
 		#endregion
 	}

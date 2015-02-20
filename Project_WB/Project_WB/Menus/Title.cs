@@ -31,11 +31,11 @@ namespace Project_WB.Menus {
 			ScreenManager.SpriteBatch.Begin();
 
 			if (ScreenState == GameStateManagement.ScreenState.TransitionOn || ScreenState == GameStateManagement.ScreenState.TransitionOff) {
-				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(100, 300),
+				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(180, 350),
 					Color.Red * TransitionAlpha);
 			}
 			else {
-				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(100, 300),
+				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(180, 350),
 					Color.Red * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 			}
 

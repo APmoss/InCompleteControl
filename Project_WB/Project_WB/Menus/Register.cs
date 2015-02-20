@@ -255,6 +255,11 @@ namespace Project_WB.Menus {
 			countryList.Items.Add("Not the United States");
 			countryList.Items.Add("Narnia");
 			countryList.Items.Add("Chernarus");
+			countryList.Items.Add("Lingor Island");
+			countryList.Items.Add("Fallujah");
+			countryList.Items.Add("Takistan");
+			countryList.Items.Add("Utes");
+			countryList.Items.Add("Panthera");
 			
 			birthLabel = new LabelControl(Strings.DateOfBirth + " (ex.- 8 | 16 | 1995)");
 			birthLabel.Bounds = new UniRectangle(10, 145, 580, 20);

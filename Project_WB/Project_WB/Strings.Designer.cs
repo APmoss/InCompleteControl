@@ -196,6 +196,15 @@ namespace Project_WB {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Switch Language.
+        /// </summary>
+        internal static string SwitchLanguage {
+            get {
+                return ResourceManager.GetString("SwitchLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Username.
         /// </summary>
         internal static string Username {

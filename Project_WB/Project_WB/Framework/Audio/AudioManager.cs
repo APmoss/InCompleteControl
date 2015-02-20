@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Project_WB.Framework.Audio {
 	/// <summary>
@@ -16,6 +17,7 @@ namespace Project_WB.Framework.Audio {
 		// The collection of all audio items. The size is limited based on
 		// the maximum number of sound channels.
 		List<AudioItem> audioItems = new List<AudioItem>();
+
 		// The audio listeners, that hear around the center of the screen (along with the camera)
 		AudioListener leftListener = new AudioListener();
 		AudioListener rightListener = new AudioListener();
@@ -116,13 +118,13 @@ namespace Project_WB.Framework.Audio {
 
 		public AudioManager(Camera2D camera) {
 			this.camera = camera;
-
+			
 			var relativePosition = camera.ToRelativePosition(new Vector2(camera.Viewport.Width / 2, camera.Viewport.Height / 2));
 			var halfListenerDistance = listenerDistance / 2;
 
 			leftListener.Position = new Vector3(relativePosition.X - halfListenerDistance, relativePosition.Y, 0);
 			rightListener.Position = new Vector3(relativePosition.X + halfListenerDistance, relativePosition.Y, 0);
-
+			
 			foreach (var sound in audioItems) {
 				if (sound is EnvironmentSound) {
 					if (sound.SoundInstance.State == SoundState.Playing) {

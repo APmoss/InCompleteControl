@@ -11,6 +11,8 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Project_WB.Framework.Entities;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Project_WB.Gameplay {
 	class TestThing : GameScreen {
@@ -22,6 +24,8 @@ namespace Project_WB.Gameplay {
 		MouseState mouse = new MouseState();
 		Point mouseTile = Point.Zero;
 		Texture2D maru;
+		Texture2D vignette;
+		SoundEffectInstance song;
 		Effect testEffect;
 		TimeSpan searchTime = TimeSpan.Zero;
 		RenderTarget2D mainTarget;
@@ -30,6 +34,8 @@ namespace Project_WB.Gameplay {
 		Map map;
 
 		TestCharacter character;
+		AnimatedSprite sango;
+		Unit mech;
 		bool follow = false;
 
 		Random r = new Random();
@@ -58,6 +64,10 @@ namespace Project_WB.Gameplay {
 			map = Map.Load(@"maps\test.tmx", ScreenManager.Game.Content);
 
 			maru = ScreenManager.Game.Content.Load<Texture2D>("textures/maru1");
+			vignette = ScreenManager.Game.Content.Load<Texture2D>("textures/vignette");
+
+			song = ScreenManager.SoundLibrary.GetSound("yeah").CreateInstance();
+			//song.Play();
 
 			testEffect = ScreenManager.Game.Content.Load<Effect>("effects/radialLight");
 
@@ -70,6 +80,101 @@ namespace Project_WB.Gameplay {
 			}
 
 			character = new TestCharacter(new Rectangle(128, 256, 32, 32), ScreenManager.Game.Content.Load<Texture2D>("maps/tilesets/tilesetAv1.0"), new Point(17, 15), maru);
+			character.LeftClicked += delegate {
+				switch (r.Next(6)) {
+					case 0:
+						ScreenManager.SoundLibrary.GetSound("-orders").Play();
+						break;
+					case 1:
+						ScreenManager.SoundLibrary.GetSound("-reporting").Play();
+						break;
+					case 2:
+						ScreenManager.SoundLibrary.GetSound("-yes").Play();
+						break;
+					case 3:
+						ScreenManager.SoundLibrary.GetSound("-good").Play();
+						break;
+					case 4:
+						ScreenManager.SoundLibrary.GetSound("-iread").Play();
+						break;
+					case 5:
+						ScreenManager.SoundLibrary.GetSound("-what").Play();
+						break;
+				}
+			};
+			character.MouseEntered += delegate {
+				ScreenManager.SoundLibrary.GetSound("tileChange1").Play();
+			};
+
+			var usr = new List<Rectangle>() {
+				new Rectangle(0, 96, 32, 32),
+				new Rectangle(32, 96, 32, 32),
+				new Rectangle(64, 96, 32, 32),
+				new Rectangle(96, 96, 32, 32),
+			};
+			var dsr = new List<Rectangle>() {
+				new Rectangle(0, 0, 32, 32),
+				new Rectangle(32, 0, 32, 32),
+				new Rectangle(64, 0, 32, 32),
+				new Rectangle(96, 0, 32, 32),
+			};
+			var lsr = new List<Rectangle>() {
+				new Rectangle(0, 32, 32, 32),
+				new Rectangle(32, 32, 32, 32),
+				new Rectangle(64, 32, 32, 32),
+				new Rectangle(96, 32, 32, 32),
+			};
+			var rsr = new List<Rectangle>() {
+				new Rectangle(0, 64, 32, 32),
+				new Rectangle(32, 64, 32, 32),
+				new Rectangle(64, 64, 32, 32),
+				new Rectangle(96, 64, 32, 32),
+			};
+			sango = new AnimatedSprite(ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"),
+										usr, dsr, lsr, rsr);
+
+			usr = new List<Rectangle>() {
+				new Rectangle(0, 352, 32, 32),
+				new Rectangle(32, 352, 32, 32),
+				new Rectangle(64, 352, 32, 32),
+				new Rectangle(96, 352, 32, 32),
+				new Rectangle(128, 352, 32, 32),
+				new Rectangle(160, 352, 32, 32),
+				new Rectangle(192, 352, 32, 32),
+				new Rectangle(224, 352, 32, 32)
+			};
+			dsr = new List<Rectangle>() {
+				new Rectangle(0, 256, 32, 32),
+				new Rectangle(32, 256, 32, 32),
+				new Rectangle(64, 256, 32, 32),
+				new Rectangle(96, 256, 32, 32),
+				new Rectangle(128, 256, 32, 32),
+				new Rectangle(160, 256, 32, 32),
+				new Rectangle(192, 256, 32, 32),
+				new Rectangle(224, 256, 32, 32)
+			};
+			lsr = new List<Rectangle>() {
+				new Rectangle(0, 288, 32, 32),
+				new Rectangle(32, 288, 32, 32),
+				new Rectangle(64, 288, 32, 32),
+				new Rectangle(96, 288, 32, 32),
+				new Rectangle(128, 288, 32, 32),
+				new Rectangle(160, 288, 32, 32),
+				new Rectangle(192, 288, 32, 32),
+				new Rectangle(224, 288, 32, 32)
+			};
+			rsr = new List<Rectangle>() {
+				new Rectangle(0, 320, 32, 32),
+				new Rectangle(32, 320, 32, 32),
+				new Rectangle(64, 320, 32, 32),
+				new Rectangle(96, 320, 32, 32),
+				new Rectangle(128, 320, 32, 32),
+				new Rectangle(160, 320, 32, 32),
+				new Rectangle(192, 320, 32, 32),
+				new Rectangle(224, 320, 32, 32)
+			};
+			mech = new Unit(ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"));
+			mech.SetSourceRectangles(usr, dsr, lsr, rsr);
 
 			ScreenManager.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
 
@@ -78,7 +183,7 @@ namespace Project_WB.Gameplay {
 
 			base.Activate(instancePreserved);
 		}
-
+		
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
 			cam.Update();
 			audioManager.Update(gameTime);
@@ -87,9 +192,17 @@ namespace Project_WB.Gameplay {
 			elapsed += gameTime.ElapsedGameTime;
 
 			character.Update(gameTime);
+			sango.Update(gameTime);
+			mech.Update(gameTime);
 
 			if (follow) {
 				cam.DestPosition = character.Position;
+				if (character.Waypoints.Count > 0) {
+					cam.DestScale = 3;
+				}
+				else {
+					cam.DestScale = 1;
+				}
 			}
 
 			if (mouse.LeftButton == ButtonState.Pressed) {
@@ -103,15 +216,18 @@ namespace Project_WB.Gameplay {
 						Position = cam.ToRelativePosition(new Vector2(mouse.X, mouse.Y)),
 						Velocity = vel,
 						Tint = new Color() {
-							R = (byte)r.Next(0, 150),
-							G = (byte)r.Next(0, 150),
-							B = (byte)r.Next(0, 150),
+							R = (byte)r.Next(50, 200),
+							G = (byte)r.Next(50, 200),
+							B = (byte)r.Next(50, 200),
+							A = (byte)255
 						}
 					});
 				}
 			}
 
 			particleManager.Update(gameTime);
+
+			song.Volume = TransitionAlpha;
 
 			DebugOverlay.DebugText.AppendFormat("-Mouse X: {0}  |  Y: {1}", mouse.X, mouse.Y).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("-MTile X: {0}  |  Y: {1}", mouseTile.X, mouseTile.Y).AppendLine();
@@ -123,7 +239,7 @@ namespace Project_WB.Gameplay {
 			
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
-
+		
 		public override void HandleInput(GameTime gameTime, InputState input) {
 			PlayerIndex p;
 
@@ -162,7 +278,7 @@ namespace Project_WB.Gameplay {
 			if (input.IsNewKeyPress(Keys.P, null, out p)) {
 				character.Speed += .1f;
 			}
-			if (input.IsKeyPressed(Keys.F, null, out p)) {
+			if (input.IsNewKeyPress(Keys.F, null, out p)) {
 				follow = !follow;
 			}
 
@@ -186,6 +302,21 @@ namespace Project_WB.Gameplay {
 							solution.RemoveFirst();
 							character.Waypoints.AddRange(solution.ToList());
 							character.Angry = false;
+
+							switch (r.Next(4)) {
+								case 0:
+									ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
+									break;
+								case 1:
+									ScreenManager.SoundLibrary.GetSound("-recieved").Play();
+									break;
+								case 2:
+									ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
+									break;
+								case 3:
+									ScreenManager.SoundLibrary.GetSound("-roger").Play();
+									break;
+							}
 						}
 						else {
 							character.Angry = true;
@@ -195,6 +326,21 @@ namespace Project_WB.Gameplay {
 						if (pf.QuickFind(new MapData(50, 50, character.TilePosition, mouseTile, barrierList), out solution)) {
 							character.Waypoints = solution.ToList();
 							character.Angry = false;
+
+							switch (r.Next(4)) {
+								case 0:
+									ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
+									break;
+								case 1:
+									ScreenManager.SoundLibrary.GetSound("-recieved").Play();
+									break;
+								case 2:
+									ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
+									break;
+								case 3:
+									ScreenManager.SoundLibrary.GetSound("-roger").Play();
+									break;
+							}
 						}
 						else {
 							character.Angry = true;
@@ -227,6 +373,42 @@ namespace Project_WB.Gameplay {
 				//ScreenManager.SoundLibrary.GetSound("tileChange1").Play();
 			}
 
+			character.UpdateInteraction(gameTime, input, cam);
+			sango.UpdateInteraction(gameTime, input, cam);
+			sango.Velocity = Vector2.Zero;
+			sango.TargetAnimationTime = TimeSpan.FromSeconds(.5);
+			//if (input.IsKeyPressed(Keys.I, null, out p)) {
+			//    sango.Velocity.Y -= 1;
+			//}
+			//if (input.IsKeyPressed(Keys.J, null, out p)) {
+			//    sango.Velocity.X -= 1;
+			//}
+			//if (input.IsKeyPressed(Keys.K, null, out p)) {
+			//    sango.Velocity.Y += 1;
+			//}
+			//if (input.IsKeyPressed(Keys.L, null, out p)) {
+			//    sango.Velocity.X += 1;
+			//}
+
+			mech.UpdateInteraction(gameTime, input, cam);
+			mech.Velocity = Vector2.Zero;
+			if (input.IsKeyPressed(Keys.I, null, out p)) {
+				mech.Velocity.Y -= 1;
+			}
+			if (input.IsKeyPressed(Keys.J, null, out p)) {
+				mech.Velocity.X -= 1;
+			}
+			if (input.IsKeyPressed(Keys.K, null, out p)) {
+				mech.Velocity.Y += 1;
+			}
+			if (input.IsKeyPressed(Keys.L, null, out p)) {
+				mech.Velocity.X += 1;
+			}
+
+			if (input.IsNewKeyPress(Keys.F10, null, out p)) {
+				ExitScreen();
+			}
+
 			base.HandleInput(gameTime, input);
 		}
 
@@ -246,12 +428,14 @@ namespace Project_WB.Gameplay {
 											Color.White * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 			
 			character.Draw(gameTime, ScreenManager);
+			sango.Draw(gameTime, ScreenManager);
+			mech.Draw(gameTime, ScreenManager);
 
 			particleManager.Draw(gameTime, ScreenManager, cam.GetViewingRectangle());
 
 			ScreenManager.SpriteBatch.End();
 			ScreenManager.GraphicsDevice.SetRenderTarget(null);
-			DrawLightMask();
+			DrawLightMask(gameTime);
 
 			ScreenManager.GraphicsDevice.Clear(Color.Black);
 
@@ -259,41 +443,43 @@ namespace Project_WB.Gameplay {
 			testEffect.Parameters["lightMask"].SetValue(lightMask);
 			testEffect.CurrentTechnique.Passes[0].Apply();
 			ScreenManager.SpriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
+
 			ScreenManager.SpriteBatch.End();
 
 			base.Draw(gameTime);
 		}
 
-		public void DrawLightMask() {
+		public void DrawLightMask(GameTime gameTime) {
 			ScreenManager.GraphicsDevice.SetRenderTarget(lightMask);
 			ScreenManager.GraphicsDevice.Clear(Color.Black);
 
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, cam.GetMatrixTransformation());
-			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, cam.GetViewingRectangle(), new Color(70, 0, 0, 200));
+			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, cam.GetViewingRectangle(), new Color(10, 10, 10, 255));
 			ScreenManager.SpriteBatch.End();
 
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, cam.GetMatrixTransformation());
 
-			foreach (var particlePosition in particleManager.GetParticlePositions()) {
-				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)particlePosition.X - 8, (int)particlePosition.Y - 8, 16, 16), Color.White);
+			foreach (var particle in particleManager.GetParticles()) {
+				//ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)particlePosition.X - 8, (int)particlePosition.Y - 8, 16, 16), Color.White);
+				//ScreenManager.SpriteBatch.Draw(CreateRadialLightTexture(4, 4), new Rectangle((int)particlePosition.X - 8, (int)particlePosition.Y - 8, 16, 16), Color.White);
+				ScreenManager.SpriteBatch.Draw(vignette, new Rectangle((int)particle.Position.X - 8, (int)particle.Position.Y - 8, 16, 16), particle.Tint);
 			}
 
+			Vector2 relativeMouse = cam.ToRelativePosition(mouse.X, mouse.Y);
+			float angle = (float)Math.Atan2(mouse.Y - Stcs.YRes / 2, mouse.X - Stcs.XRes / 2);
+			float cone = 2 + (Vector2.Distance(new Vector2(mouse.X, mouse.Y), new Vector2(Stcs.XRes / 2, Stcs.YRes / 2)) / 300);
+			ScreenManager.SpriteBatch.Draw(vignette, relativeMouse, null, Color.White,
+										angle, new Vector2(64), new Vector2(cone, 2), SpriteEffects.None, 0);
+			ScreenManager.SpriteBatch.Draw(vignette, character.Position, null, character.flashColor,
+										0, new Vector2(48), 1, SpriteEffects.None, 0);
+			ScreenManager.SpriteBatch.Draw(vignette, sango.Position + new Vector2(9, 11), null, Color.Green,
+										0, Vector2.Zero, .05f, SpriteEffects.None, 0);
+			ScreenManager.SpriteBatch.Draw(vignette, sango.Position + new Vector2(18, 11), null, Color.Green,
+										0, Vector2.Zero, .05f, SpriteEffects.None, 0);
+			
 			ScreenManager.SpriteBatch.End();
 
 			ScreenManager.GraphicsDevice.SetRenderTarget(null);
-		}
-
-		public Texture2D CreateRadialLightTexture(int definiteRadius, int blurRadius) {
-			Color[] colorData = new Color[(int)Math.Pow((definiteRadius + blurRadius) * 2, 2)];
-
-			float step = 1 / (definiteRadius + blurRadius);
-
-			//for (int angle = 0; angle < MathHelper.TwoPi; angle += step) {
-			//    int x = (int)Math.Round((definiteRadius + blurRadius) * 2 * Math.Cos(angle));
-			//    int y = (int)Math.Round((definiteRadius + blurRadius) * 2 * Math.Sin(angle));
-			//}
-
-			return null;
 		}
 		#endregion
 	}
@@ -301,14 +487,28 @@ namespace Project_WB.Gameplay {
 	class TestCharacter : Sprite {
 		public Point TilePosition = Point.Zero;
 		public List<Point> Waypoints = new List<Point>();
+		LinkedList<Point> ll = new LinkedList<Point>();
 		public bool Angry = false;
 		public float Speed = .5f;
 		Texture2D maru;
+		public Color flashColor = Color.White;
 
 		public TestCharacter(Rectangle sourceRectangle, Texture2D spriteSheet, Point tilePosition, Texture2D maru) : base(sourceRectangle, spriteSheet) {
 			this.TilePosition = tilePosition;
 			Position = new Vector2(TilePosition.X * 32, TilePosition.Y * 32);
 			this.maru = maru;
+
+			this.MouseEntered += delegate {
+				Tint = Color.Blue;
+			};
+			this.MouseExited += delegate {
+				Tint = Color.White;
+			};
+			this.LeftClicked += new EventHandler<EntityInputEventArgs>(TestCharacter_LeftClicked);
+		}
+
+		void TestCharacter_LeftClicked(object sender, EntityInputEventArgs e) {
+			Tint = Color.Red;
 		}
 
 		public override void Update(GameTime gameTime) {
@@ -323,7 +523,11 @@ namespace Project_WB.Gameplay {
 				}
 			}
 
+			flashColor = flashColor == Color.White ? Color.Black : Color.White;
+			
 			base.Update(gameTime);
+
+			Bounds = new Rectangle((int)Position.X, (int)Position.Y, 32, 32);
 		}
 
 		public override void Draw(GameTime gameTime, ScreenManager screenManager) {
@@ -344,7 +548,7 @@ namespace Project_WB.Gameplay {
 												Color.Red * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 			}
 
-			screenManager.SpriteBatch.Draw(maru, new Rectangle((int)Position.X, (int)Position.Y, 32, 32), Color.White);
+			screenManager.SpriteBatch.Draw(maru, new Rectangle((int)Position.X, (int)Position.Y, 32, 32), Tint);
 
 			base.Draw(gameTime, screenManager);
 		}

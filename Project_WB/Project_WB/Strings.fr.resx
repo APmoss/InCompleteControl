@@ -162,6 +162,9 @@
   <data name="Spanish" xml:space="preserve">
     <value>Espagnol</value>
   </data>
+  <data name="SwitchLanguage" xml:space="preserve">
+    <value>*kjnewfkjnfad LANGUE!!!</value>
+  </data>
   <data name="Username" xml:space="preserve">
     <value>Nom d’utilisateur</value>
   </data>

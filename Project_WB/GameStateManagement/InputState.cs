@@ -20,13 +20,17 @@ namespace GameStateManagement {
 	/// or "pause the game".
 	/// </summary>
 	public class InputState {
+		public enum MouseButton {
+			Left, Middle, Right, XButton1, XButton2
+		}
+
 		public const int MaxInputs = 4;
 
-		public readonly MouseState[] CurrentMouseStates;
+		public MouseState CurrentMouseState;
 		public readonly KeyboardState[] CurrentKeyboardStates;
 		public readonly GamePadState[] CurrentGamePadStates;
 
-		public readonly MouseState[] LastMouseStates;
+		public MouseState LastMouseState;
 		public readonly KeyboardState[] LastKeyboardStates;
 		public readonly GamePadState[] LastGamePadStates;
 
@@ -41,11 +45,11 @@ namespace GameStateManagement {
 		/// Constructs a new input state.
 		/// </summary>
 		public InputState() {
-			CurrentMouseStates = new MouseState[MaxInputs];
+			CurrentMouseState = new MouseState();
 			CurrentKeyboardStates = new KeyboardState[MaxInputs];
 			CurrentGamePadStates = new GamePadState[MaxInputs];
 
-			LastMouseStates = new MouseState[MaxInputs];
+			LastMouseState = new MouseState();
 			LastKeyboardStates = new KeyboardState[MaxInputs];
 			LastGamePadStates = new GamePadState[MaxInputs];
 
@@ -56,12 +60,13 @@ namespace GameStateManagement {
 		/// Reads the latest state user input.
 		/// </summary>
 		public void Update() {
+			LastMouseState = CurrentMouseState;
+			CurrentMouseState = Mouse.GetState();
+
 			for (int i = 0; i < MaxInputs; i++) {
-				LastMouseStates[i] = CurrentMouseStates[i];
 				LastKeyboardStates[i] = CurrentKeyboardStates[i];
 				LastGamePadStates[i] = CurrentGamePadStates[i];
 
-				CurrentMouseStates[i] = Mouse.GetState();
 				CurrentKeyboardStates[i] = Keyboard.GetState((PlayerIndex)i);
 				CurrentGamePadStates[i] = GamePad.GetState((PlayerIndex)i);
 
@@ -82,6 +87,22 @@ namespace GameStateManagement {
 			}
 		}
 
+		public bool IsMousePressed(MouseButton mouseButton) {
+			switch (mouseButton) {
+				case MouseButton.Left:
+					return CurrentMouseState.LeftButton == ButtonState.Pressed;
+				case MouseButton.Middle:
+					return CurrentMouseState.MiddleButton == ButtonState.Pressed;
+				case MouseButton.Right:
+					return CurrentMouseState.RightButton == ButtonState.Pressed;
+				case MouseButton.XButton1:
+					return CurrentMouseState.XButton1 == ButtonState.Pressed;
+				case MouseButton.XButton2:
+					return CurrentMouseState.XButton2 == ButtonState.Pressed;
+				default:
+					return false;
+			}
+		}
 
 		/// <summary>
 		/// Helper for checking if a key was pressed during this update. The
@@ -132,6 +153,27 @@ namespace GameStateManagement {
 			}
 		}
 
+		public bool IsNewMousePress(MouseButton mouseButton) {
+			switch (mouseButton) {
+				case MouseButton.Left:
+					return (CurrentMouseState.LeftButton == ButtonState.Pressed) &&
+							(LastMouseState.LeftButton == ButtonState.Released);
+				case MouseButton.Middle:
+					return (CurrentMouseState.MiddleButton == ButtonState.Pressed) &&
+							(LastMouseState.MiddleButton == ButtonState.Released);
+				case MouseButton.Right:
+					return (CurrentMouseState.RightButton == ButtonState.Pressed) &&
+							(LastMouseState.RightButton == ButtonState.Released);
+				case MouseButton.XButton1:
+					return (CurrentMouseState.XButton1 == ButtonState.Pressed) &&
+							(LastMouseState.XButton1 == ButtonState.Released);
+				case MouseButton.XButton2:
+					return (CurrentMouseState.XButton2 == ButtonState.Pressed) &&
+							(LastMouseState.XButton2 == ButtonState.Released);
+				default:
+					return false;
+			}
+		}
 
 		/// <summary>
 		/// Helper for checking if a key was newly pressed during this update. The
