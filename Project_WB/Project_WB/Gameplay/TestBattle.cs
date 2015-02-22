@@ -13,13 +13,34 @@ namespace Project_WB.Gameplay {
 
 			base.Activate(instancePreserved);
 
+			camera.DestPosition = new Vector2(300, 300);
+			camera.DestScale = 1.4f;
+
 			Centurion cen = new Centurion();
 			Ballistarius bal = new Ballistarius();
 			Accensus acc = new Accensus();
-			entityManager.AddEntities(cen, bal, acc);
-			cen.Tile = new Point(4, 3);
-			bal.Tile = new Point(5, 3);
-			acc.Tile = new Point(6, 3);
+			Scout sco = new Scout();
+			Scorpionarius scp = new Scorpionarius();
+			entityManager.AddEntities(cen, bal, acc, sco, scp);
+			cen.Tile = new Point(7, 3);
+			bal.Tile = new Point(8, 3);
+			acc.Tile = new Point(9, 3);
+			sco.Tile = new Point(10, 3);
+			scp.Tile = new Point(11, 3);
+			cen.Team = bal.Team = acc.Team = 1;
+
+			Centurion cen2 = new Centurion();
+			Ballistarius bal2 = new Ballistarius();
+			Accensus acc2 = new Accensus();
+			Scout sco2 = new Scout();
+			Scorpionarius scp2 = new Scorpionarius();
+			entityManager.AddEntities(cen2, bal2, acc2, sco2, scp2);
+			cen2.Tile = new Point(7, 28);
+			bal2.Tile = new Point(8, 28);
+			acc2.Tile = new Point(9, 28);
+			sco2.Tile = new Point(10, 28);
+			scp2.Tile = new Point(11, 28);
+			cen2.Team = bal2.Team = acc2.Team = 2;
 		}
 
 		public override void HandleInput(GameTime gameTime, InputState input) {

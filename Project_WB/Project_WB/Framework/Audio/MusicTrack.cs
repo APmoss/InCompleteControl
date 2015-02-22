@@ -9,12 +9,16 @@ namespace Project_WB.Framework.Audio {
 	/// </summary>
 	class MusicTrack : AudioItem {
 		#region Properties
+		/// <summary>
+		/// The length of the track of music.
+		/// </summary>
 		public TimeSpan SongLength {
 			get; protected set;
 		}
 		#endregion
 
 		public MusicTrack(SoundEffect soundEffect) : base(soundEffect) {
+			// Set the song length
 			this.SongLength = soundEffect.Duration;
 		}
 	}

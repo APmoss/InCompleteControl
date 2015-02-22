@@ -11,8 +11,6 @@ namespace Project_WB.Framework.Audio {
 	/// the AddSounds method, with any AudioItem object.
 	/// </summary>
 	class AudioManager {
-		//TODO: finish documentation
-
 		#region Fields
 		// Private variable (description in property)
 		int maxSoundChannels = 64;
@@ -131,8 +129,10 @@ namespace Project_WB.Framework.Audio {
 		public AudioManager(Camera2D camera) {
 			this.camera = camera;
 
+			// Get settings from the settings file on local storage
 			var settings = IOManager.LoadSettings();
 
+			// Update volume settings based on the settings in the file
 			this.MusicVolume = settings.MusicVolume;
 			this.InterfaceVolume = settings.InterfaceVolume;
 			this.EnvironmentVolume = settings.EnvironmentVolume;
@@ -150,14 +150,17 @@ namespace Project_WB.Framework.Audio {
 			leftListener.Position = new Vector3(cameraPosition.X - halfListenerDistance, cameraPosition.Y, listenerHeight);
 			rightListener.Position = new Vector3(cameraPosition.X + halfListenerDistance, cameraPosition.Y, listenerHeight);
 			
+			// Set listener velocity to the camera velocity
 			leftListener.Velocity = new Vector3(camera.GetCurrentVelocity(), 0);
 			rightListener.Velocity = new Vector3(camera.GetCurrentVelocity(), 0);
 
+			// If there is no music playing, then start playing music now
 			if(transitionSong != null && currentSong == null) {
 				currentSong = transitionSong;
 				transitionSong = null;
 				currentSong.SoundInstance.Play();
 			}
+			// If there is a song that we need to transition to, lower volume
 			else if (transitionSong != null) {
 				musicTransitionAlpha -= .01f;
 				if (musicTransitionAlpha <= 0) {
@@ -166,11 +169,13 @@ namespace Project_WB.Framework.Audio {
 					transitionSong = null;
 				}
 			}
+			// Song is currently playing and is normal
 			else if (currentSong != null && transitionSong == null) {
 				if (musicTransitionAlpha < 1) {
 					musicTransitionAlpha += .01f;
 				}
 			}
+			// Update the currenty playing song
 			if (currentSong != null) {
 				musicTransitionAlpha = MathHelper.Clamp(musicTransitionAlpha, 0, 1);
 				currentSong.SoundInstance.Volume = musicVolume * musicTransitionAlpha;
@@ -190,6 +195,7 @@ namespace Project_WB.Framework.Audio {
 					continue;
 				}
 
+				// Set all volumes to the volume items
 				if (audioItems[i] is InterfaceSound) {
 					InterfaceSound inS = audioItems[i] as InterfaceSound;
 					inS.SoundInstance.Volume = interfaceVolume;
@@ -199,7 +205,7 @@ namespace Project_WB.Framework.Audio {
 					es.SoundInstance.Volume = environmentVolume;
 					es.SoundInstance.Apply3D(new AudioListener[] { leftListener, rightListener }, es.Emitter);
 				}
-				//voice
+				// Voice
 			}
 		}
 
@@ -224,10 +230,12 @@ namespace Project_WB.Framework.Audio {
 						// Must apply 3D once before playing for the first time to avoid error
 						sound.SoundInstance.Apply3D(new AudioListener[] { leftListener, rightListener }, es.Emitter);
 					}
-					//voice
+					// Voice
 
+					// Play sound after adding it
 					sound.SoundInstance.Play();
 
+					// Add it to the collection of sounds
 					audioItems.Add(sound);
 				}
 				else {

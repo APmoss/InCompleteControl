@@ -28,6 +28,8 @@ namespace Project_WB.Gameplay {
 		Rectangle rightCameraMovementBound;
 		Rectangle topCameraMovementBound;
 		Rectangle bottomCameraMovementBound;
+
+		protected Point mouseTile = Point.Zero;
 		#endregion
 
 		#region Overridden Methods
@@ -97,6 +99,13 @@ namespace Project_WB.Gameplay {
 				camera.DestScale += .001f * (input.CurrentMouseState.ScrollWheelValue - input.LastMouseState.ScrollWheelValue);
 			}
 
+			// Update the tile the mouse is currently on
+			var relativeMouse = camera.ToRelativePosition(input.CurrentMouseState.X, input.CurrentMouseState.Y);
+			relativeMouse.X -= entityManager.tileSize / 2;
+			relativeMouse.Y -= entityManager.tileSize / 2;
+			mouseTile = new Point((int)Math.Round(relativeMouse.X / 32),
+								(int)Math.Round(relativeMouse.Y / 32));
+
 			base.HandleInput(gameTime, input);
 		}
 
@@ -122,6 +131,8 @@ namespace Project_WB.Gameplay {
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, RasterizerState.CullNone, null, camera.GetMatrixTransformation());
 
 			map.Draw(ScreenManager.SpriteBatch, new Rectangle(0, 0, map.Width * map.TileWidth, map.Height * map.TileHeight), Vector2.Zero);
+			Rectangle mouseTileRec = new Rectangle(mouseTile.X * entityManager.tileSize, mouseTile.Y * entityManager.tileSize, entityManager.tileSize, entityManager.tileSize);
+			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, mouseTileRec, Color.White * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 			entityManager.Draw(gameTime, ScreenManager);
 			particleManager.Draw(gameTime, ScreenManager, camera.GetViewingRectangle());
 

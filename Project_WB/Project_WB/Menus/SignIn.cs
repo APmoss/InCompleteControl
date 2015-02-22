@@ -92,8 +92,8 @@ namespace Project_WB.Menus {
 				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)points3[i].X, (int)points3[i].Y, 2, 2), Color.Blue * TransitionAlpha);
 			}
 
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "InComplete Control", titlePos - Vector2.One, new Color(60, 0, 0) * TransitionAlpha);
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "InComplete Control", titlePos + Vector2.One, Color.Maroon * TransitionAlpha);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "HERPDERP", titlePos - Vector2.One, new Color(60, 0, 0) * TransitionAlpha);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "HERPDERP", titlePos + Vector2.One, Color.Maroon * TransitionAlpha);
 
 			gui.Draw(gameTime, ScreenManager);
 

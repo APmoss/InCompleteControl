@@ -88,6 +88,8 @@
     <Compile Include="Framework\Entities\Units\BakerBot.cs" />
     <Compile Include="Framework\Entities\Units\Ballistarius.cs" />
     <Compile Include="Framework\Entities\Units\Centurion.cs" />
+    <Compile Include="Framework\Entities\Units\Scorpionarius.cs" />
+    <Compile Include="Framework\Entities\Units\Scout.cs" />
     <Compile Include="Framework\Entities\Units\VerticalCenturion.cs" />
     <Compile Include="Framework\Entities\Units\Guy.cs" />
     <Compile Include="Framework\Entities\Units\Sango.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Framework\Gui\Controls\Slider.cs" />
     <Compile Include="Framework\Gui\GuiManager.cs" />
     <Compile Include="Framework\IO\IOManager.cs" />
+    <Compile Include="Framework\IO\Session.cs" />
     <Compile Include="Framework\IO\SettingsFile.cs" />
     <Compile Include="Framework\Particles\AnimatedParticle.cs" />
     <Compile Include="Framework\Particles\Emitters\StarEmitter.cs" />
@@ -189,7 +192,6 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Project_WB.Framework.Entities.Units {
-	class Accensus : Unit {
-		public Accensus() {
+	class Scout : Unit {
+		public Scout() {
 			#region SetRectangles
 			var dsr = new List<Rectangle>();
 
-			for (int i = 0; i < 4; i++) {
-				dsr.Add(new Rectangle(i * 32, 448, 32, 32));
+			for (int i = 0; i < 3; i++) {
+				dsr.Add(new Rectangle(i * 32, 480, 32, 32));
 			}
 
 			List<Rectangle> blank = new List<Rectangle>();
 			SetSourceRectangles(blank, dsr, blank, blank);
 			#endregion
 
-			Name = "Accensus";
-			Speed = 1.6f;
-			maxHealth = health = 150;
-			distance = 6;
+			Name = "Scout";
+			Speed = 2f;
+			maxHealth = health = 50;
+			distance = 15;
 			rotationalAnimation = true;
 
 			selectCommandVoices.Add("readyfororders");

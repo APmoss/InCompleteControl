@@ -18,7 +18,9 @@ namespace Project_WB.Framework.Entities {
 		public float Speed = 1;
 		public int distance = 5;
 		public int attackDistance = 1;
-		public bool spent = false;
+		public bool Moved = false;
+		public bool Spent = false;
+		public int Team = 0;
 		public LinkedList<Point> Waypoints = new LinkedList<Point>();
 
 		protected List<string> selectCommandVoices = new List<string>();
@@ -96,18 +98,19 @@ namespace Project_WB.Framework.Entities {
 		public Unit(Texture2D spriteSheet) : base(spriteSheet) {
 			sharedConstruct();
 		}
-		public Unit(Texture2D spriteSheet,
-						List<Rectangle> upSourceRectangles,
-						List<Rectangle> downSourceRectangles,
-						List<Rectangle> leftSourceRectangles,
-						List<Rectangle> rightSourceRectangles) : base(spriteSheet) {
+		public Unit(Texture2D spriteSheet, List<Rectangle> upSourceRectangles, List<Rectangle> downSourceRectangles,
+										List<Rectangle> leftSourceRectangles, List<Rectangle> rightSourceRectangles) : base(spriteSheet) {
 
 			SetSourceRectangles(upSourceRectangles, downSourceRectangles, leftSourceRectangles, rightSourceRectangles);
 
 			sharedConstruct();
 		}
 
+		/// <summary>
+		/// A method shared between the overloaded constructors to reduce redundancy
+		/// </summary>
 		void sharedConstruct() {
+			// Multiple event handler initializations for every unit;
 			// Wooh, lambda expressions!
 			LeftClicked += (s, e) => { EntityManager.SelectedUnit = this; IsSelected = true; };
 
@@ -124,7 +127,7 @@ namespace Project_WB.Framework.Entities {
 				}
 			};
 			DestinationAchieved += (s, e) => {
-				spent = true;
+				Moved = true;
 			};
 		}
 
@@ -134,7 +137,6 @@ namespace Project_WB.Framework.Entities {
 		/// with access to the entity manager.
 		/// </summary>
 		public virtual void Initialize() {
-
 		}
 
 		public override void Update(GameTime gameTime) {
@@ -165,34 +167,52 @@ namespace Project_WB.Framework.Entities {
 
 		public override void UpdateInteraction(GameTime gameTime, InputState input, Camera2D camera) {
 			PlayerIndex p = PlayerIndex.One;
-			if (IsSelected && input.IsNewMousePress(MouseButton.Right)) {
-				var relativeMouse = camera.ToRelativePosition(input.CurrentMouseState.X, input.CurrentMouseState.Y);
-				relativeMouse.X -= EntityManager.tileSize / 2;
-				relativeMouse.Y -= EntityManager.tileSize / 2;
-				var mouseTile = new Point((int)Math.Round(relativeMouse.X / 32),
-									(int)Math.Round(relativeMouse.Y / 32));
+			var relativeMouse = camera.ToRelativePosition(input.CurrentMouseState.X, input.CurrentMouseState.Y);
+			relativeMouse.X -= EntityManager.tileSize / 2;
+			relativeMouse.Y -= EntityManager.tileSize / 2;
+			var mouseTile = new Point((int)Math.Round(relativeMouse.X / 32),
+								(int)Math.Round(relativeMouse.Y / 32));
 
-				var solution = new LinkedList<Point>();
+			// Moving the unit with right click
+			if (!Moved) {
+				if (IsSelected && input.IsNewMousePress(MouseButton.Right) && GetTravelableTiles().Contains(mouseTile) && Waypoints.Count == 0) {
+					var solution = new LinkedList<Point>();
+					var otherBarriers = new List<Point>();
+					foreach (var entity in EntityManager.GetEntities()) {
+						if (entity is Unit) {
+							Unit u = entity as Unit;
+							otherBarriers.Add(u.Tile);
 
-				// Add to the waypoint list (append move)
-				if (input.IsKeyPressed(Keys.LeftShift, null, out p) && Waypoints.Count > 0) {
-					if (EntityManager.QuickFind(Tile, mouseTile, new List<Point>(), out solution)) {
-						solution.RemoveFirst();
-						foreach (var point in solution) {
-							Waypoints.AddLast(point);
+							if (u.Waypoints.Count > 0) {
+								otherBarriers.Add(u.Waypoints.Last.Value);
+							}
 						}
+					}
 
-						InvokeWaypointsChanged();
+					// Add to the waypoint list (append move)
+					if (input.IsKeyPressed(Keys.LeftShift, null, out p) && Waypoints.Count > 0) {
+						if (EntityManager.QuickFind(Tile, mouseTile, otherBarriers, out solution)) {
+							solution.RemoveFirst();
+							foreach (var point in solution) {
+								Waypoints.AddLast(point);
+							}
+
+							InvokeWaypointsChanged();
+						}
+					}
+					// Override previous orders and head straight to location
+					else {
+						if (EntityManager.QuickFind(Tile, mouseTile, otherBarriers, out solution)) {
+							Waypoints = solution;
+
+							InvokeWaypointsChanged();
+						}
 					}
 				}
-				// Override previous orders and head straight to location
-				else {
-					if (EntityManager.QuickFind(Tile, mouseTile, new List<Point>(), out solution)) {
-						Waypoints = solution;
+			}
+			// Attack with the unit with right click
+			else if (Moved && !Spent) {
 
-						InvokeWaypointsChanged();
-					}
-				}
 			}
 
 			base.UpdateInteraction(gameTime, input, camera);
@@ -200,12 +220,6 @@ namespace Project_WB.Framework.Entities {
 
 		public override void Draw(GameTime gameTime, ScreenManager screenManager) {
 			int ts = EntityManager.tileSize;
-
-			if (isSelected) {
-				foreach (var tile in GetTravelableTiles()) {
-					screenManager.SpriteBatch.Draw(screenManager.BlankTexture, new Rectangle(tile.X * ts, tile.Y * ts, ts - 1, ts - 1), new Color(10, 100, 10, 50));
-				}
-			}
 
 			if (IsSelected && Waypoints.Count > 0 && DownSourceRectangles.Count > 0) {
 				foreach (var waypoint in Waypoints) {
@@ -219,7 +233,10 @@ namespace Project_WB.Framework.Entities {
 
 			base.Draw(gameTime, screenManager);
 
-			if (spent) {
+			if (Moved) {
+				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, Bounds, new Color(10, 10, 10, 150));
+			}
+			if (Spent) {
 				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, Bounds, new Color(10, 10, 10, 150));
 			}
 		}
@@ -250,6 +267,22 @@ namespace Project_WB.Framework.Entities {
 
 			return tiles;
 		}
+
+		public List<Point> GetAttackableTiles() {
+			List<Point> tiles = new List<Point>();
+			int ts = EntityManager.tileSize;
+
+			for (int i = -attackDistance; i <= attackDistance; i++) {
+				for (int j = -attackDistance; j <= attackDistance; j++) {
+					if (Vector2.Distance(new Vector2(Tile.X, Tile.Y), new Vector2(i + Tile.X, j + Tile.Y)) <= attackDistance) {
+						tiles.Add(new Point(i + Tile.X, j + Tile.Y));
+					}
+				}
+			}
+
+			return tiles;
+		}
+
 		#endregion
 
 		#region Invocations

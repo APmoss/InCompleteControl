@@ -17,12 +17,13 @@ namespace Project_WB.Framework.Entities {
 		#region Fields
 		protected readonly Rectangle haloSrcRec = new Rectangle(0, 0, 48, 48);
 		protected readonly Rectangle hoverSrcRec = new Rectangle(0, 48, 48, 48);
-
+		
 		List<Entity> entities = new List<Entity>();
 		protected internal int tileSize = 32;
 		public Texture2D EtcTextures;
 		public Texture2D DefaultSpritesheet;
 
+		protected internal int controllingTeam = 1;
 		protected internal Random r = new Random();
 
 		protected internal AudioManager audioManager;
@@ -82,6 +83,20 @@ namespace Project_WB.Framework.Entities {
 		}
 
 		public void Draw(GameTime gameTime, ScreenManager screenManager) {
+			if (SelectedUnit != null) {
+				if (!SelectedUnit.Moved) {
+					foreach (var tile in SelectedUnit.GetTravelableTiles()) {
+						screenManager.SpriteBatch.Draw(screenManager.BlankTexture, new Rectangle(tile.X * tileSize, tile.Y * tileSize, tileSize - 1, tileSize - 1), new Color(5, 75, 5, 150));
+					}
+				}
+
+				if (SelectedUnit.Moved) {
+					foreach (var tile in SelectedUnit.GetAttackableTiles()) {
+						screenManager.SpriteBatch.Draw(screenManager.BlankTexture, new Rectangle(tile.X * tileSize, tile.Y * tileSize, tileSize - 1, tileSize - 1), new Color(75, 5, 5, 150));
+					}
+				}
+			}
+
 			foreach (var entity in entities) {
 				// Entity is selected
 				if (SelectedUnit == entity) {
@@ -144,7 +159,7 @@ namespace Project_WB.Framework.Entities {
 		}
 
 		public bool QuickFind(Point start, Point finish, List<Point> otherBarriers, out LinkedList<Point> solution) {
-			List<Point> barriers = mapData.Barriers;
+			List<Point> barriers = mapData.Barriers.ToList();
 			barriers.AddRange(otherBarriers);
 			barriers = barriers.Distinct().ToList();
 

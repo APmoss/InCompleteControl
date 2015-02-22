@@ -20,6 +20,7 @@ namespace Project_WB.Framework.Entities.Units {
 			Speed = 1f;
 			maxHealth = health = 200;
 			distance = 4;
+			attackDistance = 5;
 			rotationalAnimation = true;
 
 			selectCommandVoices.Add("readyfororders");

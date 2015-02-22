@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -186,7 +187,7 @@ namespace Project_WB.Framework.Pathfinding
 			int x = 0;
 			int y = 0;
 			// Set the barriers
-			for (int i = 0; i < maps[currentMap].Barriers.Count; i++)
+			for (int i = 0; i < maps[currentMap].Barriers.Count(); i++)
 			{
 				x = maps[currentMap].Barriers[i].X;
 				y = maps[currentMap].Barriers[i].Y;

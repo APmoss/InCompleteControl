@@ -22,7 +22,12 @@ namespace Project_WB.Framework.Pathfinding {
 		public int NumberColumns;
 		public Point Start;
 		public Point End;
-		public List<Point> Barriers;
+
+		List<Point> barriers = new List<Point>();
+
+		public Point[] Barriers {
+			get { return barriers.ToArray(); }
+		}
 
 		public MapData(int columns, int rows, Point startPosition,
 						Point endPosition, List<Point> barriersList) {
@@ -31,7 +36,7 @@ namespace Project_WB.Framework.Pathfinding {
 			NumberRows = rows;
 			Start = startPosition;
 			End = endPosition;
-			Barriers = barriersList;
+			barriers = barriersList;
 		}
 	}
 }
