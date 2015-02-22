@@ -200,9 +200,9 @@ namespace Project_WB.Menus {
 			};
 
 			quitButton = new Button(10, 125, 180, "Quit Game");
-			//quitButton.Pressed += delegate {
-			//    ScreenManager.Game.Exit();
-			//};
+			quitButton.LeftClicked += delegate {
+				ScreenManager.Game.Exit();
+			};
 
 			otherPanel = new Panel(30, Stcs.YRes - 205, 200, 175);
 			otherPanel.AddChild(creditsButton);

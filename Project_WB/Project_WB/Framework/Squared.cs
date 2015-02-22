@@ -676,7 +676,7 @@ namespace Project_WB.Framework.Squared.Tiled {
 	public class Map
 	{
 		public SortedList<string, Tileset> Tilesets = new SortedList<string, Tileset>();
-		public SortedList<string, Layer> Layers = new SortedList<string, Layer>();
+		public Dictionary<string, Layer> Layers = new Dictionary<string, Layer>();
 		public SortedList<string, ObjectGroup> ObjectGroups = new SortedList<string, ObjectGroup>();
 		public SortedList<string, string> Properties = new SortedList<string, string>();
 		public int Width, Height;
@@ -813,7 +813,7 @@ namespace Project_WB.Framework.Squared.Tiled {
 			// Drawing-  draw([1] bottomLayer)
 			//           draw([0] topLayer)
 
-			foreach (Layer layers in Layers.Values.Reverse())
+			foreach (Layer layers in Layers.Values)
 			{
 				layers.Draw(batch, Tilesets.Values, rectangle, viewportPosition, TileWidth, TileHeight);
 			}

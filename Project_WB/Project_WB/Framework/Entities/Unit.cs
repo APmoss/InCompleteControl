@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using GameStateManagement;
 using Project_WB.Framework.Audio;
+using MouseButton = GameStateManagement.InputState.MouseButton;
+using Microsoft.Xna.Framework.Input;
 
 namespace Project_WB.Framework.Entities {
 	class Unit : AnimatedSprite {
@@ -45,6 +47,10 @@ namespace Project_WB.Framework.Entities {
 			get {
 				return new Point((int)Math.Round(Position.X / EntityManager.tileSize),
 								(int)Math.Round(Position.Y / EntityManager.tileSize));
+			}
+
+			set {
+				Position = new Vector2(value.X * EntityManager.tileSize, value.Y * EntityManager.tileSize);
 			}
 		}
 
@@ -149,7 +155,38 @@ namespace Project_WB.Framework.Entities {
 			base.Update(gameTime);
 		}
 
-		public override void UpdateInteraction(GameTime gameTime, GameStateManagement.InputState input, Camera2D camera) {
+		public override void UpdateInteraction(GameTime gameTime, InputState input, Camera2D camera) {
+			PlayerIndex p = PlayerIndex.One;
+			if (IsSelected && input.IsNewMousePress(MouseButton.Right)) {
+				var relativeMouse = camera.ToRelativePosition(input.CurrentMouseState.X, input.CurrentMouseState.Y);
+				relativeMouse.X -= Bounds.Width / 2;
+				relativeMouse.Y -= Bounds.Height / 2;
+				var mouseTile = new Point((int)Math.Round(relativeMouse.X / 32),
+									(int)Math.Round(relativeMouse.Y / 32));
+
+				var solution = new LinkedList<Point>();
+
+				// Add to the waypoint list (append move)
+				if (input.IsKeyPressed(Keys.LeftShift, null, out p) && Waypoints.Count > 0) {
+					if (EntityManager.QuickFind(Tile, mouseTile, new List<Point>(), out solution)) {
+						solution.RemoveFirst();
+						foreach (var point in solution) {
+							Waypoints.AddLast(point);
+						}
+
+						InvokeWaypointsChanged();
+					}
+				}
+				// Override previous orders and head straight to location
+				else {
+					if (EntityManager.QuickFind(Tile, mouseTile, new List<Point>(), out solution)) {
+						Waypoints = solution;
+
+						InvokeWaypointsChanged();
+					}
+				}
+			}
+
 			base.UpdateInteraction(gameTime, input, camera);
 		}
 

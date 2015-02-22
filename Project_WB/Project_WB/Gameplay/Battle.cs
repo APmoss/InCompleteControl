@@ -11,24 +11,29 @@ using Project_WB.Framework.Particles;
 using Project_WB.Framework.Pathfinding;
 using Microsoft.Xna.Framework.Graphics;
 using Project_WB.Framework.Gui.Controls;
+using Microsoft.Xna.Framework.Input;
 
 namespace Project_WB.Gameplay {
 	class Battle : GameScreen {
 		#region Fields
-		Camera2D camera;
-		Map map;
+		protected Camera2D camera;
+		protected Map map;
 
-		GuiManager guiManager;
-		AudioManager audioManager;
-		ParticleManager particleManager;
-		EntityManager entityManager;
+		protected GuiManager guiManager;
+		protected AudioManager audioManager;
+		protected ParticleManager particleManager;
+		protected EntityManager entityManager;
 
-		PathFinder pathFinder;
+		Rectangle leftCameraMovementBound;
+		Rectangle rightCameraMovementBound;
+		Rectangle topCameraMovementBound;
+		Rectangle bottomCameraMovementBound;
 		#endregion
 
 		#region Overridden Methods
 		public override void Activate(bool instancePreserved) {
 			SetGui();
+			
 			camera = new Camera2D(ScreenManager.GraphicsDevice.Viewport);
 
 			audioManager = new AudioManager(camera);
@@ -36,8 +41,12 @@ namespace Project_WB.Gameplay {
 			entityManager = new EntityManager(ScreenManager.Game.Content.Load<Texture2D>("textures/etc"),
 												ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"),
 												audioManager, ScreenManager.SoundLibrary, particleManager);
+			entityManager.LoadMap(map);
 
-			pathFinder = new PathFinder();
+			leftCameraMovementBound = new Rectangle(0, 0, 5, Stcs.YRes);
+			rightCameraMovementBound = new Rectangle(Stcs.XRes - 5, 0, 5, Stcs.YRes);
+			topCameraMovementBound = new Rectangle(0, 0, Stcs.XRes, 5);
+			bottomCameraMovementBound = new Rectangle(0, Stcs.YRes - 5, Stcs.XRes, 5);
 
 			base.Activate(instancePreserved);
 		}
@@ -45,6 +54,40 @@ namespace Project_WB.Gameplay {
 		public override void HandleInput(GameTime gameTime, InputState input) {
 			entityManager.UpdateInteration(gameTime, input, camera);
 			guiManager.UpdateInteraction(input);
+
+			PlayerIndex p = PlayerIndex.One;
+
+			int x = (int)MathHelper.Clamp(Mouse.GetState().X, 0, 1279);
+			int y = (int)MathHelper.Clamp(Mouse.GetState().Y, 0, 719);
+			Mouse.SetPosition(x, y);
+
+			// Check the mouse positions to move the camera (camera will move if mouse is on the borders)
+			if (leftCameraMovementBound.Contains(x, y)) {
+				camera.DestPosition.X -= 5;
+			}
+			if (rightCameraMovementBound.Contains(x, y)) {
+				camera.DestPosition.X += 5;
+			}
+			if (topCameraMovementBound.Contains(x, y)) {
+				camera.DestPosition.Y -= 5;
+			}
+			if (bottomCameraMovementBound.Contains(x, y)) {
+				camera.DestPosition.Y += 5;
+			}
+
+			// Check for directional keys to move the camera
+			if (input.IsKeyPressed(Keys.Left, null, out p)) {
+				camera.DestPosition.X -= 5;
+			}
+			if (input.IsKeyPressed(Keys.Right, null, out p)) {
+				camera.DestPosition.X += 5;
+			}
+			if (input.IsKeyPressed(Keys.Up, null, out p)) {
+				camera.DestPosition.Y -= 5;
+			}
+			if (input.IsKeyPressed(Keys.Down, null, out p)) {
+				camera.DestPosition.Y += 5;
+			}
 
 			base.HandleInput(gameTime, input);
 		}
@@ -57,13 +100,17 @@ namespace Project_WB.Gameplay {
 			entityManager.Update(gameTime);
 			guiManager.Update(gameTime);
 
+			if (entityManager.SelectedUnit != null) {
+				entityHudNameLabel.Text = entityManager.SelectedUnit.Name;
+			}
+
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
 
 		public override void Draw(GameTime gameTime) {
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, RasterizerState.CullNone, null, camera.GetMatrixTransformation());
 
-			//map.Draw(ScreenManager.SpriteBatch, new Rectangle(0, 0, map.Width, map.Height), Vector2.Zero);
+			map.Draw(ScreenManager.SpriteBatch, new Rectangle(0, 0, map.Width * map.TileWidth, map.Height * map.TileHeight), Vector2.Zero);
 			entityManager.Draw(gameTime, ScreenManager);
 			particleManager.Draw(gameTime, ScreenManager, camera.GetViewingRectangle());
 
@@ -83,14 +130,23 @@ namespace Project_WB.Gameplay {
 		#endregion
 
 		#region SetGui
-		Panel entityHud;
+		Label entityHudNameLabel;
+		Label entityHudHealthLabel;
+		Panel entityHudPanel;
 
 		private void SetGui() {
 			guiManager = new GuiManager(ScreenManager.FontLibrary.SmallSegoeUIMono);
 
-			entityHud = new Panel(0, Stcs.YRes - 150, Stcs.XRes, 150);
+			entityHudNameLabel = new Label(10, 10, "                 ");
 
-			guiManager.AddControl(entityHud);
+			entityHudHealthLabel = new Label(10, 50, "Health");
+
+			entityHudPanel = new Panel(0, Stcs.YRes - 150, Stcs.XRes, 150);
+			entityHudPanel.Tint = new Color(10, 10, 10, 256);
+			entityHudPanel.AddChild(entityHudNameLabel);
+			entityHudPanel.AddChild(entityHudHealthLabel);
+
+			guiManager.AddControl(entityHudPanel);
 		}
 		#endregion
 	}

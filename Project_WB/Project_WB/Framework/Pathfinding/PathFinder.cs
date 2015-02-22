@@ -117,6 +117,14 @@ namespace Project_WB.Framework.Pathfinding
 		public bool QuickFind(MapData mapData, out LinkedList<Point> solution) {
 			solution = new LinkedList<Point>();
 
+			// Primary check
+			if (mapData.Barriers.Contains(mapData.End) ||
+				mapData.End.X < 0 || mapData.End.X >= mapData.NumberColumns ||
+				mapData.End.Y < 0 || mapData.End.Y >= mapData.NumberRows) {
+
+				return false;
+			}
+
 			PathMap pm = new PathMap();
 			pm.SetMaps(0, mapData);
 

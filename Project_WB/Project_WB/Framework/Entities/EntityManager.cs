@@ -6,6 +6,9 @@ using Project_WB.Framework.Entities;
 using Microsoft.Xna.Framework.Graphics;
 using Project_WB.Framework.Audio;
 using Project_WB.Framework.Particles;
+using Project_WB.Framework.Pathfinding;
+using Project_WB.Framework.Squared.Tiled;
+using System.Linq;
 
 namespace Project_WB.Framework.Entities {
 	class EntityManager {
@@ -23,6 +26,9 @@ namespace Project_WB.Framework.Entities {
 		protected internal AudioManager audioManager;
 		protected internal SoundLibrary soundLibrary;
 		protected internal ParticleManager particleManager;
+
+		protected PathFinder pathFinder = new PathFinder();
+		protected MapData mapData;
 
 		Unit selectedUnit;
 		#endregion
@@ -111,6 +117,30 @@ namespace Project_WB.Framework.Entities {
 
 				this.entities.Add(entity);
 			}
+		}
+
+		public void LoadMap(Map map) {
+			List<Point> barriers = new List<Point>();
+
+			for (int i = 0; i < map.Layers["collision"].Width; i++) {
+				for (int j = 0; j < map.Layers["collision"].Height; j++) {
+					if (map.Layers["collision"].GetTile(i, j) == 256) {
+						barriers.Add(new Point(i, j));
+					}
+				}
+			}
+
+			mapData = new MapData(map.Height, map.Width, Point.Zero, Point.Zero, barriers);
+		}
+
+		public bool QuickFind(Point start, Point finish, List<Point> otherBarriers, out LinkedList<Point> solution) {
+			List<Point> barriers = mapData.Barriers;
+			barriers.AddRange(otherBarriers);
+			barriers = barriers.Distinct().ToList();
+
+			var md = new MapData(mapData.NumberColumns, mapData.NumberRows, start, finish, barriers);
+
+			return pathFinder.QuickFind(md, out solution);
 		}
 		#endregion
 	}
