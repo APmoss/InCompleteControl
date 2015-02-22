@@ -34,7 +34,7 @@ namespace Project_WB.Menus {
 			if (ScreenState == GameStateManagement.ScreenState.TransitionOn || ScreenState == GameStateManagement.ScreenState.TransitionOff) {
 				registerWindow.Bounds.Location.X = MathHelper.SmoothStep(-600, Stcs.XRes / 2 - 300, TransitionAlpha);
 			}
-
+			
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
 
