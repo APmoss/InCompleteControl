@@ -9,6 +9,10 @@ using MouseButton = GameStateManagement.InputState.MouseButton;
 using Project_WB.Framework.Particles.Emitters;
 
 namespace Project_WB.Framework.Entities {
+	/// <summary>
+	/// The class used for battle events, and an extension of the animated sprite class.
+	/// Handles all important pathfinding, health, movement and others.
+	/// </summary>
 	class Unit : AnimatedSprite {
 		// The minimal distance for the unit before moving to the next needed tile
 		const int nearestDistance = 3;
@@ -273,7 +277,7 @@ namespace Project_WB.Framework.Entities {
 				}
 			}
 			// Attack with the unit with right click
-			else if (!HasAttacked && input.IsNewMousePress(MouseButton.Right) && Team == EntityManager.controllingTeam) {
+			if (!HasAttacked && input.IsNewMousePress(MouseButton.Right) && Team == EntityManager.controllingTeam) {
 				foreach (var entity in EntityManager.GetEntities()) {
 					if (entity is Unit) {
 						Unit unit = entity as Unit;
@@ -283,7 +287,7 @@ namespace Project_WB.Framework.Entities {
 							HasAttacked = true;
 
 							EntityManager.particleManager.AddParticleEmitter(
-														new LightBullet(TimeSpan.FromSeconds(.1), TimeSpan.FromSeconds(.5),
+														new MediumBullet(TimeSpan.FromSeconds(.1), TimeSpan.FromSeconds(.5),
 														this.Position + new Vector2(Bounds.Width / 2, Bounds.Height / 2), unit.Position + new Vector2(unit.Bounds.Width / 2, unit.Bounds.Height / 2)));
 						}
 					}

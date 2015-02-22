@@ -18,6 +18,7 @@ namespace Project_WB.Framework.Entities.Units {
 
 			Name = "Scorpionarius";
 			Speed = 1f;
+			Damage = 70;
 			maxHealth = health = 200;
 			distance = 5;
 			rotationalAnimation = true;

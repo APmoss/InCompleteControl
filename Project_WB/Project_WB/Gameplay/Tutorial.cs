@@ -6,6 +6,7 @@ using Project_WB.Framework.Gui.Controls;
 using Project_WB.Framework.Entities.Units;
 using Project_WB.Framework.Entities;
 using System.Linq;
+using Project_WB.Framework.Audio;
 
 namespace Project_WB.Gameplay {
 	class Tutorial : Battle {
@@ -30,20 +31,24 @@ namespace Project_WB.Gameplay {
 			notificationBox.HasButton = false;
 
 			addEntities();
+
+			// Add a few sound effects
+			//audioManager.AddSounds(new EnvironmentSound(ScreenManager.SoundLibrary.GetSound("ocean1"), new Vector2(7 * 32, 15 * 32), true));
+			//audioManager.AddSounds(new EnvironmentSound(ScreenManager.SoundLibrary.GetSound("ocean1"), new Vector2(25 * 32, 15 * 32), true));
 			
 			welcomeDialog = new DialogBox(300, 300, 500, 300, "Welcome to INCOMPLETE CONTROL. In this level, you will learn the basics of combat. Press the OK button to advance the dialog.");
 			guiDialog = new DialogBox(500, 300, 500, 300, "Let's learn some basic controls. The controls are locked at first, but will be unlocked after the tutorial is up. " +
 														"First, the camera can be controlled by moving to the sides of the screen, or by using the " +
 														"directional keys. You can use this to look around the map and get a better view of your battlefield. You may also zoom using the " +
 														"scroll wheel on your mouse.");
-			youDialog = new DialogBox(100, 500, 900, 220, "These units you see here are yours. You will be able to control them and use them in combat soon. Each different unit has different " +
+			youDialog = new DialogBox(100, 450, 900, 250, "These units you see here are yours. You will be able to control them and use them in combat soon. Each different unit has different " +
 														"benefits and disadvantages when it comes to combat, so be sure to check the HUD on the bottom of the screen when learning. " +
 														"You may select a unit by left clicking on them. This will show the unit's movement range (blue) and attack range (red). Attack and/or " +
 														"move using right click. If there is a blue square available, you are able to travel to it, no matter the obstacles. You may " +
 														"only attack and move once per unit per turn, so choose your strategy wisely.");
 			enemyDialog = new DialogBox(100, 500, 800, 200, "These units here are your enemy! They are slightly tinted red, and have an orange highlight if you select them. " +
 														"You cannot control these units, but you may select them, check their range, statistics, and even health. They aren't expecting an " +
-														"so now would be a good time to strike! Defeat the enemies to continue, good luck.");
+														"attack, so now would be a good time to strike! Defeat the enemies to continue, good luck.");
 			guiManager.AddControl(welcomeDialog);
 			welcomeDialog.OkButton.LeftClicked += delegate {
 				camera.DestScale += .5f;

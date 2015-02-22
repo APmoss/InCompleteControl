@@ -5,12 +5,16 @@ using GameStateManagement;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Project_WB.Framework.Particles {
+	/// <summary>
+	/// The central manager for all particle effects. Controls the main collection of
+	/// particles and emitters and the updating and drawing of all.
+	/// </summary>
 	class ParticleManager {
-		//TODO: finish documentation
-
 		#region Fields
+		// The total number of particles allows at once
 		int maxParticleCount = 512;
 
+		// The collection of particles and emitters
 		List<Particle> particles = new List<Particle>();
 		List<ParticleEmitter> particleEmitters = new List<ParticleEmitter>();
 
@@ -18,6 +22,9 @@ namespace Project_WB.Framework.Particles {
 		#endregion
 
 		#region Properties
+		/// <summary>
+		/// The maximum number of particles allowed on the screen at once.
+		/// </summary>
 		public int MaxParticleCount {
 			get { return maxParticleCount; }
 			set {

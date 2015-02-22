@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 
 namespace Project_WB.Framework.IO {
+	/// <summary>
+	/// The data held when logging in for the current login session.
+	/// </summary>
 	class Session {
 		public static bool LoggedIn = false;
 		public static DateTime LoginTime = DateTime.Today;

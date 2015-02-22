@@ -5,6 +5,9 @@ using MouseButton = GameStateManagement.InputState.MouseButton;
 
 
 using GameStateManagement;namespace Project_WB.Framework.Gui.Controls {
+	/// <summary>
+	/// A control that has a slider value that can change by dragging the notch left or right.
+	/// </summary>
 	class Slider : Control {
 		#region Fields
 		public bool DrawValue = true;
@@ -50,6 +53,7 @@ using GameStateManagement;namespace Project_WB.Framework.Gui.Controls {
 		}
 
 		public override void UpdateInteraction(InputState input) {
+			// Update the caret position depending on the mouse position on the control
 			if (ContainsMouse && input.IsMousePressed(MouseButton.Left)) {
 				caretX = input.CurrentMouseState.X;
 				caretX = MathHelper.Clamp(caretX, GlobalBounds.X + GuiManager.Padding, GlobalBounds.Right - GuiManager.Padding);
@@ -61,6 +65,7 @@ using GameStateManagement;namespace Project_WB.Framework.Gui.Controls {
 		}
 
 		public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, GameStateManagement.ScreenManager screenManager) {
+			// Calculate center of the text
 			Vector2 textCenter = GuiManager.font.MeasureString(value.ToString()) * GuiManager.TextScale / 2;
 			Vector2 center = GlobalPosition +
 								new Vector2(Bounds.Width / 2, Bounds.Height / 2) -

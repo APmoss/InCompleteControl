@@ -243,6 +243,14 @@ namespace Project_WB.Framework.Audio {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Removes all sounds
+		/// </summary>
+		public void StopAll() {
+			audioItems.Clear();
+			currentSong.SoundInstance.Stop();
+		}
 		#endregion
 	}
 }

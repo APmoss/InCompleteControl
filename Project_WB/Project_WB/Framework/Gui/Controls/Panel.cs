@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework;
 using GameStateManagement;
 
 namespace Project_WB.Framework.Gui.Controls {
+	/// <summary>
+	/// A control that hold other controls and converts their distance to global distances.
+	/// </summary>
 	class Panel : Control {
 		#region Fields
 		protected List<Control> Children = new List<Control>();

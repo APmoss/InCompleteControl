@@ -23,7 +23,7 @@ namespace Project_WB {
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
-			Stcs.InternalVersion = new Version("0.5.7.9");
+			Stcs.InternalVersion = new Version("1.0.0.1");
 
 			// Make the mouse visible
 			IsMouseVisible = true;
@@ -73,11 +73,7 @@ namespace Project_WB {
 		/// checking for collisions, gathering input, and playing audio.
 		/// </summary>
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-		protected override void Update(GameTime gameTime) {
-			DebugOverlay.DebugText.Append("-I like jellybeans.").AppendLine();
-			DebugOverlay.DebugText.AppendFormat("X: {0}({1}) | Y: {2}({3})", graphics.PreferredBackBufferWidth, Window.ClientBounds.Width,
-																			graphics.PreferredBackBufferHeight, Window.ClientBounds.Height).AppendLine();
-			
+		protected override void Update(GameTime gameTime) {			
 			base.Update(gameTime);
 		}
 
@@ -97,7 +93,6 @@ namespace Project_WB {
 		/// </summary>
 		private void AddInitialScreens() {
 			screenManager.AddScreen(new DebugOverlay(), null);
-			//TODO: Start at splash
 			screenManager.AddScreen(new Menus.Splash(), null);
 			//screenManager.AddScreen(new Menus.Title(), null);
 			//screenManager.AddScreen(new Menus.SignIn(), null);

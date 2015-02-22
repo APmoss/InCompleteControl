@@ -5,6 +5,9 @@ using Project_WB.Menus;
 using Microsoft.Xna.Framework;
 
 namespace Project_WB.Framework.Gui.Controls {
+	/// <summary>
+	/// In input box that allows users to type into the keyboard.
+	/// </summary>
 	class InputBox : Button {
 		bool isPasswordField = false;
 		string headingText = string.Empty;

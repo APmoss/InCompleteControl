@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Project_WB.Framework.Particles.Emitters {
+	/// <summary>
+	/// A particle emitter that creates an explosion around a certain boundary.
+	/// </summary>
 	class Explosion : ParticleEmitter {
 		Rectangle explosionBounds = Rectangle.Empty;
 		List<Rectangle> explosionSrcRecs = new List<Rectangle>();
@@ -25,6 +28,7 @@ namespace Project_WB.Framework.Particles.Emitters {
 			int numExplosions = 1;
 			int numSmokes = 5;
 
+			// Add the explosion and smoke particles to the collection
 			for (int i = 0; i < numExplosions; i++) {
 				AnimatedParticle explosion = new AnimatedParticle(explosionSrcRecs);
 

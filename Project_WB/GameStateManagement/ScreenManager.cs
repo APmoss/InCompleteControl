@@ -165,51 +165,56 @@ namespace GameStateManagement {
 		/// Allows each screen to run logic.
 		/// </summary>
 		public override void Update(GameTime gameTime) {
-			// Read the keyboard and gamepad.
-			input.Update();
+			try {
+				// Read the keyboard and gamepad.
+				input.Update();
 
-			// Make a copy of the master screen list, to avoid confusion if
-			// the process of updating one screen adds or removes others.
-			tempScreensList.Clear();
+				// Make a copy of the master screen list, to avoid confusion if
+				// the process of updating one screen adds or removes others.
+				tempScreensList.Clear();
 
-			foreach (GameScreen screen in screens)
-				tempScreensList.Add(screen);
+				foreach (GameScreen screen in screens)
+					tempScreensList.Add(screen);
 
-			bool otherScreenHasFocus = !Game.IsActive;
-			bool coveredByOtherScreen = false;
+				bool otherScreenHasFocus = !Game.IsActive;
+				bool coveredByOtherScreen = false;
 
-			// Loop as long as there are screens waiting to be updated.
-			while (tempScreensList.Count > 0) {
-				// Pop the topmost screen off the waiting list.
-				GameScreen screen = tempScreensList[tempScreensList.Count - 1];
+				// Loop as long as there are screens waiting to be updated.
+				while (tempScreensList.Count > 0) {
+					// Pop the topmost screen off the waiting list.
+					GameScreen screen = tempScreensList[tempScreensList.Count - 1];
 
-				tempScreensList.RemoveAt(tempScreensList.Count - 1);
+					tempScreensList.RemoveAt(tempScreensList.Count - 1);
 
-				// Update the screen.
-				screen.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+					// Update the screen.
+					screen.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
-				if (screen.ScreenState == ScreenState.TransitionOn ||
-					screen.ScreenState == ScreenState.Active) {
-					// If this is the first active screen we came across,
-					// give it a chance to handle input.
-					if (!otherScreenHasFocus || screen.OverrideInput) {
-						screen.HandleInput(gameTime, input);
+					if (screen.ScreenState == ScreenState.TransitionOn ||
+						screen.ScreenState == ScreenState.Active) {
+						// If this is the first active screen we came across,
+						// give it a chance to handle input.
+						if (!otherScreenHasFocus || screen.OverrideInput) {
+							screen.HandleInput(gameTime, input);
 
-						otherScreenHasFocus = true;
+							otherScreenHasFocus = true;
+						}
+
+						// If this is an active non-popup, inform any subsequent
+						// screens that they are covered by it.
+						if (!screen.IsPopup)
+							coveredByOtherScreen = true;
 					}
-
-					// If this is an active non-popup, inform any subsequent
-					// screens that they are covered by it.
-					if (!screen.IsPopup)
-						coveredByOtherScreen = true;
 				}
+
+				// Print debug trace?
+				if (traceEnabled)
+					TraceScreens();
 			}
-
-			// Print debug trace?
-			if (traceEnabled)
-				TraceScreens();
+			catch (Exception e) {
+				screens.Clear();
+				AddScreen(new ErrorScreen(e.Message), null);
+			}
 		}
-
 
 		/// <summary>
 		/// Prints a list of all the screens, for debugging.
@@ -228,21 +233,27 @@ namespace GameStateManagement {
 		/// Tells each screen to draw itself.
 		/// </summary>
 		public override void Draw(GameTime gameTime) {
-			List<GameScreen> topBatch = new List<GameScreen>();
+			try {
+				List<GameScreen> topBatch = new List<GameScreen>();
 
-			foreach (GameScreen screen in screens) {
-				if (screen.ScreenState == ScreenState.Hidden)
-					continue;
-				if (screen.Topmost) {
-					topBatch.Add(screen);
+				foreach (GameScreen screen in screens) {
+					if (screen.ScreenState == ScreenState.Hidden)
+						continue;
+					if (screen.Topmost) {
+						topBatch.Add(screen);
+					}
+					else {
+						screen.Draw(gameTime);
+					}
 				}
-				else {
+
+				foreach (var screen in topBatch) {
 					screen.Draw(gameTime);
 				}
 			}
-
-			foreach (var screen in topBatch) {
-				screen.Draw(gameTime);
+			catch (Exception e) {
+				screens.Clear();
+				AddScreen(new ErrorScreen(e.Message), null);
 			}
 		}
 
@@ -263,6 +274,11 @@ namespace GameStateManagement {
 			// If we have a graphics device, tell the screen to load content.
 			if (isInitialized) {
 				screen.Activate(false);
+			}
+
+			using (TextWriter writer = new StreamWriter(new FileStream("log.txt", FileMode.Append, FileAccess.Write, FileShare.ReadWrite))) {
+				string message = string.Format("New screen entered: {0}", screen.GetType());
+				writer.WriteLine(string.Format("{0} - {1} - {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), message));
 			}
 
 			screens.Add(screen);

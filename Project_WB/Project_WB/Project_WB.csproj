@@ -109,12 +109,15 @@
     <Compile Include="Framework\Gui\Controls\Slider.cs" />
     <Compile Include="Framework\Gui\GuiManager.cs" />
     <Compile Include="Framework\IO\IOManager.cs" />
+    <Compile Include="Framework\IO\LevelFile.cs" />
     <Compile Include="Framework\IO\Session.cs" />
     <Compile Include="Framework\IO\SettingsFile.cs" />
     <Compile Include="Framework\Particles\AnimatedParticle.cs" />
     <Compile Include="Framework\Particles\Emitters\BulletEmitter.cs" />
     <Compile Include="Framework\Particles\Emitters\Explosion.cs" />
+    <Compile Include="Framework\Particles\Emitters\HeavyBullet.cs" />
     <Compile Include="Framework\Particles\Emitters\LightBullet.cs" />
+    <Compile Include="Framework\Particles\Emitters\MediumBullet.cs" />
     <Compile Include="Framework\Particles\Emitters\SiegeBullet.cs" />
     <Compile Include="Framework\Particles\Particle.cs" />
     <Compile Include="Framework\Particles\ParticleEmitter.cs" />
@@ -127,10 +130,12 @@
     <Compile Include="Framework\Pathfinding\MapData.cs" />
     <Compile Include="Framework\Pathfinding\PathFinder.cs" />
     <Compile Include="Framework\Entities\Sprite.cs" />
+    <Compile Include="Gameplay\Multi1v1.cs" />
     <Compile Include="Gameplay\TestBattle.cs" />
     <Compile Include="Gameplay\TestThing.cs" />
     <Compile Include="Gameplay\Tutorial.cs" />
     <Compile Include="LicensesAndAknowledgements.cs" />
+    <Compile Include="Menus\Credits.cs" />
     <Compile Include="Menus\InputScreen.cs" />
     <Compile Include="Menus\LoadingScreen.cs" />
     <Compile Include="Menus\MainMenu.cs" />
@@ -141,7 +146,6 @@
     <Compile Include="Menus\SignIn.cs" />
     <Compile Include="Menus\Splash.cs" />
     <Compile Include="Menus\Title.cs" />
-    <Compile Include="Framework\PasswordInputControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Framework\Stcs.cs" />

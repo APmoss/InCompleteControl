@@ -4,9 +4,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Project_WB.Framework.Particles {
+	/// <summary>
+	/// A particle extension that plays through an animation cycle.
+	/// </summary>
 	class AnimatedParticle : Particle {
-		//TODO: finish documentation
-
 		#region Fields
 		int currentFrame = 0;
 		TimeSpan elapsedAnimationTime = TimeSpan.Zero;
@@ -25,6 +26,7 @@ namespace Project_WB.Framework.Particles {
 		public override void Update(GameTime gameTime) {
 			elapsedAnimationTime += gameTime.ElapsedGameTime;
 			
+			// Check to cycle through frames
 			if (elapsedAnimationTime > TargetAnimationTime) {
 				elapsedAnimationTime -= TargetAnimationTime;
 

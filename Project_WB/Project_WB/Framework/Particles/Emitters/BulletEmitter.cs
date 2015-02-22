@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Project_WB.Framework.Particles.Emitters {
+	/// <summary>
+	/// A particle emitter that creates bullet particles.
+	/// </summary>
 	class BulletEmitter : ParticleEmitter {
 		protected List<Rectangle> srcRecs = new List<Rectangle>();
 		protected Vector2 startPosition = Vector2.Zero;

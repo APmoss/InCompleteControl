@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Project_WB.Framework.Particles {
+	/// <summary>
+	/// A particle emitter that emits a particle at a set frequency.
+	/// </summary>
 	abstract class ParticleEmitter {
 		#region Fields
 		public TimeSpan EmissionFrequency = TimeSpan.Zero;
@@ -23,6 +26,7 @@ namespace Project_WB.Framework.Particles {
 			elapsed += gameTime.ElapsedGameTime;
 			LifeSpan -= gameTime.ElapsedGameTime;
 
+			// Check if the emitter needs to emit particles
 			if (elapsed > EmissionFrequency) {
 				elapsed -= EmissionFrequency;
 

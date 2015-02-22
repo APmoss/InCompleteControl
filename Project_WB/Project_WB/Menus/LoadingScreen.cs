@@ -41,7 +41,6 @@ namespace Project_WB.Menus {
 		}
 
 		public override void Draw(GameTime gameTime) {
-			//TODO: Change the loading screen stuff
 			ScreenManager.SpriteBatch.Begin();
 
 			//ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, viewport, Color.Black * TransitionAlpha);

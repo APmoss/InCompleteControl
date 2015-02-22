@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="32" height="32" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="environment" tilewidth="32" tileheight="32">
+  <image source="tilesets/environment.png" width="512" height="512"/>
+ </tileset>
+ <layer name="ground" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3NMQHAIAwAsFpnKIApAIxSFfTJkTstIr4iPY00i/x+v9/v9/v9fr/f7/c/+lfaRU66H///KQAQAAA=
+  </data>
+ </layer>
+ <layer name="tree1" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3XsQ0AMAgDQbdkg2T/QUOTJgMYJN6S5ZYrCUkrG0W7s6dw3x3u/H538OPHjx8/fvz+4MePHz/+Hv6p/+8Fc73B9AAQAAA=
+  </data>
+ </layer>
+ <layer name="tree2" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3XMQoAIAwEwbT6A/3/Q7WxEa5MTnAXQtpMmQh/bU837NPYMw379lel/FXhx49f35Mdfvz49T3Z4cePX9+THf43/b/+f84WtuoMpQAQAAA=
+  </data>
+ </layer>
+ <layer name="obstacle" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+1WwRHAIAhzgI7QUXqdoPvP0y/HiaAGilfz6kO5EEJsKRuZcXxNQMBNvinHp3HuHKj9Z1yAGlbNZ0E9IPHm3ugFv+/VG7qu5wwQHomANcesWtFztbxA5GbU7iDB+57NUuqvrLnMe47Yich3GeVDK2eLfjVO0ftifU+8ZyXVH/WhpuMquYTUHZE9Pf8f2lk+21avPdz5bDUNM+zhxrp4AcdUqi0AEAAA
+  </data>
+ </layer>
+ <layer name="collision" width="32" height="32" opacity="0.01">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+1VQQ6AMAjD/3/a+zKghQ49jIREZ2wLDLDHzK7/w3fmnXeM4Y8wsmfvW8Z/IuZVUzf+CX6FJg9XHT9SP7T+CEfEg+BM3r+dblX+K/99cf/X/Hr8qI6sXhHOZP91+KvY0TvLf6Iv1PGzc0G9/1hj+dV3QzH/Ov2iqn9lVij5Mx3ReSf/il09Mf+r8TNYFT0IP6uH6V9m/1XyMjH/OubxXx/3F7Rp/D8AEAAA
+  </data>
+ </layer>
+</map>

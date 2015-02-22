@@ -124,16 +124,16 @@
     <value>Fecha</value>
   </data>
   <data name="DateOfBirth" xml:space="preserve">
-    <value>*Cumpleano</value>
+    <value>Cumpleano</value>
   </data>
   <data name="English" xml:space="preserve">
-    <value>Inglés</value>
+    <value>Ingles</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Nombre</value>
   </data>
   <data name="French" xml:space="preserve">
-    <value>Francés</value>
+    <value>Frances</value>
   </data>
   <data name="Hello" xml:space="preserve">
     <value>Hola</value>
@@ -151,19 +151,19 @@
     <value>Nombre</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Contraseña</value>
+    <value>Contrasena</value>
   </data>
   <data name="Register" xml:space="preserve">
-    <value>*Registro</value>
+    <value>Registro</value>
   </data>
   <data name="SignIn" xml:space="preserve">
     <value>Ingresar</value>
   </data>
   <data name="Spanish" xml:space="preserve">
-    <value>Español</value>
+    <value>Espanol</value>
   </data>
   <data name="SwitchLanguage" xml:space="preserve">
-    <value>*switcho languago</value>
+    <value>Cambia lingua</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Nombre de usuario</value>

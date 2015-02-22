@@ -40,7 +40,6 @@ namespace Project_WB.Gameplay {
 		Random r = new Random();
 		int particleLoops = 1;
 
-		//TODO: remove this
 		TimeSpan elapsed = TimeSpan.Zero;
 		TimeSpan targetElapsed = TimeSpan.FromSeconds(1);
 
@@ -107,8 +106,7 @@ namespace Project_WB.Gameplay {
 			character.MouseEntered += (s, e) => ScreenManager.SoundLibrary.GetSound("tileChange1").Play();
 
 			entityManager = new EntityManager(ScreenManager.Game.Content.Load<Texture2D>("textures/etc"), ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"), audioManager, ScreenManager.SoundLibrary, particleManager);
-			//TODO note to me- remove the constructor dependency on the spritesheet, since the entitymanager will automatically set if if it's null to the entity manager's default.
-			// this will clear things upo and allow bettter constructor parameters, like position.
+			
 			entityManager.LoadMap(map);
 			Sango sango = new Sango();
 			Guy guy = new Guy();
@@ -241,6 +239,11 @@ namespace Project_WB.Gameplay {
 		
 		public override void HandleInput(GameTime gameTime, InputState input) {
 			PlayerIndex p;
+
+			if (input.IsNewKeyPress(Keys.Escape, null, out p)) {
+				audioManager.StopAll();
+				ExitScreen();
+			}
 
 			if (input.IsKeyPressed(Keys.W, null, out p)) {
 				cam.DestPosition.Y -= 5;
@@ -438,6 +441,7 @@ namespace Project_WB.Gameplay {
 			entityManager.UpdateInteration(gameTime, input, cam);
 
 			if (input.IsNewKeyPress(Keys.F10, null, out p)) {
+				audioManager.StopAll();
 				ExitScreen();
 			}
 

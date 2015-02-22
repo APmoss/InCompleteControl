@@ -60,6 +60,7 @@
     <XnaCompressContent>false</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ErrorScreen.cs" />
     <Compile Include="FontLibrary.cs" />
     <Compile Include="GameScreen.cs" />
     <Compile Include="InputAction.cs" />

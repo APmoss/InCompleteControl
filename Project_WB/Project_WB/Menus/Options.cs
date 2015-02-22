@@ -103,7 +103,7 @@ namespace Project_WB.Menus {
 
 			voiceVolumeSlider = new Slider(410, 250, 380, 40, settings.VoiceVolume);
 
-			okButton = new Button(690, 560, 100, "Ok");
+			okButton = new Button(660, 560, 130, "Save (.xml)");
 			okButton.LeftClicked += delegate {
 				SaveAndClose();
 			};

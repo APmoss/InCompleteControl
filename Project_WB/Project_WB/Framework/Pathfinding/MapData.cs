@@ -17,6 +17,9 @@ using Microsoft.Xna.Framework.Content;
 #endregion
 
 namespace Project_WB.Framework.Pathfinding {
+	/// <summary>
+	/// Contains essential data for loading maps for pathfinding.
+	/// </summary>
 	public class MapData {
 		public int NumberRows;
 		public int NumberColumns;

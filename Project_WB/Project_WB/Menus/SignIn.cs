@@ -20,13 +20,15 @@ namespace Project_WB.Menus {
 		#region Fields
 		// A gui manager for all gui elements
 		GuiManager gui;
-		//TODO: finalize background
+
 		List<Vector2> points1 = new List<Vector2>();
 		List<Vector2> points2 = new List<Vector2>();
 		List<Vector2> points3 = new List<Vector2>();
 		Vector2 titlePos;
 		Vector2 baseTitlePos = Vector2.Zero;
 		Random r = new Random();
+
+		Texture2D back;
 		#endregion
 
 		#region Initialization
@@ -41,12 +43,13 @@ namespace Project_WB.Menus {
 			var font = ScreenManager.FontLibrary.HighTowerText;
 			baseTitlePos = new Vector2(Stcs.XRes / 2 - font.MeasureString("INCOMPLETE CONTROL").X / 2, Stcs.YRes / 2 - font.MeasureString("I").Y / 2 + 10);
 
-			//TODO:remove and stuff
 			for (int i = 0; i < Stcs.XRes; i++) {
 				points1.Add(new Vector2(i, Stcs.YRes * 1 / 4));
 				points2.Add(new Vector2(i, Stcs.YRes * 2 / 4));
 				points3.Add(new Vector2(i, Stcs.YRes * 3 / 4));
 			}
+
+			back = ScreenManager.Game.Content.Load<Texture2D>("textures/back");
 
 			base.Activate(instancePreserved);
 		}
@@ -56,7 +59,6 @@ namespace Project_WB.Menus {
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
 			gui.Update(gameTime);
 
-			//TODO: finalize background
 			for (int i = 0; i < points1.Count; i++) {
 				var newPos = points1[i];
 				newPos.Y = (Stcs.YRes * 1 / 4) + (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds + newPos.X) * (float)(40 * (Math.Sin(gameTime.TotalGameTime.TotalSeconds) + 1));
@@ -84,17 +86,18 @@ namespace Project_WB.Menus {
 		}
 
 		public override void Draw(GameTime gameTime) {
-			//TODO: remove and stuff
 			ScreenManager.SpriteBatch.Begin();
 
+			ScreenManager.SpriteBatch.Draw(back, new Rectangle(0, 0, Stcs.XRes, Stcs.YRes), Color.White * TransitionAlpha);
+
 			for (int i = 0; i < points1.Count; i++) {
-				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)points1[i].X, (int)points1[i].Y, 2, 2), Color.Red * TransitionAlpha);
-				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)points2[i].X, (int)points2[i].Y, 2, 2), Color.Green * TransitionAlpha);
+				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)points1[i].X, (int)points1[i].Y, 2, 2), Color.PapayaWhip * TransitionAlpha);
+				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)points2[i].X, (int)points2[i].Y, 2, 2), Color.SkyBlue * TransitionAlpha);
 				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)points3[i].X, (int)points3[i].Y, 2, 2), Color.Blue * TransitionAlpha);
 			}
 
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "INCOMPLETE CONTROL", titlePos - Vector2.One, new Color(60, 0, 0) * TransitionAlpha);
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "INCOMPLETE CONTROL", titlePos + Vector2.One, Color.Maroon * TransitionAlpha);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "INCOMPLETE CONTROL", titlePos - Vector2.One, Color.LightCyan * TransitionAlpha);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "INCOMPLETE CONTROL", titlePos + Vector2.One, Color.Cyan * TransitionAlpha);
 
 			gui.Draw(gameTime, ScreenManager);
 
@@ -106,7 +109,6 @@ namespace Project_WB.Menus {
 
 		#region SetGui
 		Label versionLabel;
-		Button testButton;
 
 		Label languageLabel;
 		Button englishButton;
@@ -131,15 +133,7 @@ namespace Project_WB.Menus {
 		private void SetGui() {
 			gui = new GuiManager(ScreenManager.FontLibrary.SmallSegoeUIMono);
 
-			versionLabel = new Label(10, Stcs.YRes - 40, Stcs.InternalVersion.ToString());
-
-			testButton = new Button(1000, 200, 100, "TEST :D");
-			testButton.LeftClicked += delegate {
-				//ScreenManager.AddScreen(new TestBattle(), null);
-				//Project_WB.Framework.IO.IOManager.CreateNewUser("newuser", "password", "bob", "bobby", "bob@bob");
-				//ScreenManager.AddScreen(new MessageBox("header stuff", "message message message message message message message message message message message message message message "), null);
-				ScreenManager.AddScreen(new MiniGame(), null);
-			};
+			versionLabel = new Label(35, Stcs.YRes - 40, "Version: " + Stcs.InternalVersion.ToString());
 
 			languageLabel = new Label(10, 10, Strings.SwitchLanguage + ":");
 			languageLabel.Bounds.Width = 200;
@@ -219,6 +213,9 @@ namespace Project_WB.Menus {
 			loginPanel.AddChild(offlineButton);
 
 			creditsButton = new Button(10, 10, 180, "Credits");
+			creditsButton.LeftClicked += delegate {
+				ScreenManager.AddScreen(new Credits(), null);
+			};
 
 			optionsButton = new Button(10, 60, 180, "Options");
 			optionsButton.LeftClicked += delegate {
@@ -236,7 +233,6 @@ namespace Project_WB.Menus {
 			otherPanel.AddChild(quitButton);
 			
 			gui.AddControl(versionLabel);
-			gui.AddControl(testButton);
 			gui.AddControl(languagePanel);
 			gui.AddControl(loginPanel);
 			gui.AddControl(otherPanel);

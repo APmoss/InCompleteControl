@@ -18,6 +18,7 @@ namespace Project_WB.Framework.Entities.Units {
 
 			Name = "Ballistarius";
 			Speed = 1f;
+			Damage = 55;
 			maxHealth = health = 200;
 			distance = 4;
 			attackDistance = 5;

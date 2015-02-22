@@ -16,9 +16,8 @@ namespace Project_WB.Menus {
 		#endregion
 
 		public Register() {
-			//TODO: change back to .3
-			TransitionOnTime = TimeSpan.FromSeconds(1);
-			TransitionOffTime = TimeSpan.FromSeconds(.3);
+			TransitionOnTime = TimeSpan.FromSeconds(.5);
+			TransitionOffTime = TimeSpan.FromSeconds(.5);
 		}
 
 		#region Overridden Methods

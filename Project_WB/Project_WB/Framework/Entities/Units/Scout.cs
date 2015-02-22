@@ -18,6 +18,7 @@ namespace Project_WB.Framework.Entities.Units {
 
 			Name = "Scout";
 			Speed = 2f;
+			Damage = 15;
 			maxHealth = health = 50;
 			distance = 15;
 			rotationalAnimation = true;

@@ -5,9 +5,10 @@ using Microsoft.Xna.Framework;
 using GameStateManagement;
 
 namespace Project_WB.Framework.Particles {
+	/// <summary>
+	/// The base particle class that contains essential particle data such as position and velocity.
+	/// </summary>
 	class Particle {
-		//TODO: finish documentation
-
 		#region Fields
 		public Vector2 Position = Vector2.Zero;
 		public Vector2 Velocity = Vector2.Zero;

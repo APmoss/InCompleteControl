@@ -6,6 +6,9 @@ using GameStateManagement;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Project_WB.Framework.Gui {
+	/// <summary>
+	/// A central manager for all gui elements. Controls updating, drawing, and interacting for all elements.
+	/// </summary>
 	class GuiManager {
 		#region Fields
 		protected List<Control> controls = new List<Control>();
@@ -14,6 +17,7 @@ namespace Project_WB.Framework.Gui {
 		public Color TextTint = Color.White;
 		public float TextScale = 1f;
 
+		// The side padding used on many controls
 		public int Padding = 5;
 		#endregion
 
@@ -23,6 +27,7 @@ namespace Project_WB.Framework.Gui {
 
 		public void Update(GameTime gameTime) {
 			for (int i = 0; i < controls.Count; i++) {
+				// Check for removal
 				if (controls[i].needsRemoval) {
 					controls.RemoveAt(i);
 					i--;

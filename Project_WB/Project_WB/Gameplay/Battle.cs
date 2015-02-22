@@ -12,26 +12,41 @@ using Project_WB.Framework.Pathfinding;
 using Microsoft.Xna.Framework.Graphics;
 using Project_WB.Framework.Gui.Controls;
 using Microsoft.Xna.Framework.Input;
+using Project_WB.Menus;
 
 namespace Project_WB.Gameplay {
+	/// <summary>
+	/// The base class for all combat and battles/engagements.
+	/// </summary>
 	class Battle : GameScreen {
 		#region Fields
+		// The camera used in battle
 		protected Camera2D camera;
+		// The map loaded for this level
 		protected Map map;
 
+		// The gui manager for all gui elements
 		protected GuiManager guiManager;
+		// The audio manager for all sounds
 		protected AudioManager audioManager;
+		// The particle manager used for all partice effects
 		protected ParticleManager particleManager;
+		// The entity manager used for entity handling
 		protected EntityManager entityManager;
 
+		// Camera boundaries
 		Rectangle leftCameraMovementBound;
 		Rectangle rightCameraMovementBound;
 		Rectangle topCameraMovementBound;
 		Rectangle bottomCameraMovementBound;
 
+		// The mouse the tile is placed on
 		protected Point mouseTile = Point.Zero;
+		// Whether the user can control combat elements
 		protected bool combatLocked = false;
+		// Shows or hides the bottom gui
 		bool showGui = false;
+		// The total teams in the current battle
 		int totalTeams = 2;
 		#endregion
 
@@ -78,32 +93,37 @@ namespace Project_WB.Gameplay {
 					entityManager.SelectedUnit = null;
 				}
 
+				int negate = 1;
+				if (camera.DestZRotation == MathHelper.Pi) {
+					negate = -1;
+				}
+
 				// Check the mouse positions to move the camera (camera will move if mouse is on the borders)
 				if (leftCameraMovementBound.Contains(x, y)) {
-					camera.DestPosition.X -= 5;
+					camera.DestPosition.X -= 5 * negate;
 				}
 				if (rightCameraMovementBound.Contains(x, y)) {
-					camera.DestPosition.X += 5;
+					camera.DestPosition.X += 5 * negate;
 				}
 				if (topCameraMovementBound.Contains(x, y)) {
-					camera.DestPosition.Y -= 5;
+					camera.DestPosition.Y -= 5 * negate;
 				}
 				if (bottomCameraMovementBound.Contains(x, y)) {
-					camera.DestPosition.Y += 5;
+					camera.DestPosition.Y += 5 * negate;
 				}
 
 				// Check for directional keys to move the camera
 				if (input.IsKeyPressed(Keys.Left, null, out p)) {
-					camera.DestPosition.X -= 5;
+					camera.DestPosition.X -= 5 * negate;
 				}
 				if (input.IsKeyPressed(Keys.Right, null, out p)) {
-					camera.DestPosition.X += 5;
+					camera.DestPosition.X += 5 * negate;
 				}
 				if (input.IsKeyPressed(Keys.Up, null, out p)) {
-					camera.DestPosition.Y -= 5;
+					camera.DestPosition.Y -= 5 * negate;
 				}
 				if (input.IsKeyPressed(Keys.Down, null, out p)) {
-					camera.DestPosition.Y += 5;
+					camera.DestPosition.Y += 5 * negate;
 				}
 
 				camera.DestPosition.X = (float)MathHelper.Clamp(camera.DestPosition.X, 100, map.Width * map.TileWidth - 100);
@@ -120,8 +140,14 @@ namespace Project_WB.Gameplay {
 
 			// Update the tile the mouse is currently on
 			var relativeMouse = camera.ToRelativePosition(input.CurrentMouseState.X, input.CurrentMouseState.Y);
-			relativeMouse.X -= entityManager.tileSize / 2;
-			relativeMouse.Y -= entityManager.tileSize / 2;
+			if (camera.DestZRotation == MathHelper.Pi) {
+				relativeMouse.X -= entityManager.tileSize / 2;
+				relativeMouse.Y -= entityManager.tileSize / 2;
+			}
+			else {
+				relativeMouse.X -= entityManager.tileSize / 2;
+				relativeMouse.Y -= entityManager.tileSize / 2;
+			}
 			mouseTile = new Point((int)Math.Round(relativeMouse.X / 32),
 								(int)Math.Round(relativeMouse.Y / 32));
 
@@ -164,6 +190,7 @@ namespace Project_WB.Gameplay {
 
 		#region Methods
 		protected void UpdateHud() {
+			// Changes the positions and data for the gui and visual elements
 			if (showGui) {
 				entityHudPanel.Bounds.Y = (int)MathHelper.Lerp((float)entityHudPanel.Bounds.Y, Stcs.YRes - 150, .1f);
 			}
@@ -207,12 +234,15 @@ namespace Project_WB.Gameplay {
 		Label unitTile;
 
 		Button endButton;
+		Button exitButton;
 		Panel entityHudPanel;
 
 		private void SetGui() {
 			guiManager = new GuiManager(ScreenManager.FontLibrary.SmallSegoeUIMono);
 
 			notificationBox = new DialogBox(10, 10, Stcs.XRes - 20, 40, "Notification:");
+			notificationBox.BackgroundTint = new Color(30, 40, 30, 200);
+			notificationBox.HasButton = false;
 			
 			unitNameLabel = new Label(10, 10, "");
 			unitNameLabel.Bounds.Width = 200;
@@ -249,11 +279,28 @@ namespace Project_WB.Gameplay {
 			unitTile = new Label(640, 10, "Tile:");
 			unitTile.Bounds.Width = 200;
 
+			exitButton = new Button(Stcs.XRes - 110, 60, 100, "Surrender");
+			exitButton.Tint = Color.Red;
+			exitButton.LeftClicked += delegate {
+				ExitScreen();
+				ScreenManager.AddScreen(new MainMenu(), null);
+			};
+
 			endButton = new Button(Stcs.XRes - 110, 10, 100, "End Turn");
+			endButton.Tint = Color.DarkOrange;
 			endButton.LeftClicked += delegate {
-				if (entityManager.controllingTeam == 1) {
-					entityManager.controllingTeam = 2;
+				entityManager.controllingTeam++;
+				if (entityManager.controllingTeam > totalTeams) {
+					entityManager.controllingTeam = 1;
 					entityManager.ResetEntities();
+				}
+				if (entityManager.controllingTeam == 1) {
+					camera.DestZRotation = 0;
+					notificationBox.Text = "Player 1 is now in control!";
+				}
+				else {
+					camera.DestZRotation = MathHelper.Pi;
+					notificationBox.Text = "Player 2 is now in control!";
 				}
 			};
 			
@@ -270,6 +317,7 @@ namespace Project_WB.Gameplay {
 			entityHudPanel.AddChild(unitAttackDistance);
 			entityHudPanel.AddChild(unitTile);
 			entityHudPanel.AddChild(endButton);
+			entityHudPanel.AddChild(exitButton);
 
 			guiManager.AddControl(notificationBox);
 			guiManager.AddControl(entityHudPanel);

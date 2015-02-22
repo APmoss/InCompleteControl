@@ -18,6 +18,7 @@ namespace Project_WB.Framework.Entities.Units {
 
 			Name = "Accensus";
 			Speed = 1.6f;
+			Damage = 45;
 			maxHealth = health = 150;
 			distance = 6;
 			rotationalAnimation = true;

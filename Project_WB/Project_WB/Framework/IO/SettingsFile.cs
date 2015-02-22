@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 
 namespace Project_WB.Framework.IO {
+	/// <summary>
+	/// The class that is serialized when saving settings data.
+	/// </summary>
 	[Serializable]
 	public class SettingsFile {
 		#region Settings Fields

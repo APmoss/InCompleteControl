@@ -118,22 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CurrentLocale" xml:space="preserve">
-    <value>Localisé en: {0}</value>
+    <value>Localise en: {0}</value>
   </data>
   <data name="Date" xml:space="preserve">
-    <value>*Jour</value>
+    <value>Jour</value>
   </data>
   <data name="DateOfBirth" xml:space="preserve">
-    <value>*Date de Naissance</value>
+    <value>Date de Naissance</value>
   </data>
   <data name="English" xml:space="preserve">
     <value>Anglais</value>
   </data>
   <data name="FirstName" xml:space="preserve">
-    <value>Prénom</value>
+    <value>Prenom</value>
   </data>
   <data name="French" xml:space="preserve">
-    <value>Français</value>
+    <value>Francais</value>
   </data>
   <data name="Hello" xml:space="preserve">
     <value>Bonjour</value>
@@ -154,7 +154,7 @@
     <value>Mot de passe</value>
   </data>
   <data name="Register" xml:space="preserve">
-    <value>*Enregistrer</value>
+    <value>Enregistrer</value>
   </data>
   <data name="SignIn" xml:space="preserve">
     <value>Connectez-vous</value>
@@ -163,12 +163,12 @@
     <value>Espagnol</value>
   </data>
   <data name="SwitchLanguage" xml:space="preserve">
-    <value>*kjnewfkjnfad LANGUE!!!</value>
+    <value>Changer la langue</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>Nom d’utilisateur</value>
+    <value>Nom d utilisateur</value>
   </data>
   <data name="Year" xml:space="preserve">
-    <value>*Ans</value>
+    <value>Ans</value>
   </data>
 </root>

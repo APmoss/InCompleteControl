@@ -4,10 +4,13 @@ using GameStateManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
+using Project_WB.Framework.IO;
 
 namespace Project_WB.Menus {
 	class Title : GameScreen {
 		Texture2D title;
+		SoundEffectInstance music;
 
 		public Title() {
 			TransitionOnTime = TimeSpan.FromSeconds(.5);
@@ -16,7 +19,10 @@ namespace Project_WB.Menus {
 
 		public override void Activate(bool instancePreserved) {
 			title = ScreenManager.Game.Content.Load<Texture2D>("textures/title");
-			
+			music = ScreenManager.SoundLibrary.GetSound("dicksInDetention").CreateInstance();
+			music.Play();
+			music.Volume = IOManager.LoadSettings().MusicVolume;
+
 			base.Activate(instancePreserved);
 		}
 
@@ -24,6 +30,7 @@ namespace Project_WB.Menus {
 			KeyboardState k = (KeyboardState)input.CurrentKeyboardStates.GetValue(0);
 
 			if (k.GetPressedKeys().Length > 0 && ScreenState == GameStateManagement.ScreenState.Active) {
+				music.Stop();
 				ExitScreen();
 				ScreenManager.AddScreen(new SignIn(), null);
 			}

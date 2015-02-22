@@ -61,6 +61,9 @@ using System.IO;
 using System.IO.Compression;
 
 namespace Project_WB.Framework.Squared.Tiled {
+	/// <summary>
+	/// A tileset manager for the map loading, where all tiles are loaded in.
+	/// </summary>
 	public class Tileset {
 		public class TilePropertyList : Dictionary<string, string> {
 		}

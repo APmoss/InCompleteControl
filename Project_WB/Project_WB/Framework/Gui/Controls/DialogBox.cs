@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework;
 using GameStateManagement;
 
 namespace Project_WB.Framework.Gui.Controls {
+	/// <summary>
+	/// Displays text character by character with an ok button to close.
+	/// </summary>
 	class DialogBox : Control {
 		#region Fields
 		string text = string.Empty;

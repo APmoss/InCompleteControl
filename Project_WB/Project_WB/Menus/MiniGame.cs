@@ -4,34 +4,53 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using GameStateManagement;
+using Microsoft.Xna.Framework.Audio;
+using Project_WB.Framework.IO;
 
 namespace Project_WB.Menus {
 	class MiniGame : GameScreen {
+		/// <summary>
+		/// this area is holding all of the variables necessary to the game
+		/// includes rectangles, various counter variables, bools
+		/// also includes textures necessary to the sprites of the game
+		/// </summary>
+		/// 
+		#region Variables
 		Effect effect;
+		SpriteFont font;
 		Texture2D text;
 		Texture2D lightMask;
 		Texture2D shade, car, baseText, arrow;
+		Texture2D slenderMan, current, dead;
+		Animation carAn = new Animation();
 		RenderTarget2D lightsTarget;
 		RenderTarget2D mainTarget;
 		MouseState mouse;
 		Rectangle lightRec = new Rectangle(490, 490, 112, 112);
 		Rectangle backRec = new Rectangle(0, 0, 8192, 8192);
 		Rectangle baseRec = new Rectangle(4300, 6000, 64, 64);
-		Color color = Color.White;
-		SpriteFont font;
-		long delay = 0;
-		bool flash = true;
-		int direction = 0;
-		Animation carAn = new Animation();
-		float intesntisy = 0.02f;
-		float i;
-		Texture2D slenderMan, current, dead;
 		Rectangle slenderRec = new Rectangle(0, 0, 64, 64);
 		Rectangle arrowRec = new Rectangle(506, 535, 32, 32);
 		Vector2 arrowDirection = Vector2.Zero;
+		Color color = Color.White;
+		long delay = 0;
+		int direction = 0;
+		int slenderKills = 0;
+		float intesntisy = 0.02f;
+		float i;
+		float arrowRotate = 0;
+		bool hit = false;
+		bool flash = true;
 		bool drawSlender = false;
-		float arrowRotate = 0f;
 
+		SoundEffectInstance sound;
+		#endregion
+
+		/// <summary>
+		/// activates all of the necessary variables for the screen manager. 
+		/// also loads all of the content necessary for drawing the textures to the screen.
+		/// </summary>
+		/// <param name="instancePreserved"></param>
 		public override void Activate(bool instancePreserved) {
 			var pp = ScreenManager.Game.GraphicsDevice.PresentationParameters;
 			lightsTarget = new RenderTarget2D(ScreenManager.Game.GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
@@ -49,30 +68,33 @@ namespace Project_WB.Menus {
 			dead = ScreenManager.Game.Content.Load<Texture2D>("minigame/deadSlender");
 			current = slenderMan;
 			arrow = ScreenManager.Game.Content.Load<Texture2D>("minigame/Arrow");
+
+			sound = ScreenManager.SoundLibrary.GetSound("southsea").CreateInstance();
+			sound.Play();
+			sound.Volume = IOManager.LoadSettings().MusicVolume;
 			
 			base.Activate(instancePreserved);
 		}
 
+		/// <summary>
+		/// updates all of the necessary functions for game to work.
+		/// deals with keyboard input- moves the unit around
+		/// updates light positions
+		/// updates collisions
+		/// updates the arrow pointing towards the objective
+		/// </summary>
+		/// <param name="gameTime"></param>
+		/// <param name="otherScreenHasFocus"></param>
+		/// <param name="coveredByOtherScreen"></param>
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
 			// Allows the game to exit
 			mouse = Mouse.GetState();
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+				sound.Stop();
 				ExitScreen();
+			}
 
-			if (Keyboard.GetState().IsKeyDown(Keys.A))
-				color = Color.Blue;
-			if (Keyboard.GetState().IsKeyDown(Keys.S))
-				color = Color.Bisque;
-			if (Keyboard.GetState().IsKeyDown(Keys.D))
-				color = Color.Green;
-			if (Keyboard.GetState().IsKeyDown(Keys.F))
-				color = Color.Yellow;
-			if (Keyboard.GetState().IsKeyDown(Keys.G))
-				color = Color.Orange;
-			if (Keyboard.GetState().IsKeyDown(Keys.H))
-				color = Color.Gray;
-			if (Keyboard.GetState().IsKeyDown(Keys.J))
-				color = Color.Purple;
+			//updates the movement for the unit
 
 			if (Keyboard.GetState().IsKeyDown(Keys.Up) && backRec.Y < 480) {
 				backRec.Y += 4;
@@ -98,35 +120,52 @@ namespace Project_WB.Menus {
 				baseRec.X -= 4;
 				direction = 2;
 			}
+			//updates the animation for the unit
 			carAn.Update(gameTime);
-			// TODO: Add your update logic here
+			//changes the intensity of the light based upon the distance from the goal
 			i = (float)(Math.Sqrt((480 - baseRec.X) * (480 - baseRec.X) + (480 - baseRec.Y) * (480 - baseRec.Y)));
 			i = i / (float)(Math.Sqrt(((baseRec.X) * (baseRec.X)) + ((baseRec.Y) * (baseRec.Y))));
-			//intesntisy = (float)(0.03*(Math.Sqrt((480-baseRec.X)*(480-baseRec.X)+(480-baseRec.Y)*(480-baseRec.Y))));
 			intesntisy = (float)(0.03 * i);
 			flash = false;
 			delay++;
+			//changes slenderman's animation when he is hit
 			if (delay % 120 == 0) {
 				if (drawSlender)
 					drawSlender = false;
 				else {
 					drawSlender = true;
 					current = slenderMan;
+					hit = false;
 				}
 				Random r = new Random();
-				slenderRec.X = r.Next(0, 1280);
-				slenderRec.Y = r.Next(0, 720);
+				slenderRec.X = r.Next(0, 1024);
+				slenderRec.Y = r.Next(0, 1024);
 			}
 			if (drawSlender) {
-				if (slenderRec.Contains(new Point(480, 480)))
+				if (slenderRec.Contains(new Point(480, 480))) {
 					current = dead;
+					if (!hit) {
+						slenderKills += 50;
+						ScreenManager.SoundLibrary.GetSound("-ugh").Play();
+					}
+						
+					hit = true;
+				}
 			}
+			//points the arrow toward the objective
 			arrowDirection = new Vector2(baseRec.X, baseRec.Y) - new Vector2(480, 480);
 			arrowRotate = (float)Math.Atan2(arrowDirection.Y, arrowDirection.X);
+			if (baseRec.Contains(new Point(480, 480))) {
+				sound.Stop();
+				ExitScreen();
+			}
 			
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
-
+		/// <summary>
+		/// draws all of the necessary game components
+		/// </summary>
+		/// <param name="gameTime"></param>
 		public override void Draw(GameTime gameTime) {
 			ScreenManager.Game.GraphicsDevice.SetRenderTarget(lightsTarget);
 			ScreenManager.Game.GraphicsDevice.Clear(Color.Black);
@@ -138,6 +177,7 @@ namespace Project_WB.Menus {
 			ScreenManager.SpriteBatch.End();
 
 			// Draw the main scene to the Render Target  
+			//draws all of the objects that the lighting applies to 
 			ScreenManager.Game.GraphicsDevice.SetRenderTarget(mainTarget);
 			ScreenManager.Game.GraphicsDevice.Clear(Color.White);
 			ScreenManager.SpriteBatch.Begin();
@@ -171,7 +211,7 @@ namespace Project_WB.Menus {
 			ScreenManager.SpriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
 			ScreenManager.SpriteBatch.End();
 			ScreenManager.SpriteBatch.Begin();
-			//ScreenManager.SpriteBatch.DrawString(font, "X: " + baseRec.X + " Y: " + baseRec.Y, Vector2.Zero, Color.Red);
+			ScreenManager.SpriteBatch.DrawString(font, "Slender Hits: " + slenderKills, Vector2.Zero, Color.Red);
 			//ScreenManager.SpriteBatch.DrawString(font, "X: " + arrowDirection.X + " Y: " + arrowDirection.Y, new Vector2(0, 50), Color.White);
 			//ScreenManager.SpriteBatch.DrawString(font, "Rotation: " + arrowRotate, new Vector2(0, 100), Color.Orange);
 			ScreenManager.SpriteBatch.Draw(arrow, arrowRec, null, new Color(255, 255, 255, 10), arrowRotate + MathHelper.PiOver2, new Vector2(arrow.Width / 2, arrow.Height / 2), SpriteEffects.None, 0);

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Project_WB.Framework.Gui.Controls {
+	/// <summary>
+	/// A simple label that displays a small string of text.
+	/// </summary>
 	class Label : Control {
 		#region Fields
 		public string Text = string.Empty;
