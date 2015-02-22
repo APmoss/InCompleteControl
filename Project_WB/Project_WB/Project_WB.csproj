@@ -79,10 +79,8 @@
     <Compile Include="Framework\Audio\MusicTrack.cs" />
     <Compile Include="Framework\Camera2D.cs" />
     <Compile Include="Framework\DebugOverlay.cs" />
-    <Compile Include="Framework\Entities\EntityEventArgs.cs" />
     <Compile Include="Framework\Entities\EntityInputEventArgs.cs" />
     <Compile Include="Framework\Entities\EntityManager.cs" />
-    <Compile Include="Framework\Entities\HotkeyEventArgs.cs" />
     <Compile Include="Framework\Entities\Unit.cs" />
     <Compile Include="Framework\Entities\Units\Accensus.cs" />
     <Compile Include="Framework\Entities\Units\BakerBot.cs" />
@@ -93,6 +91,7 @@
     <Compile Include="Framework\Entities\Units\VerticalCenturion.cs" />
     <Compile Include="Framework\Entities\Units\Guy.cs" />
     <Compile Include="Framework\Entities\Units\Sango.cs" />
+    <Compile Include="Framework\Gui\Controls\Bar.cs" />
     <Compile Include="Framework\Gui\Controls\Button.cs" />
     <Compile Include="Framework\Gui\Controls\Control.cs" />
     <Compile Include="Framework\Gui\Controls\DialogBox.cs" />

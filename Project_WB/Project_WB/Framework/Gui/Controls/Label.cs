@@ -18,8 +18,12 @@ namespace Project_WB.Framework.Gui.Controls {
 
 		#region Methods
 		protected internal override void Initialize() {
-			Bounds.Width = (int)GuiManager.font.MeasureString(Text).X + GuiManager.Padding * 2;
-			Bounds.Height = (int)GuiManager.font.MeasureString(Text).Y + GuiManager.Padding * 2;
+			if (Bounds.Width == 0) {
+				Bounds.Width = (int)GuiManager.font.MeasureString(Text).X + GuiManager.Padding * 2;
+			}
+			if (Bounds.Height == 0) {
+				Bounds.Height = (int)GuiManager.font.MeasureString(Text).Y + GuiManager.Padding * 2;
+			}
 			
 			base.Initialize();
 		}

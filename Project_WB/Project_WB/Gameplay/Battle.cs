@@ -117,12 +117,7 @@ namespace Project_WB.Gameplay {
 			entityManager.Update(gameTime);
 			guiManager.Update(gameTime);
 
-			if (entityManager.SelectedUnit != null) {
-				entityHudNameLabel.Text = entityManager.SelectedUnit.Name;
-				entityHudHealthGreen.Bounds.Width = (int)entityManager.SelectedUnit.MaxHealth;
-				entityHudHealthRed.Bounds.Width = (int)entityManager.SelectedUnit.Health;
-				entityHudHealthCount.Text = entityManager.SelectedUnit.Health + " / " + entityManager.SelectedUnit.MaxHealth;
-			}
+			UpdateHud();
 			
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
@@ -149,38 +144,85 @@ namespace Project_WB.Gameplay {
 		#endregion
 
 		#region Methods
+		protected void UpdateHud() {
+			if (entityManager.SelectedUnit != null) {
+				var unit = entityManager.SelectedUnit;
+
+				unitNameLabel.Text = unit.Name;
+				unitGreenBar.Bounds.Width = (int)(100 * (unit.Health / unit.MaxHealth));
+				unitHealthCount.Text = string.Format("{0}/{1}", unit.Health, unit.MaxHealth);
+				unitDamageLabel.Text = string.Format("Damage: {0}", unit.Damage);
+				unitSpeedLabel.Text = string.Format("Speed: {0}", unit.Speed);
+				unitTravelDistance.Text = string.Format("Travel Dist.: {0}", unit.distance);
+				unitAttackDistance.Text = string.Format("Attack Dist.: {0}", unit.attackDistance);
+				unitTile.Text = string.Format("Tile: {0} - {1}", unit.Tile.X, unit.Tile.Y);
+			}
+		}
 		#endregion
 
 		#region SetGui
-		Label entityHudNameLabel;
-		Label entityHudHealthLabel;
-		Label entityHudHealthRed;
-		Label entityHudHealthGreen;
-		Label entityHudHealthCount;
+		Label unitNameLabel;
+		Label unitHealthLabel;
+		Bar unitRedBar;
+		Bar unitGreenBar;
+		Label unitHealthCount;
+		Label unitDamageLabel;
+		Label unitSpeedLabel;
+		Label unitTravelDistance;
+		Label unitAttackDistance;
+		Label unitTile;
 		Panel entityHudPanel;
 
 		private void SetGui() {
 			guiManager = new GuiManager(ScreenManager.FontLibrary.SmallSegoeUIMono);
+			
+			unitNameLabel = new Label(10, 10, "");
+			unitNameLabel.Bounds.Width = 200;
+			unitNameLabel.Bounds.Height = 35;
+			unitNameLabel.BackgroundTint = Color.DarkCyan;
+			unitNameLabel.TextTint = Color.LightCyan;
 
-			entityHudNameLabel = new Label(10, 10, "                ");
+			unitHealthLabel = new Label(10, 50, "Health");
+			unitHealthLabel.Bounds.Width = 90;
+			
+			unitRedBar = new Bar(110, 50, 100, 35, Color.Red);
 
-			entityHudHealthLabel = new Label(10, 50, "Health");
+			unitGreenBar = new Bar(110, 50, 100, 35, Color.Green);
 
-			entityHudHealthRed = new Label(100, 50, " ");
-			entityHudHealthRed.BackgroundTint = Color.Red;
+			unitHealthCount = new Label(115, 50, "100/100");
+			unitHealthCount.BackgroundTint = Color.Transparent;
 
-			entityHudHealthGreen = new Label(100, 50, " ");
-			entityHudHealthGreen.BackgroundTint = Color.Green;
+			unitDamageLabel = new Label(220, 10, "Damage:");
+			unitDamageLabel.Bounds.Width = 200;
+			unitDamageLabel.BackgroundTint = Color.Maroon;
 
-			entityHudHealthCount = new Label(200, 50, " ");
+			unitSpeedLabel = new Label(220, 50, "Speed:");
+			unitSpeedLabel.Bounds.Width = 200;
+			unitSpeedLabel.BackgroundTint = Color.DarkGreen;
 
+			unitTravelDistance = new Label(430, 10, "Travel Dist.:");
+			unitTravelDistance.Bounds.Width = 200;
+			unitTravelDistance.BackgroundTint = Color.DarkBlue;
+
+			unitAttackDistance = new Label(430, 50, "Attack Dist.:");
+			unitAttackDistance.Bounds.Width = 200;
+			unitAttackDistance.BackgroundTint = Color.DarkRed;
+
+			unitTile = new Label(640, 10, "Tile:");
+			unitTile.Bounds.Width = 200;
+			
 			entityHudPanel = new Panel(0, Stcs.YRes - 150, Stcs.XRes, 150);
 			entityHudPanel.Tint = new Color(10, 10, 10, 256);
-			entityHudPanel.AddChild(entityHudNameLabel);
-			entityHudPanel.AddChild(entityHudHealthRed);
-			entityHudPanel.AddChild(entityHudHealthGreen);
-			entityHudPanel.AddChild(entityHudHealthCount);
-			entityHudPanel.AddChild(entityHudHealthLabel);
+			entityHudPanel.AddChild(unitNameLabel);
+			entityHudPanel.AddChild(unitRedBar);
+			entityHudPanel.AddChild(unitGreenBar);
+			entityHudPanel.AddChild(unitHealthCount);
+			entityHudPanel.AddChild(unitHealthLabel);
+			entityHudPanel.AddChild(unitDamageLabel);
+			entityHudPanel.AddChild(unitSpeedLabel);
+			entityHudPanel.AddChild(unitTravelDistance);
+			entityHudPanel.AddChild(unitAttackDistance);
+			entityHudPanel.AddChild(unitTile);
 
 			//Temp, remove
 			guiManager.AddControl(new DialogBox(50, 50, 300, 300, "Welcom to the test level! " +
