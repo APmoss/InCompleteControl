@@ -187,6 +187,9 @@ namespace Project_WB.Menus {
 			creditsButton = new Button(10, 35, 180, "Credits");
 
 			optionsButton = new Button(10, 80, 180, "Options");
+			optionsButton.LeftClicked += delegate {
+				ScreenManager.AddScreen(new Options(), null);
+			};
 
 			quitButton = new Button(10, 125, 180, "Quit Game");
 			//quitButton.Pressed += delegate {

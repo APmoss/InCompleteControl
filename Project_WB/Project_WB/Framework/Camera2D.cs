@@ -87,6 +87,7 @@ namespace Project_WB.Framework {
 			yRotation = MathHelper.Lerp(yRotation, DestYRotation, TransitionStrength);
 		}
 
+		#region Matrix Transformations
 		/// <summary>
 		/// Returns a matrix that applies the translations, the scale, and the rotation.
 		/// </summary>
@@ -127,6 +128,7 @@ namespace Project_WB.Framework {
 				// Translate to the center of the screen (all camera modifcations are relative to the center)
 				Matrix.CreateTranslation(new Vector3(Viewport.Width / 2, Viewport.Height / 2, 0));
 		}
+		#endregion
 
 		/// <summary>
 		/// Returns a rectangle that covers the current viewing area.
@@ -134,14 +136,27 @@ namespace Project_WB.Framework {
 		/// </summary>
 		/// <returns></returns>
 		public Rectangle GetViewingRectangle() {
-			//TODO: Implement transformation modifications
-			int x = (int)(position.X - Viewport.Width / (2 * scale)) + 10;
-			int y = (int)(position.Y - Viewport.Height / (2 * scale)) + 10;
-			return new Rectangle(x, y, (int)(Viewport.Width / scale) - 20, (int)(Viewport.Height / scale) - 20);
+			// Retrieve all coordinate extremes for each corner
+			Vector2 topLeft = ToRelativePosition(0, 0);
+			Vector2 topRight = ToRelativePosition(Viewport.Width, 0);
+			Vector2 bottomLeft = ToRelativePosition(0, Viewport.Height);
+			Vector2 bottomRight = ToRelativePosition(Viewport.Width, Viewport.Height);
+
+			// Get the extreme boundaries for each side
+			int leftBound = (int)MathHelper.Min(MathHelper.Min(topLeft.X, topRight.X), MathHelper.Min(bottomLeft.X, bottomRight.X));
+			int rightBound = (int)MathHelper.Max(MathHelper.Max(topLeft.X, topRight.X), MathHelper.Max(bottomLeft.X, bottomRight.X));
+			int topBound = (int)MathHelper.Min(MathHelper.Min(topLeft.Y, topRight.Y), MathHelper.Min(bottomLeft.Y, bottomRight.Y));
+			int bottomBound = (int)MathHelper.Max(MathHelper.Max(topLeft.Y, topRight.Y), MathHelper.Max(bottomLeft.Y, bottomRight.Y));
+
+			// Test stuff
+			// return new Rectangle(leftBound + 20, topBound + 20, rightBound - leftBound - 20, bottomBound - topBound - 20);
+
+			// Return a new rectangle containing the viewing rectangle of the visible area
+			return new Rectangle(leftBound, topBound, rightBound - leftBound, bottomBound - topBound);
 		}
 
 		/// <summary>
-		/// Returns the current velociy of the camera as a vector.
+		/// Returns the current velocity of the camera as a vector.
 		/// </summary>
 		/// <returns></returns>
 		public Vector2 GetCurrentVelocity() {
@@ -157,6 +172,7 @@ namespace Project_WB.Framework {
 			return scale;
 		}
 
+		#region Position Transformations
 		/// <summary>
 		/// Converts a screen position into a position relative to the modifications of the camera.
 		/// For example, a mouse position will be the same if you move around in the world,
@@ -207,6 +223,7 @@ namespace Project_WB.Framework {
 		public Vector2 ToScreenPosition(int x, int y) {
 			return ToScreenPosition(new Vector2(x, y));
 		}
+		#endregion
 		#endregion
 	}
 }

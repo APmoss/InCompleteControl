@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using System;
+using Project_WB.Framework.IO;
 
 namespace Project_WB.Framework.Audio {
 	/// <summary>
@@ -129,6 +130,13 @@ namespace Project_WB.Framework.Audio {
 
 		public AudioManager(Camera2D camera) {
 			this.camera = camera;
+
+			var settings = IOManager.LoadSettings();
+
+			this.MusicVolume = settings.MusicVolume;
+			this.InterfaceVolume = settings.InterfaceVolume;
+			this.EnvironmentVolume = settings.EnvironmentVolume;
+			this.VoiceVolume = settings.VoiceVolume;
 		}
 
 		#region Methods

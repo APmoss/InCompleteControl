@@ -95,6 +95,8 @@
     <Compile Include="Framework\Gui\Controls\Panel.cs" />
     <Compile Include="Framework\Gui\Controls\Slider.cs" />
     <Compile Include="Framework\Gui\GuiManager.cs" />
+    <Compile Include="Framework\IO\IOManager.cs" />
+    <Compile Include="Framework\IO\SettingsFile.cs" />
     <Compile Include="Framework\Particles\AnimatedParticle.cs" />
     <Compile Include="Framework\Particles\Emitters\StarEmitter.cs" />
     <Compile Include="Framework\Particles\Particle.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="Gameplay\TestThing.cs" />
     <Compile Include="LicensesAndAknowledgements.cs" />
     <Compile Include="Menus\LoadingScreen.cs" />
+    <Compile Include="Menus\Options.cs" />
     <Compile Include="Menus\Register.cs" />
     <Compile Include="Menus\SignIn.cs" />
     <Compile Include="Menus\Splash.cs" />

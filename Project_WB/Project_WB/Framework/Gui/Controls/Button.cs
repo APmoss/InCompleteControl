@@ -7,6 +7,7 @@ namespace Project_WB.Framework.Gui.Controls {
 	class Button : Control {
 		#region Fields
 		public string Text = string.Empty;
+		public Color Tint = new Color(10, 10, 10);
 		#endregion
 
 		public Button(int x, int y, int width, string text) {
@@ -29,7 +30,7 @@ namespace Project_WB.Framework.Gui.Controls {
 								new Vector2(Bounds.Width / 2, Bounds.Height / 2) -
 								textCenter;
 
-			screenManager.SpriteBatch.Draw(screenManager.BlankTexture, GlobalBounds, new Color(10, 10, 10));
+			screenManager.SpriteBatch.Draw(screenManager.BlankTexture, GlobalBounds, Tint);
 			if (ContainsMouse) {
 				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, GlobalBounds, Color.White * .2f);
 			}

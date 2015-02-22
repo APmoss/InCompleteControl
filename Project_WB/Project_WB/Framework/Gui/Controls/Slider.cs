@@ -7,11 +7,29 @@ using MouseButton = GameStateManagement.InputState.MouseButton;
 using GameStateManagement;namespace Project_WB.Framework.Gui.Controls {
 	class Slider : Control {
 		#region Fields
+		public bool DrawValue = true;
 		float value = 0;
 		float caretX = 0;
 		#endregion
 
 		#region Properties
+		public float Value {
+			get { return value; }
+			set {
+				if (this.value != value) {
+					if (ValueChanged != null) {
+						ValueChanged.Invoke(this, EventArgs.Empty);
+					}
+				}
+
+				this.value = value;
+				caretX = (float)(GlobalBounds.X + GuiManager.Padding + (GlobalBounds.Width - GuiManager.Padding * 2) * this.value);
+			}
+		}
+		#endregion
+
+		#region Events
+		public event EventHandler<EventArgs> ValueChanged;
 		#endregion
 
 		public Slider(int x, int y, int width, int height) : this(x, y, width, height, .5f){
@@ -27,9 +45,6 @@ using GameStateManagement;namespace Project_WB.Framework.Gui.Controls {
 		#region Methods
 		public override void Update(Microsoft.Xna.Framework.GameTime gameTime) {
 			caretX = (float)(GlobalBounds.X + GuiManager.Padding + (GlobalBounds.Width - GuiManager.Padding * 2) * value);
-
-			DebugOverlay.DebugText.AppendFormat("caretX: {0}", caretX).AppendLine();
-			DebugOverlay.DebugText.AppendFormat("value: {0}", value).AppendLine();
 
 			base.Update(gameTime);
 		}
@@ -67,9 +82,11 @@ using GameStateManagement;namespace Project_WB.Framework.Gui.Controls {
 			Rectangle caret = new Rectangle((int)caretX, GlobalBounds.Y + GuiManager.Padding, 1, GlobalBounds.Height - GuiManager.Padding * 2);
 			screenManager.SpriteBatch.Draw(screenManager.BlankTexture, caret, new Color(0, 150, 0, 50));
 
-			//Draw the value text
-			screenManager.SpriteBatch.DrawString(GuiManager.font, value.ToString(), center, Color.White, 0, Vector2.Zero, GuiManager.TextScale, 0, 0);
-			
+			if (DrawValue) {
+				//Draw the value text
+				screenManager.SpriteBatch.DrawString(GuiManager.font, value.ToString(), center, Color.White, 0, Vector2.Zero, GuiManager.TextScale, 0, 0);
+			}
+
 			base.Draw(gameTime, screenManager);
 		}
 		#endregion
