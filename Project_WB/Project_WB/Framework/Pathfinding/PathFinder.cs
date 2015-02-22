@@ -1,60 +1,49 @@
-#region File Description
-//-----------------------------------------------------------------------------
-// PathFinder.cs
-//
-// Microsoft XNA Community Game Platform
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
-#endregion
-
-#region Using Statements
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-#endregion
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Project_WB.Framework.Pathfinding
 {
-	#region Search Status Enum
+	/// <summary>
+	/// The current status of the pathfinder.
+	/// </summary>
 	public enum SearchStatus {
 		Stopped,
 		Searching,
 		NoPath,
 		PathFound,
 	}
-	#endregion
-
-	#region Search Method Enum
+	/// <summary>
+	/// The current searching method. A very simple description of each-
+	/// AStar- What we will use for pathfinding. Fast and efficient.
+	/// BestFirst- Comparable to AStar, but sometimes chooses awkward paths.
+	/// BreadthFirst- Not as fast, but chooses good paths.
+	/// </summary>
 	public enum SearchMethod {
 		BreadthFirst,
 		BestFirst,
-		AStar,
-		Max,
+		AStar
 	}
-	#endregion
 
+	/// <summary>
+	/// PathFinder contains the necessary elemts for the game's pathfinding.
+	/// All units must strategically move from one tile to another, which
+	/// means you need pathfinding logic to travel in the right direction.
+	/// </summary>
 	class PathFinder {
-		#region Search Node Struct
 		/// <summary>
-		/// Reresents one node in the search space
+		/// A single node of a search structure. Contains the node's position,
+		/// distance to the goal, and distance traveled so far.
 		/// </summary>
-		private struct SearchNode {
-			/// <summary>
-			/// Location on the map
-			/// </summary>
+		protected struct SearchNode {
+			// The node position in the current map
 			public Point Position;
-
-			/// <summary>
-			/// Distance to goal estimate
-			/// </summary>
+			
+			// An estimate of the distance to the goal
 			public int DistanceToGoal;
 			
-			/// <summary>
-			/// Distance traveled from the start
-			/// </summary>
+			// The total distance traveled from the start
 			public int DistanceTraveled;
 
 			public SearchNode(Point mapPosition, int distanceToGoal, int distanceTraveled) {
@@ -63,68 +52,39 @@ namespace Project_WB.Framework.Pathfinding
 				DistanceTraveled = distanceTraveled;
 			}
 		}
-		#endregion
-
-		#region Constants
-
-		/// <summary>
-		/// Scales the draw size of the search nodes
-		/// </summary>
-		const float searchNodeDrawScale = .75f;
-
-		#endregion
 
 		#region Fields
-
-		//Draw data
-		private Texture2D nodeTexture;
-		private Vector2 nodeTextureCenter;
-		private Color openColor = Color.Green;
-		private Color closedColor = Color.Red;
-
-		// How much time has passed since the last search step
-		private float timeSinceLastSearchStep = 0f;
-		// Holds search nodes that are avaliable to search
-		private List<SearchNode> openList;
-		// Holds the nodes that have already been searched
-		private List<SearchNode> closedList;
-		// Holds all the paths we've creted so far
-		private Dictionary<Point, Point> paths;
-		// The map we're searching
-		private PathMap map;        
-		// Seconds per search step        
-		public float timeStep = 0;
-
+		// Private fields (details in properties)
+		SearchStatus searchStatus = SearchStatus.Stopped;
+		SearchMethod searchMethod = SearchMethod.AStar;
+		// The list of nodes that are able to be searched
+		List<SearchNode> openList = new List<SearchNode>();
+		// The list of nodes that have already been searched
+		List<SearchNode> closedList = new List<SearchNode>();
+		// All of the points created so far
+		Dictionary<Point, Point> paths = new Dictionary<Point,Point>();
+		// The current map we are searching
+		PathMap map = new PathMap();        
 		#endregion
 		
 		#region Properties
-
-		// Tells us if the search is stopped, started, finished or failed
+		/// <summary>
+		/// Gets the current search status.
+		/// </summary>
 		public SearchStatus SearchStatus {
 			get { return searchStatus; }
+			protected set { searchStatus = value; }
 		}
-		private SearchStatus searchStatus;
-
-		// Tells us which search type we're using right now
+		/// <summary>
+		/// Gets or sets the methods of path finding. Each method
+		/// is described at the SearchMethod enumeration.
+		/// </summary>
 		public SearchMethod SearchMethod {
 			get { return searchMethod; }
+			set { searchMethod = value; }
 		}
-		private SearchMethod searchMethod = SearchMethod.AStar;
-
-		public float Scale {
-			get { return scale; }
-			set { scale = value * searchNodeDrawScale; }
-		}
-		private float scale;
-		
-		// Seconds per search step
-		public float TimeStep {
-			get { return timeStep; }
-			set { timeStep = value; }
-		}
-
 		/// <summary>
-		/// Toggles searching on and off
+		/// Gets or sets whether the path finder is searching or not.
 		/// </summary>
 		public bool IsSearching {
 			get { return searchStatus == SearchStatus.Searching; }
@@ -139,92 +99,35 @@ namespace Project_WB.Framework.Pathfinding
 		}
 
 		/// <summary>
-		/// How many search steps have elapsed on this map
+		/// The current number of search steps taken so far.
 		/// </summary>
 		public int TotalSearchSteps {
-			get { return totalSearchSteps; }
+			get; protected set;
 		}
-		private int totalSearchSteps = 0;
-
-		#endregion
-
-		#region Initialization
-
-		/// <summary>
-		/// Setup search
-		/// </summary>
-		/// <param name="mazeMap">Map to search</param>
-		public void Initialize(PathMap mazeMap) {
-			searchStatus = SearchStatus.Stopped;
-			openList = new List<SearchNode>();
-			closedList = new List<SearchNode>();
-			paths = new Dictionary<Point, Point>();
-			map = mazeMap;
-
-			Reset();
-		}
-
-		/// <summary>
-		/// Load the Draw texture
-		/// </summary>
-		public void LoadContent(ContentManager content) {
-			nodeTexture = content.Load<Texture2D>("dot");
-			nodeTextureCenter =	new Vector2(nodeTexture.Width / 2, nodeTexture.Height / 2);
-		}
-
-		#endregion
-
-		#region Update and Draw
-
-		/// <summary>
-		/// Search Update
-		/// </summary>
-		public void Update(GameTime gameTime) {
-			if (searchStatus == SearchStatus.Searching) {
-				timeSinceLastSearchStep += (float)gameTime.ElapsedGameTime.TotalSeconds;
-				if (timeSinceLastSearchStep >= timeStep) {
-					DoSearchStep();
-					timeSinceLastSearchStep = 0f;
-				}
-			}
-		}
-		
-		/// <summary>
-		/// Draw the search space
-		/// </summary>
-		public void Draw(SpriteBatch spriteBatch) {
-			if (searchStatus != SearchStatus.PathFound) {
-				spriteBatch.Begin();
-				foreach (SearchNode node in openList) {
-					spriteBatch.Draw(nodeTexture, 
-						map.MapToWorld(node.Position, true), null, openColor, 0f,
-						nodeTextureCenter, scale, SpriteEffects.None, 0f);
-				}
-				foreach (SearchNode node in closedList) {
-					spriteBatch.Draw(nodeTexture, 
-						map.MapToWorld(node.Position, true), null, closedColor, 0f,
-						nodeTextureCenter, scale, SpriteEffects.None, 0f);
-				}
-				spriteBatch.End();
-			}
-		}
-
 		#endregion
 
 		#region Methods
-
+		/// <summary>
+		/// Immediately finds a path with the specified parameters.
+		/// Returns whether a path is possible, setting the solution parameter.
+		/// </summary>
+		/// <param name="mapData"></param>
+		/// <param name="solution"></param>
+		/// <returns></returns>
 		public bool QuickFind(MapData mapData, out LinkedList<Point> solution) {
 			solution = new LinkedList<Point>();
 
 			PathMap pm = new PathMap();
 			pm.SetMaps(0, mapData);
 
-			Initialize(pm);
+			map = pm;
+			Reset();
 
 			IsSearching = true;
 
 			while (searchStatus != SearchStatus.PathFound && searchStatus != SearchStatus.NoPath) {
-				Update(new GameTime());
+				if (searchStatus == SearchStatus.Searching)
+					DoSearchStep();
 			}
 			if (searchStatus == SearchStatus.PathFound) {
 				solution = FinalPath();
@@ -240,22 +143,13 @@ namespace Project_WB.Framework.Pathfinding
 		/// </summary>
 		public void Reset() {
 			searchStatus = SearchStatus.Stopped;
-			totalSearchSteps = 0;
-			Scale = map.Scale;
+			TotalSearchSteps = 0;
 			openList.Clear();
 			closedList.Clear();
 			paths.Clear();
 			openList.Add(new SearchNode(map.StartTile,
 				PathMap.StepDistance(map.StartTile, map.EndTile)
 				, 0));
-		}
-
-		/// <summary>
-		/// Cycle through the search method to the next type
-		/// </summary>
-		public void NextSearchType() {
-			searchMethod = (SearchMethod)(((int)searchMethod + 1) % 
-				(int)SearchMethod.Max);
 		}
 
 		/// <summary>
@@ -320,14 +214,14 @@ namespace Project_WB.Framework.Pathfinding
 					// Breadth first search looks at every possible path in the 
 					// order that we see them in.
 					case SearchMethod.BreadthFirst:
-						totalSearchSteps++;
+						TotalSearchSteps++;
 						result = openList[0];
 						success = true;
 						break;
 					// Best first search always looks at whatever path is closest to
 					// the goal regardless of how long that path is.
 					case SearchMethod.BestFirst:
-						totalSearchSteps++;
+						TotalSearchSteps++;
 						foreach (SearchNode node in openList) {
 							currentDistance = node.DistanceToGoal;
 							if(currentDistance < smallestDistance){
@@ -342,7 +236,7 @@ namespace Project_WB.Framework.Pathfinding
 					// meaning that it never over-estimates, it will always find 
 					// the best path.
 					case SearchMethod.AStar:
-						totalSearchSteps++;
+						TotalSearchSteps++;
 						foreach (SearchNode node in openList) {
 							currentDistance = Heuristic(node);
 							// The heuristic value gives us our optimistic estimate 

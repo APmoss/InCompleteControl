@@ -26,6 +26,7 @@ namespace Project_WB.Framework.Pathfinding {
 
 		public MapData(int columns, int rows, Point startPosition,
 						Point endPosition, List<Point> barriersList) {
+
 			NumberColumns = columns;
 			NumberRows = rows;
 			Start = startPosition;

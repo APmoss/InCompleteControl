@@ -24,7 +24,6 @@ namespace Project_WB.Menus {
 		Vector2 titlePos;
 		Vector2 baseTitlePos = new Vector2(230, 333);
 		Random r = new Random();
-		SoundEffectInstance song;
 		#endregion
 
 		#region Initialization
@@ -43,9 +42,6 @@ namespace Project_WB.Menus {
 				points3.Add(new Vector2(i, Stcs.YRes * 3 / 4));
 			}
 
-			song = ScreenManager.Game.Content.Load<SoundEffect>("audio/effects/flicker").CreateInstance();
-			song.Play();
-
 			base.Activate(instancePreserved);
 		}
 		#endregion
@@ -59,8 +55,6 @@ namespace Project_WB.Menus {
 			}
 
 			//TODO: finalize background
-			song.Volume = TransitionAlpha;
-			
 			for (int i = 0; i < points1.Count; i++) {
 				var newPos = points1[i];
 				newPos.Y = (Stcs.YRes * 1 / 4) + (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds + newPos.X) * (float)(40 * (Math.Sin(gameTime.TotalGameTime.TotalSeconds) + 1));
@@ -183,7 +177,6 @@ namespace Project_WB.Menus {
 			loginButton.Bounds = new UniRectangle(10, 170, 160, 35);
 			loginButton.Pressed += delegate {
 				ScreenManager.AddScreen(new Gameplay.TestThing(), null);
-				song.Stop();
 			};
 
 			registerButton = new ButtonControl();

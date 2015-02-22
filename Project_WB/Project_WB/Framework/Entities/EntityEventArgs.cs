@@ -4,11 +4,11 @@ using System.Collections.Generic;
 namespace Project_WB.Framework.Entities {
 	class EntityEventArgs : EventArgs {
 		#region Fields
-		public Entity RecievingEntity;
+		public List<Entity> EntityList;
 		#endregion
 
-		public EntityEventArgs(Entity recievingEntity) {
-			this.RecievingEntity = recievingEntity;
+		public EntityEventArgs(List<Entity> entityList) {
+			this.EntityList = entityList;
 		}
 	}
 }

@@ -13,9 +13,7 @@ namespace Project_WB.Framework {
 		#endregion
 
 		#region Fields
-		/// <summary>
-		/// The amount of which the linear interpolation travels (.1 = 10%).
-		/// </summary>
+		// The amount of which the linear interpolation travels (.1 = 10%).
 		public float TransitionStrength = .1f;
 		// A local copy of the game's viewport.
 		public Viewport Viewport;
@@ -26,9 +24,13 @@ namespace Project_WB.Framework {
 		// The actual scale of the camera
 		float lastScale = 1f;
 		float scale = 1f;
-		// The actual rotation of the camera
-		float lastRotationDegrees = 0f;
-		float rotationDegrees = 0f;
+		// The actual rotations of the camera
+		float lastZRotation = 0f;
+		float zRotation = 0f;
+		float lastXRotation = 0f;
+		float xRotation = 0f;
+		float lastYRotation = 0f;
+		float yRotation = 0f;
 
 		/// <summary>
 		/// The position that the camera will transition towards.
@@ -39,9 +41,20 @@ namespace Project_WB.Framework {
 		/// </summary>
 		public float DestScale = 1f;
 		/// <summary>
-		/// The rotation in degrees that the camera will transition towards.
+		/// The rotation in radians that the camera will transition towards.
+		/// Z rotation is like turning your computer screen into portrait mode.
 		/// </summary>
-		public float DestRotationDegrees = 0f;
+		public float DestZRotation = 0f;
+		/// <summary>
+		/// The rotation in radians that the camera will transition towards.
+		/// X rotation is like looking at the ceiling.
+		/// </summary>
+		public float DestXRotation = 0f;
+		/// <summary>
+		/// The rotation in radians that the camera will transition towards.
+		/// Y rotation is like looking at the stalker behind you.
+		/// </summary>
+		public float DestYRotation = 0f;
 		#endregion
 
 		public Camera2D(Viewport viewport) {
@@ -53,7 +66,9 @@ namespace Project_WB.Framework {
 			// Update the old transformations
 			lastPosition = position;
 			lastScale = scale;
-			lastRotationDegrees = rotationDegrees;
+			lastZRotation = zRotation;
+			lastXRotation = xRotation;
+			lastYRotation = yRotation;
 
 			// Perform a linear interpolation from the current camera position to the destination
 			position = Vector2.Lerp(position, DestPosition, TransitionStrength);
@@ -61,10 +76,12 @@ namespace Project_WB.Framework {
 			// Make sure that the destination scale is actually between the minimum and maximum amounts
 			DestScale = MathHelper.Clamp(DestScale, MIN_SCALE, MAX_SCALE);
 			// Interpolate from the current scale to the destination scale
-			scale = MathHelper.Lerp(scale, DestScale, TransitionStrength);			
+			scale = MathHelper.Lerp(scale, DestScale, TransitionStrength);
 
-			// Interpolate from the current rotation in degrees to the destination rotation
-			rotationDegrees = MathHelper.Lerp(rotationDegrees, DestRotationDegrees, TransitionStrength);			
+			// Interpolate from the current rotation in radians to the destination rotation
+			zRotation = MathHelper.Lerp(zRotation, DestZRotation, TransitionStrength);
+			xRotation = MathHelper.Lerp(xRotation, DestXRotation, TransitionStrength);
+			yRotation = MathHelper.Lerp(yRotation, DestYRotation, TransitionStrength);
 		}
 
 		/// <summary>
@@ -76,7 +93,27 @@ namespace Project_WB.Framework {
 				// Translate to the position
 				Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) *
 				// Rotate in radians
-				Matrix.CreateRotationZ(MathHelper.ToRadians(rotationDegrees)) *
+				Matrix.CreateRotationX(xRotation) *
+				Matrix.CreateRotationY(yRotation) *
+				// We must flatten the 3 dimensional transformations because of the spritebatch viewing depth limitations.
+				Matrix.CreateScale(1, 1, 0) *
+				Matrix.CreateRotationZ(zRotation) *
+				// Apply scale
+				Matrix.CreateScale(scale) *
+				// Translate to the center of the screen (all camera modifcations are relative to the center)
+				Matrix.CreateTranslation(new Vector3(Viewport.Width / 2, Viewport.Height / 2, 0));
+		}
+		//TODO: REMOVE THIS
+		public Matrix Thing() {
+			return
+				// Translate to the position
+				Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) *
+				// Rotate in radians
+				//Matrix.CreateRotationX(xRotation) *
+				Matrix.CreateRotationY(yRotation) *
+				// We must flatten the 3 dimensional transformations because of the spritebatch viewing depth limitations.
+				Matrix.CreateScale(1, 1, 0) *
+				Matrix.CreateRotationZ(zRotation) *
 				// Apply scale
 				Matrix.CreateScale(scale) *
 				// Translate to the center of the screen (all camera modifcations are relative to the center)
@@ -93,7 +130,11 @@ namespace Project_WB.Framework {
 				// Translate to the old position
 				Matrix.CreateTranslation(new Vector3(-lastPosition.X, -lastPosition.Y, 0)) *
 				// Rotate in old radians
-				Matrix.CreateRotationZ(MathHelper.ToRadians(lastRotationDegrees)) *
+				Matrix.CreateRotationX(lastXRotation) *
+				Matrix.CreateRotationY(lastYRotation) *
+				// We must flatten the 3 dimensional transformations because of the spritebatch viewing depth limitations.
+				Matrix.CreateScale(1, 1, 0) *
+				Matrix.CreateRotationZ(lastZRotation) *
 				// Apply old scale
 				Matrix.CreateScale(lastScale) *
 				// Translate to the center of the screen (all camera modifcations are relative to the center)
@@ -139,6 +180,9 @@ namespace Project_WB.Framework {
 		public Vector2 ToRelativePosition(Vector2 screenPosition) {
 			// Transform with the inverse of the transformation matrix.
 			// Without inverse, you would convert relative position to screen position.
+
+			//Vector3 thing = Vector3.Transform(new Vector3(screenPosition, 0), Matrix.Invert(GetMatrixTransformation()));
+			//return new Vector2(thing.X, thing.Y);
 			return Vector2.Transform(screenPosition, Matrix.Invert(GetMatrixTransformation()));
 		}
 		// Overloaded with X and Y coordinates

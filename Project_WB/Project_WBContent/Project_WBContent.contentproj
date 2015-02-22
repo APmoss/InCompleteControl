@@ -227,17 +227,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="audio\effects\flicker.wav">
-      <Name>flicker</Name>
+    <Compile Include="audio\effects\-what.wav">
+      <Name>-what</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="audio\effects\yeah.wav">
-      <Name>yeah</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
+    <Compile Include="textures\halo.png">
+      <Name>halo</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
