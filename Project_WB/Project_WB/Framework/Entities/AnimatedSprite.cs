@@ -14,7 +14,7 @@ namespace Project_WB.Framework.Entities {
 		#region Fields
 		int currentFrame = 0;
 		TimeSpan elapsedAnimationTime = TimeSpan.Zero;
-		public TimeSpan TargetAnimationTime = TimeSpan.FromSeconds(.1);
+		public TimeSpan TargetAnimationTime = TimeSpan.FromSeconds(.25);
 
 		AnimationState animationState = AnimationState.Normal;
 		protected List<Rectangle> UpSourceRectangles = new List<Rectangle>();
@@ -25,33 +25,21 @@ namespace Project_WB.Framework.Entities {
 
 		public AnimatedSprite(Texture2D spriteSheet) : base(spriteSheet) { }
 
-		public AnimatedSprite(Texture2D spriteSheet,
-								List<Rectangle> upSourceRectangles,
+		public AnimatedSprite(List<Rectangle> upSourceRectangles,
 								List<Rectangle> downSourceRectangles,
 								List<Rectangle> leftSourceRectangles,
-								List<Rectangle> rightSourceRectangles) : base(spriteSheet) {
+								List<Rectangle> rightSourceRectangles,
+								Texture2D spriteSheet) : base(spriteSheet) {
 
-			SetSourceRectangles(upSourceRectangles, downSourceRectangles, leftSourceRectangles, rightSourceRectangles);
+			// Check if the parameters are valid. If good, set our values, otherwise just use an empty rectangle.
+			this.UpSourceRectangles = upSourceRectangles.Count > 0 ? upSourceRectangles : new List<Rectangle>();
+			this.DownSourceRectangles = downSourceRectangles.Count > 0 ? downSourceRectangles : new List<Rectangle>();
+			this.LeftSourceRectangles = leftSourceRectangles.Count > 0 ? leftSourceRectangles : new List<Rectangle>();
+			this.RightSourceRectangles = rightSourceRectangles.Count > 0 ? rightSourceRectangles : new List<Rectangle>();
 		}
 
 		#region Methods
 		public override void Update(GameTime gameTime) {
-			if (Velocity.X < 0) {
-				animationState = AnimationState.MovingLeft;
-			}
-			else if (Velocity.X > 0) {
-				animationState = AnimationState.MovingRight;
-			}
-			if (Velocity.Y < 0) {
-				animationState = AnimationState.MovingUp;
-			}
-			else if (Velocity.Y > 0) {
-				animationState = AnimationState.MovingDown;
-			}
-			if (Velocity.X == 0 && Velocity.Y == 0) {
-				animationState = AnimationState.Normal;
-			}
-
 			elapsedAnimationTime += gameTime.ElapsedGameTime;
 
 			if (elapsedAnimationTime > TargetAnimationTime) {
@@ -88,46 +76,6 @@ namespace Project_WB.Framework.Entities {
 			}
 			
 			base.Update(gameTime);
-		}
-
-		public override void Draw(GameTime gameTime, GameStateManagement.ScreenManager screenManager) {
-			screenManager.SpriteBatch.Draw(spriteSheet, Position, GetNextFrame(), Tint, RotationDegrees, Vector2.Zero, Scale, SpriteEffects, 0);
-		}
-
-		public Rectangle GetNextFrame() {
-			switch (animationState) {
-				case AnimationState.Normal:
-				case AnimationState.MovingDown:
-					return DownSourceRectangles[currentFrame];
-				case AnimationState.MovingUp:
-					return UpSourceRectangles[currentFrame];
-				case AnimationState.MovingLeft:
-					return LeftSourceRectangles[currentFrame];
-				case AnimationState.MovingRight:
-					return RightSourceRectangles[currentFrame];
-				case AnimationState.Frozen:
-					if (DownSourceRectangles.Count > 0) {
-						return DownSourceRectangles[0];
-					}
-					return Rectangle.Empty;
-				default:
-					return Rectangle.Empty;
-			}
-		}
-
-		public void SetSourceRectangles(List<Rectangle> upSourceRectangles, List<Rectangle> downSourceRectangles,
-										List<Rectangle> leftSourceRectangles, List<Rectangle> rightSourceRectangles) {
-
-			// Check if the parameters are valid. If good, set our values, otherwise just use an empty rectangle.
-			this.UpSourceRectangles = upSourceRectangles.Count > 0 ? upSourceRectangles : new List<Rectangle>();
-			this.DownSourceRectangles = downSourceRectangles.Count > 0 ? downSourceRectangles : new List<Rectangle>();
-			this.LeftSourceRectangles = leftSourceRectangles.Count > 0 ? leftSourceRectangles : new List<Rectangle>();
-			this.RightSourceRectangles = rightSourceRectangles.Count > 0 ? rightSourceRectangles : new List<Rectangle>();
-
-			if (downSourceRectangles.Count > 0) {
-				this.Bounds.Width = downSourceRectangles[0].Width;
-				this.Bounds.Height = downSourceRectangles[0].Height;
-			}
 		}
 		#endregion
 	}

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
 using Project_WB.Framework.Entities;
-using Nuclex.Input;
-using Nuclex.Input.Devices;
 
 namespace Project_WB.Framework.Entities {
 	class EntityManager {
@@ -12,7 +10,6 @@ namespace Project_WB.Framework.Entities {
 		
 		#region Fields
 		List<Entity> entities = new List<Entity>();
-		public Entity SelectedEntity;
 		#endregion
 
 		#region Methods
@@ -36,14 +33,6 @@ namespace Project_WB.Framework.Entities {
 
 		public Entity[] GetEntities() {
 			return entities.ToArray();
-		}
-
-		public void AddEntities(params Entity[] entities) {
-			foreach (var entity in entities) {
-				entity.EntityManager = this;
-
-				this.entities.Add(entity);
-			}
 		}
 		#endregion
 	}

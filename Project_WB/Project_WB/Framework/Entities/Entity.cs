@@ -10,28 +10,22 @@ namespace Project_WB.Framework.Entities {
 
 		#region Fields
 		public string Name = string.Empty;
-		EntityManager entityManager;
 		protected Rectangle lastBounds = Rectangle.Empty;
 		public Rectangle Bounds = Rectangle.Empty;
-		public Dictionary<string, string> EntityData = new Dictionary<string, string>();
 		#endregion
 
 		#region Properties
-		public EntityManager EntityManager {
-			get { return entityManager; }
-			internal set { entityManager = value; }
-		}
 		public bool ContainsMouse {
 			get; protected set;
 		}
 		#endregion
 
 		#region Events
-		public event EventHandler<EntityInputEventArgs> MouseEntered;
-		public event EventHandler<EntityInputEventArgs> MouseExited;
-		public event EventHandler<EntityInputEventArgs> LeftClicked;
-		public event EventHandler<EntityInputEventArgs> MiddleClicked;
-		public event EventHandler<EntityInputEventArgs> RightClicked;
+		public event EventHandler<EventArgs> MouseEntered;
+		public event EventHandler<EventArgs> MouseExited;
+		public event EventHandler<EventArgs> LeftClicked;
+		public event EventHandler<EventArgs> MiddleClicked;
+		public event EventHandler<EventArgs> RightClicked;
 		#endregion
 
 		#region Methods
@@ -48,25 +42,25 @@ namespace Project_WB.Framework.Entities {
 				if (!lastBounds.Contains(lrmPoint) && Bounds.Contains(crmPoint)) {
 					ContainsMouse = true;
 					if (MouseEntered != null)
-						MouseEntered.Invoke(this, new EntityInputEventArgs(input));
+						MouseEntered.Invoke(this, EventArgs.Empty);
 				}
 				else if (lastBounds.Contains(lrmPoint) && !Bounds.Contains(crmPoint)) {
 					ContainsMouse = false;
 					if (MouseExited != null)
-						MouseExited.Invoke(this, new EntityInputEventArgs(input));
+						MouseExited.Invoke(this, EventArgs.Empty);
 				}
 
 				if (input.IsNewMousePress(MouseButton.Left) && ContainsMouse) {
 					if (LeftClicked != null)
-						LeftClicked.Invoke(this, new EntityInputEventArgs(input));
+						LeftClicked.Invoke(this, EventArgs.Empty);
 				}
 				if (input.IsNewMousePress(MouseButton.Middle) && ContainsMouse) {
 					if (MiddleClicked != null)
-						MiddleClicked.Invoke(this, new EntityInputEventArgs(input));
+						MiddleClicked.Invoke(this, EventArgs.Empty);
 				}
 				if (input.IsNewMousePress(MouseButton.Right) && ContainsMouse) {
 					if (RightClicked != null)
-						RightClicked.Invoke(this, new EntityInputEventArgs(input));
+						RightClicked.Invoke(this, EventArgs.Empty);
 				}
 			}
 		}

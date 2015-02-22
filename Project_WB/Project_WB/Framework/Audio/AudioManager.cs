@@ -17,7 +17,6 @@ namespace Project_WB.Framework.Audio {
 		// The collection of all audio items. The size is limited based on
 		// the maximum number of sound channels.
 		List<AudioItem> audioItems = new List<AudioItem>();
-
 		// The audio listeners, that hear around the center of the screen (along with the camera)
 		AudioListener leftListener = new AudioListener();
 		AudioListener rightListener = new AudioListener();
@@ -124,7 +123,7 @@ namespace Project_WB.Framework.Audio {
 
 			leftListener.Position = new Vector3(relativePosition.X - halfListenerDistance, relativePosition.Y, 0);
 			rightListener.Position = new Vector3(relativePosition.X + halfListenerDistance, relativePosition.Y, 0);
-			
+
 			foreach (var sound in audioItems) {
 				if (sound is EnvironmentSound) {
 					if (sound.SoundInstance.State == SoundState.Playing) {

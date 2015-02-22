@@ -10,7 +10,6 @@ namespace Project_WB.Framework.Entities {
 
 		#region Fields
 		public Vector2 Position = Vector2.Zero;
-		public Vector2 Velocity = Vector2.Zero;
 		public Color Tint = Color.White;
 		public float Scale = 1;
 		public float RotationDegrees = 0;
@@ -27,18 +26,11 @@ namespace Project_WB.Framework.Entities {
 		public Sprite(Rectangle sourceRectangle, Texture2D spriteSheet) {
 			this.sourceRectangle = sourceRectangle;
 			this.spriteSheet = spriteSheet;
-			this.Bounds.Width = sourceRectangle.Width;
-			this.Bounds.Height = sourceRectangle.Height;
 		}
 
 		#region Methods
 		public override void Update(GameTime gameTime) {
-			Position += Velocity;
-
 			base.Update(gameTime);
-
-			Bounds.X = (int)Position.X;
-			Bounds.Y = (int)Position.Y;
 		}
 
 		public override void Draw(GameTime gameTime, ScreenManager screenManager) {

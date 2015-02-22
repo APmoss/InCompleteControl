@@ -44,7 +44,7 @@ namespace Project_WB.Menus {
 			}
 
 			song = ScreenManager.Game.Content.Load<SoundEffect>("audio/effects/flicker").CreateInstance();
-			//song.Play();
+			song.Play();
 
 			base.Activate(instancePreserved);
 		}
