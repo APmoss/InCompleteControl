@@ -1,234 +1,332 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Project_WB.Framework.Audio.AudioItem" Collapsed="true">
-    <Position X="0.5" Y="4.5" Width="1.5" />
+    <Position X="3.5" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAACAIAAIAAAAAAAAAMAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Framework\Audio\AudioItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Audio.AudioManager" Collapsed="true">
-    <Position X="5.25" Y="0.5" Width="1.5" />
+    <Position X="8" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAYBAAAAAwAIEQAAAAAAAAAAAIEAAAAAIACAACgAIAA=</HashCode>
+      <HashCode>AAYBAEAAAwAIEQAAAAAAAAAAAAEAAAAAICCCACgAIAA=</HashCode>
       <FileName>Framework\Audio\AudioManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Audio.EnvironmentSound" Collapsed="true">
-    <Position X="0.5" Y="5.75" Width="1.5" />
+    <Position X="3.5" Y="8.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Framework\Audio\EnvironmentSound.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Camera2D" Collapsed="true">
-    <Position X="8.75" Y="0.5" Width="1.5" />
+    <Position X="11.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAQgAAAAAAAEAAAAAAgAIAACCAAAAAAgsAACIAAAAAA=</HashCode>
+      <HashCode>IAQg4IAAAAAEAAAAAAiCIAiSAEAIIAAhMABCIBAgAAA=</HashCode>
       <FileName>Framework\Camera2D.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.DebugOverlay" Collapsed="true">
-    <Position X="10.5" Y="0.5" Width="1.5" />
+    <Position X="13.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAACAAQAAEgAAAAAAAAAAAAACIAAAAAAQAAAAAAA=</HashCode>
       <FileName>Framework\DebugOverlay.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Project_WB.Framework.RadialLight" Collapsed="true">
+    <Position X="9.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAIAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Framework\RadialLight.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.AnimatedSprite" Collapsed="true">
+    <Position X="3" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAIAIkAAAAgAAAAgAAAIEAAgAAAAAAAABAAAAABA=</HashCode>
+      <FileName>Framework\Entities\AnimatedSprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.Entity" Collapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBQAAAAAAQAAAgAAABAAICQKAAAAAAAAABAAABAAAgA=</HashCode>
+      <FileName>Framework\Entities\Entity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.EntityEventArgs" Collapsed="true">
+    <Position X="15" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Framework\Entities\EntityEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.EntityInputEventArgs" Collapsed="true">
+    <Position X="16.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Entities\EntityInputEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.EntityManager" Collapsed="true">
+    <Position X="8" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAQgEA4AABAAgAAAAIIAAAQAAAAAAIAAAAAA=</HashCode>
+      <FileName>Framework\Entities\EntityManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.HotkeyEventArgs" Collapsed="true">
+    <Position X="9.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Entities\HotkeyEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.Sprite" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAEEAAAAAAoAgAAIAAAAAAAAAAAAAAAQAAAIEAAA=</HashCode>
+      <FileName>Framework\Entities\Sprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.Unit" Collapsed="true">
+    <Position X="3" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ARQAAAAQAAAgEgAAAAAAAgABAACAAAAAAAAAAAQAAQI=</HashCode>
+      <FileName>Framework\Entities\Unit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.Units.BakerBot" Collapsed="true">
+    <Position X="0.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Entities\Units\BakerBot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.Units.Centurion" Collapsed="true">
+    <Position X="0.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Entities\Units\Centurion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.Units.Guy" Collapsed="true">
+    <Position X="3" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Entities\Units\Guy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Entities.Units.Sango" Collapsed="true">
+    <Position X="5.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Entities\Units\Sango.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Particles.AnimatedParticle" Collapsed="true">
+    <Position X="5.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAgAAAAAAAgAAAAAAEAAAgAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Framework\Particles\AnimatedParticle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Particles.Particle" Collapsed="true">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAEAAAAAAAAggAIAAAAAAAAAAAgABAQAAAIEAAA=</HashCode>
+      <FileName>Framework\Particles\Particle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Particles.ParticleEmitter" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAQAABIAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Particles\ParticleEmitter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Particles.ParticleManager" Collapsed="true">
+    <Position X="11.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAQAAAAABAAAAwAAgAgAAAAAAAAAAAACAAgAAAAAAAA=</HashCode>
+      <FileName>Framework\Particles\ParticleManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Project_WB.Framework.Particles.Emitters.StarEmitter" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Particles\Emitters\StarEmitter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="Project_WB.PasswordInputControl" Collapsed="true">
-    <Position X="5.25" Y="2.5" Width="1.5" />
+    <Position X="13.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAEAABAAAEAEAAAAAAAAAAAACAAAAAAAEAAAAAAAAA=</HashCode>
       <FileName>Framework\PasswordInputControl.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Stcs" Collapsed="true">
-    <Position X="8.75" Y="3.5" Width="1.5" />
+    <Position X="16.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAQAAQAIAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Framework\Stcs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Program" Collapsed="true">
-    <Position X="10.5" Y="2.5" Width="1.5" />
+    <Position X="8" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Program.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Strings" Collapsed="true">
-    <Position X="10.5" Y="3.5" Width="1.5" />
+    <Position X="8" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAQAECADAAAAAAAAQABUAQABQARAAAXAAAAAAAAAIg=</HashCode>
+      <HashCode>AAAQAEDADAAAAAAAAQABUAQABQARAAAXAAAAAAAAAIg=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.WB_Game" Collapsed="true">
-    <Position X="8.75" Y="4.5" Width="1.5" />
+    <Position X="15" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAEAAAAAAAAwAAAAAAAAAAAAAAAAgAAAEAAEAAAAQ=</HashCode>
       <FileName>WB_Game.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Pathfinding.MapData" Collapsed="true">
-    <Position X="8.75" Y="1.5" Width="1.5" />
+    <Position X="16.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAJAAAAAACAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
       <FileName>Framework\Pathfinding\MapData.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Pathfinding.PathFinder" Collapsed="true">
-    <Position X="7" Y="2.5" Width="1.5" />
+    <Position X="15" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQQEEIAAJQAIBwIhQAIAIAACAAAAAAAQhCAAECCkhBQ=</HashCode>
+      <HashCode>AQAEEIAAIQAIBAIBQAAAIAAAAAAAAAAQgCAAAAAgBAA=</HashCode>
       <FileName>Framework\Pathfinding\PathFinder.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Pathfinding.PathMap" Collapsed="true">
-    <Position X="8.75" Y="2.5" Width="1.5" />
+    <Position X="16.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>YIAAAEAAwQAAAikAIAIAACAiA4EgCAAAgEgAAEAZEAQ=</HashCode>
+      <HashCode>YIAAAEAAQAAAAAgAIAAAACAAAoEgCAAAAEgAAAAJEAA=</HashCode>
       <FileName>Framework\Pathfinding\PathMap.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Squared.Tiled.Tileset" Collapsed="true">
-    <Position X="5.25" Y="4.5" Width="1.5" />
+    <Position X="11.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAgwAEAIQAAAAIAAAAAACQAAAAAABEAAAIAAQAAACA=</HashCode>
       <FileName>Framework\Squared.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Squared.Tiled.Layer" Collapsed="true">
-    <Position X="12.25" Y="0.5" Width="1.5" />
+    <Position X="11.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAAlAAgBAAAIgECAAAAgEQAAAAAAAIAAAEAAQACAAA=</HashCode>
       <FileName>Framework\Squared.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Squared.Tiled.ObjectGroup" Collapsed="true">
-    <Position X="12.25" Y="1.5" Width="1.5" />
+    <Position X="9.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAkAAABAAAAgAAAAAAAEQAAAAAAAEAAAAAAAACYAA=</HashCode>
       <FileName>Framework\Squared.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Squared.Tiled.Object" Collapsed="true">
-    <Position X="10.5" Y="1.5" Width="1.5" />
+    <Position X="8" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAggAEABQAAAgAAAAAAAEQAAAAAABAAAAIAAAACYAA=</HashCode>
       <FileName>Framework\Squared.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Framework.Squared.Tiled.Map" Collapsed="true">
-    <Position X="7" Y="1.5" Width="1.5" />
+    <Position X="15" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAAAkAAABAAAAgAAAAAAAGAAAAAAAAAEAAAAAQACAAA=</HashCode>
       <FileName>Framework\Squared.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Project_WB.Gameplay.AnimatedSprite" Collapsed="true">
-    <Position X="2.75" Y="3.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAQAAAAIkAAAAAAAAAgAAAAEAAgAAAAAAAABAAAAABA=</HashCode>
-      <FileName>Gameplay\AnimatedSprite.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Project_WB.Gameplay.Battle" Collapsed="true">
-    <Position X="7" Y="0.5" Width="1.5" />
+    <Position X="9.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAEAiAAgAAAgBAAAAAAEAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AIQAEACAAgAAAgBAAAAAAAAAAAAAAAAAABAAAAAAAAQ=</HashCode>
       <FileName>Gameplay\Battle.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Project_WB.Gameplay.Entity" Collapsed="true">
-    <Position X="1.75" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAQAAAAAAAAAAgAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Gameplay\Entity.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Project_WB.Gameplay.Sprite" Collapsed="true">
-    <Position X="1.75" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAQAAEEAAAAAAgAgAAIAAAAAAAAAAAgAAAQAAAIAAAA=</HashCode>
-      <FileName>Gameplay\Sprite.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Project_WB.Gameplay.TestThing" Collapsed="true">
-    <Position X="12.25" Y="3.5" Width="1.5" />
+    <Position X="9.75" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CIQIFACAAAAAAgBACAQAAEAAAAAIAACAAAAAAQAAAAA=</HashCode>
-      <FileName>Gameplay\TestThing.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Project_WB.Gameplay.TestCharacter" Collapsed="true">
-    <Position X="0.5" Y="3.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAQAAAAAAAAAAgAAAAAAAgABAQAAAAEAAAAAAAAAAAA=</HashCode>
+      <HashCode>CISLHACAAAAAAgBACAQAAEAEAAAJggCAABAJAwAAAAQ=</HashCode>
       <FileName>Gameplay\TestThing.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Menus.LoadingScreen" Collapsed="true">
-    <Position X="5.25" Y="1.5" Width="1.5" />
+    <Position X="13.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAgAAAAAAAAgAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Menus\LoadingScreen.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Menus.Register" Collapsed="true">
-    <Position X="12.25" Y="2.5" Width="1.5" />
+    <Position X="11.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BEQoEGEIBAYAAgBGBAAAAAAECCRACCAAgACABAkEAIA=</HashCode>
       <FileName>Menus\Register.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Menus.SignIn" Collapsed="true">
-    <Position X="5.25" Y="3.5" Width="1.5" />
+    <Position X="13.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAYAAAAAEQAAQgBkAAAAAAABCAQAAAAAgAAAAAgEAAA=</HashCode>
+      <HashCode>BwYAAACAEQEAQgFkIAAAAAABCAQAAAAAwAABAAgEIAA=</HashCode>
       <FileName>Menus\SignIn.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Menus.Splash" Collapsed="true">
-    <Position X="7" Y="3.5" Width="1.5" />
+    <Position X="15" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAQAAAgAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
       <FileName>Menus\Splash.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Project_WB.Menus.Title" Collapsed="true">
-    <Position X="7" Y="4.5" Width="1.5" />
+    <Position X="13.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAACAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Menus\Title.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="GameStateManagement.GameScreen" Collapsed="true">
-    <Position X="11" Y="6" Width="1.5" />
+    <Position X="9.5" Y="8" Width="1.5" />
     <TypeIdentifier />
   </Class>
   <Enum Name="Project_WB.Framework.Pathfinding.SearchStatus" Collapsed="true">
-    <Position X="8.75" Y="5.75" Width="1.5" />
+    <Position X="11.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAFAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>Framework\Pathfinding\PathFinder.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Project_WB.Framework.Pathfinding.SearchMethod" Collapsed="true">
-    <Position X="7" Y="5.75" Width="1.5" />
+    <Position X="9.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAABAAAAACAAAAAAAAAAAAAEAAAAAAAAAAAAQ=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAEAAAAAAAAAAAAQ=</HashCode>
       <FileName>Framework\Pathfinding\PathFinder.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Project_WB.Framework.Pathfinding.MapTileType" Collapsed="true">
-    <Position X="5.25" Y="5.75" Width="1.5" />
+    <Position X="8" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAASAAAACAAAAA=</HashCode>
       <FileName>Framework\Pathfinding\PathMap.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="GameStateManagement.ScreenState" Collapsed="true">
-    <Position X="13.5" Y="6" Width="1.5" />
+    <Position X="12" Y="8" Width="1.5" />
     <TypeIdentifier />
   </Enum>
   <Font Name="Segoe UI" Size="9" />

@@ -202,8 +202,31 @@ namespace Project_WB.Gameplay {
 				}
 			}
 
-			particleManager.Update(gameTime);
+			foreach (var entity in entityManager.GetEntities()) {
+				if (entity is Centurion && gameTime.TotalGameTime.TotalMilliseconds % 10 == 0) {
+					double angle = MathHelper.ToRadians(r.Next(0, 1440) / 4);
+					Vector2 vel = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+					vel *= (float)(r.NextDouble()  / 2);
 
+					particleManager.AddParticle(new Particle(new Rectangle(0, 0, 16, 16)) {
+						LifeSpan = new TimeSpan(0, 0, 0, 0, 500),
+						Position = ((Centurion)entity).Position + new Vector2(9, 9),
+						Velocity = vel,
+						Scale = .25f,
+						Tint = new Color() {
+							R = (byte)r.Next(150, 200),
+							G = (byte)r.Next(150, 200),
+							B = 0,//(byte)r.Next(150, 200),
+							A = (byte)255
+						}
+					});
+				}
+			}
+
+			if(!gameTime.IsRunningSlowly)
+				particleManager.Update(gameTime);
+
+			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 			DebugOverlay.DebugText.AppendFormat("-Mouse X: {0}  |  Y: {1}", mouse.X, mouse.Y).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("-MTile X: {0}  |  Y: {1}", mouseTile.X, mouseTile.Y).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("-ChrSpd: {0}", character.Speed).AppendLine();
@@ -212,7 +235,6 @@ namespace Project_WB.Gameplay {
 			DebugOverlay.DebugText.AppendFormat("-ParticleLoops: {0}", particleLoops).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("-SearchTime: {0}", searchTime.TotalMilliseconds).AppendLine();
 			
-			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
 		
 		public override void HandleInput(GameTime gameTime, InputState input) {
@@ -282,6 +304,10 @@ namespace Project_WB.Gameplay {
 				Centurion temp = new Centurion(entityManager.DefaultSpritesheet);
 				temp.Position = new Vector2(mouseTile.X * 32, mouseTile.Y * 32);
 				entityManager.AddEntities(temp);
+			}
+			if (input.IsNewKeyPress(Keys.Y, null, out p)) {
+				int sel = r.Next(entityManager.GetEntities().Count());
+				entityManager.SelectedUnit = (Unit)entityManager.GetEntities()[sel];
 			}
 
 			if (input.IsKeyPressed(Keys.PageUp, null, out p)) {
@@ -458,7 +484,7 @@ namespace Project_WB.Gameplay {
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, cam.GetMatrixTransformation());
 
 			foreach (var particle in particleManager.GetParticles()) {
-				ScreenManager.SpriteBatch.Draw(vignette, new Rectangle((int)particle.Position.X - 8, (int)particle.Position.Y - 8, 16, 16), particle.Tint);
+				ScreenManager.SpriteBatch.Draw(vignette, new Rectangle((int)particle.Position.X - 8, (int)particle.Position.Y - 8, (int)(16 * particle.Scale), (int)(16 * particle.Scale)), particle.Tint);
 			}
 
 			Vector2 relativeMouse = cam.ToRelativePosition(mouse.X, mouse.Y);
