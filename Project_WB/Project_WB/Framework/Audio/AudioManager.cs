@@ -14,6 +14,8 @@ namespace Project_WB.Framework.Audio {
 		#region Fields
 		// Private variable (description in property)
 		int maxSoundChannels = 64;
+		// Multiplier that spreads the position of 
+		public int AudioSpreaderMultiplier = 32;
 		// The collection of all audio items. The size is limited based on
 		// the maximum number of sound channels.
 		List<AudioItem> audioItems = new List<AudioItem>();
@@ -51,7 +53,7 @@ namespace Project_WB.Framework.Audio {
 				}
 			}
 		}
-
+		
 		/// <summary>
 		/// The volume that affects the background and other types of music.
 		/// </summary>
@@ -138,8 +140,8 @@ namespace Project_WB.Framework.Audio {
 		public void Update(GameTime gameTime) {
 			// Update the position of the listeners
 			var relativePosition = camera.ToRelativePosition(new Vector2(camera.Viewport.Width / 2, camera.Viewport.Height / 2));
-			relativePosition.X /= 32;
-			relativePosition.Y /= 32;
+			relativePosition.X /= AudioSpreaderMultiplier;
+			relativePosition.Y /= AudioSpreaderMultiplier;
 			var halfListenerDistance = listenerDistance / 2;
 
 			leftListener.Position = new Vector3(relativePosition.X - halfListenerDistance, relativePosition.Y, 0);

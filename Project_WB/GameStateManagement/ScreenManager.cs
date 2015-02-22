@@ -31,7 +31,6 @@ namespace GameStateManagement {
 	/// </summary>
 	public class ScreenManager : DrawableGameComponent {
 		#region Fields
-
 		private const string StateFilename = "ScreenManagerState.xml";
 
 		List<GameScreen> screens = new List<GameScreen>();
@@ -48,12 +47,19 @@ namespace GameStateManagement {
 
 		bool traceEnabled;
 
-		InputManager inputManager;
+		GraphicsDeviceManager graphicsDeviceManager;
+		InputManager nuclexInputManager;
 
 		#endregion
 
 		#region Properties
+		public GraphicsDeviceManager GraphicsDeviceManager {
+			get { return graphicsDeviceManager; }
+		}
 
+		public InputManager NuclexInputManager {
+			get { return nuclexInputManager; }
+		}
 
 		/// <summary>
 		/// A default SpriteBatch shared by all the screens. This saves
@@ -98,15 +104,6 @@ namespace GameStateManagement {
 		public Texture2D BlankTexture {
 			get { return blankTexture; }
 		}
-
-		/// <summary>
-		/// A preloaded, default gui with the default skin, text, etc.
-		/// </summary>
-		public GuiManager DefaultGui {
-			get; private set;
-		}
-
-
 		#endregion
 
 		#region Initialization
@@ -115,8 +112,11 @@ namespace GameStateManagement {
 		/// <summary>
 		/// Constructs a new screen manager component.
 		/// </summary>
-		public ScreenManager(Game game)
+		public ScreenManager(Game game, GraphicsDeviceManager graphics)
 			: base(game) {
+
+			this.graphicsDeviceManager = graphics;
+
 			// we must set EnabledGestures before we can query for them, but
 			// we don't assume the game wants to read them.
 			TouchPanel.EnabledGestures = GestureType.None;
@@ -127,14 +127,8 @@ namespace GameStateManagement {
 		/// Initializes the screen manager component.
 		/// </summary>
 		public override void Initialize() {
-			inputManager = new InputManager(Game.Services, Game.Window.Handle);
-			Game.Components.Add(inputManager);
-
-			DefaultGui = new GuiManager(Game.Services);
-
-			DefaultGui.Visualizer = Nuclex.UserInterface.Visuals.Flat.FlatGuiVisualizer.FromFile(Game.Services, "content/gui/grey/Suave.skin.xml");
-			
-			DefaultGui.Initialize();
+			nuclexInputManager = new InputManager(Game.Services, Game.Window.Handle);
+			Game.Components.Add(nuclexInputManager);
 
 			base.Initialize();
 

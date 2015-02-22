@@ -33,7 +33,6 @@ namespace Project_WB.Gameplay {
 
 		Map map;
 
-		AnimatedSprite mech;
 		TestCharacter character;
 		bool follow = false;
 
@@ -101,54 +100,11 @@ namespace Project_WB.Gameplay {
 			};
 			character.MouseEntered += (s, e) => ScreenManager.SoundLibrary.GetSound("tileChange1").Play();
 
-			mech = new AnimatedSprite(ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"));
-			mech.SetSourceRectangles(
-				new List<Rectangle>() {
-				new Rectangle(0, 352, 32, 32),
-				new Rectangle(32, 352, 32, 32),
-				new Rectangle(64, 352, 32, 32),
-				new Rectangle(96, 352, 32, 32),
-				new Rectangle(128, 352, 32, 32),
-				new Rectangle(160, 352, 32, 32),
-				new Rectangle(192, 352, 32, 32),
-				new Rectangle(224, 352, 32, 32)
-			},
-			new List<Rectangle>() {
-				new Rectangle(0, 256, 32, 32),
-				new Rectangle(32, 256, 32, 32),
-				new Rectangle(64, 256, 32, 32),
-				new Rectangle(96, 256, 32, 32),
-				new Rectangle(128, 256, 32, 32),
-				new Rectangle(160, 256, 32, 32),
-				new Rectangle(192, 256, 32, 32),
-				new Rectangle(224, 256, 32, 32)
-			},
-			new List<Rectangle>() {
-				new Rectangle(0, 288, 32, 32),
-				new Rectangle(32, 288, 32, 32),
-				new Rectangle(64, 288, 32, 32),
-				new Rectangle(96, 288, 32, 32),
-				new Rectangle(128, 288, 32, 32),
-				new Rectangle(160, 288, 32, 32),
-				new Rectangle(192, 288, 32, 32),
-				new Rectangle(224, 288, 32, 32)
-			},
-			new List<Rectangle>() {
-				new Rectangle(0, 320, 32, 32),
-				new Rectangle(32, 320, 32, 32),
-				new Rectangle(64, 320, 32, 32),
-				new Rectangle(96, 320, 32, 32),
-				new Rectangle(128, 320, 32, 32),
-				new Rectangle(160, 320, 32, 32),
-				new Rectangle(192, 320, 32, 32),
-				new Rectangle(224, 320, 32, 32)
-			});
-
-			entityManager = new EntityManager(ScreenManager.Game.Content.Load<Texture2D>("textures/etc"), ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"));
+			entityManager = new EntityManager(ScreenManager.Game.Content.Load<Texture2D>("textures/etc"), ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"), audioManager, ScreenManager.SoundLibrary, particleManager);
 			//TODO note to me- remove the constructor dependency on the spritesheet, since the entitymanager will automatically set if if it's null to the entity manager's default.
 			// this will clear things upo and allow bettter constructor parameters, like position.
-			Sango sango = new Sango(entityManager.DefaultSpritesheet);
-			Guy guy = new Guy(entityManager.DefaultSpritesheet);
+			Sango sango = new Sango();
+			Guy guy = new Guy();
 			sango.Position = new Vector2(128, 352);
 			guy.Position = new Vector2(128 + 32, 352);
 			entityManager.AddEntities(sango, guy);
@@ -167,18 +123,17 @@ namespace Project_WB.Gameplay {
 			elapsed += gameTime.ElapsedGameTime;
 
 			character.Update(gameTime);
-			mech.Update(gameTime);
 			entityManager.Update(gameTime);
 
 			if (follow) {
-				cam.DestPosition = character.Position;
-				if (character.Waypoints.Count > 0) {
+				cam.DestPosition = entityManager.SelectedUnit.Position;
+				if (entityManager.SelectedUnit.Waypoints.Count > 0) {
 					cam.DestScale = 2;
-					cam.DestXRotation = MathHelper.ToRadians(45);
+					//cam.DestXRotation = MathHelper.ToRadians(45);
 				}
 				else {
 					cam.DestScale = 1;
-					cam.DestXRotation = MathHelper.ToRadians(0);
+					//cam.DestXRotation = MathHelper.ToRadians(0);
 				}
 			}
 
@@ -203,14 +158,14 @@ namespace Project_WB.Gameplay {
 			}
 
 			foreach (var entity in entityManager.GetEntities()) {
-				if (entity is Centurion && gameTime.TotalGameTime.TotalMilliseconds % 10 == 0) {
+				if (entity is VerticalCenturion && gameTime.TotalGameTime.TotalMilliseconds % 10 == 0) {
 					double angle = MathHelper.ToRadians(r.Next(0, 1440) / 4);
 					Vector2 vel = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
 					vel *= (float)(r.NextDouble()  / 2);
 
 					particleManager.AddParticle(new Particle(new Rectangle(0, 0, 16, 16)) {
 						LifeSpan = new TimeSpan(0, 0, 0, 0, 500),
-						Position = ((Centurion)entity).Position + new Vector2(9, 9),
+						Position = ((VerticalCenturion)entity).Position + new Vector2(9, 9),
 						Velocity = vel,
 						Scale = .25f,
 						Tint = new Color() {
@@ -291,23 +246,28 @@ namespace Project_WB.Gameplay {
 				follow = !follow;
 			}
 			if (input.IsNewKeyPress(Keys.B, null, out p)) {
-				BakerBot temp = new BakerBot(entityManager.DefaultSpritesheet, baker);
+				BakerBot temp = new BakerBot(baker);
 				temp.Position = new Vector2(mouseTile.X * 32, mouseTile.Y * 32);
 				entityManager.AddEntities(temp);
 			}
 			if (input.IsNewKeyPress(Keys.N, null, out p)) {
-				Centurion temp = new Centurion(entityManager.DefaultSpritesheet);
+				Centurion temp = new Centurion();
 				temp.Position = new Vector2(mouseTile.X * 32, mouseTile.Y * 32);
 				entityManager.AddEntities(temp);
 			}
 			if (input.IsKeyPressed(Keys.M, null, out p)) {
-				Centurion temp = new Centurion(entityManager.DefaultSpritesheet);
+				VerticalCenturion temp = new VerticalCenturion();
 				temp.Position = new Vector2(mouseTile.X * 32, mouseTile.Y * 32);
 				entityManager.AddEntities(temp);
 			}
 			if (input.IsNewKeyPress(Keys.Y, null, out p)) {
 				int sel = r.Next(entityManager.GetEntities().Count());
 				entityManager.SelectedUnit = (Unit)entityManager.GetEntities()[sel];
+			}
+			if (input.IsNewKeyPress(Keys.Space, null, out p)) {
+				if (entityManager.SelectedUnit != null) {
+					entityManager.SelectedUnit.Health -= 20;
+				}
 			}
 
 			if (input.IsKeyPressed(Keys.PageUp, null, out p)) {
@@ -413,7 +373,6 @@ namespace Project_WB.Gameplay {
 			}
 
 			character.UpdateInteraction(gameTime, input, cam);
-			mech.UpdateInteraction(gameTime, input, cam);
 			entityManager.UpdateInteration(gameTime, input, cam);
 
 			if (input.IsNewKeyPress(Keys.F10, null, out p)) {
@@ -442,19 +401,11 @@ namespace Project_WB.Gameplay {
 											Color.White * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 			
 			character.Draw(gameTime, ScreenManager);
-			mech.Draw(gameTime, ScreenManager);
 			entityManager.Draw(gameTime, ScreenManager);
 
 			particleManager.Draw(gameTime, ScreenManager, cam.GetViewingRectangle());
 
 			//ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Consolas, DebugOverlay.DebugText, Vector2.Zero, Color.White);
-
-			ScreenManager.SpriteBatch.End();
-
-			//REMOVE
-			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, RasterizerState.CullNone, null, cam.Thing());
-
-			mech.Draw(gameTime, ScreenManager);
 
 			ScreenManager.SpriteBatch.End();
 
@@ -494,14 +445,10 @@ namespace Project_WB.Gameplay {
 										angle, new Vector2(64), new Vector2(cone, 2), SpriteEffects.None, 0);
 			ScreenManager.SpriteBatch.Draw(vignette, character.Position, null, character.flashColor,
 										0, new Vector2(48), 1, SpriteEffects.None, 0);
-			ScreenManager.SpriteBatch.Draw(vignette, mech.Position + new Vector2(9, 11), null, Color.Green,
-										0, Vector2.Zero, .05f, SpriteEffects.None, 0);
-			ScreenManager.SpriteBatch.Draw(vignette, mech.Position + new Vector2(18, 11), null, Color.Green,
-										0, Vector2.Zero, .05f, SpriteEffects.None, 0);
 
 			foreach (var entity in entityManager.GetEntities()) {
-				if (entity is Centurion) {
-					Centurion cent = (Centurion)entity;
+				if (entity is VerticalCenturion) {
+					VerticalCenturion cent = (VerticalCenturion)entity;
 
 					List<RadialLight> radialLights = (List<RadialLight>)entity.EntityData["radialLights"];
 

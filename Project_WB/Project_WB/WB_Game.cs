@@ -23,7 +23,7 @@ namespace Project_WB {
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
-			Stcs.InternalVersion = new Version("0.0.7.2");
+			Stcs.InternalVersion = new Version("0.0.7.9");
 
 			// Make the mouse visible
 			IsMouseVisible = true;
@@ -36,7 +36,7 @@ namespace Project_WB {
 			graphics.PreferredBackBufferHeight = 720;
 
 			// Set up the screen manager and add some screens
-			screenManager = new ScreenManager(this);
+			screenManager = new ScreenManager(this, graphics);
 			Components.Add(screenManager);
 		}
 

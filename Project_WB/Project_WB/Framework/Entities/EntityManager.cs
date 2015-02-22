@@ -6,6 +6,8 @@ using Project_WB.Framework.Entities;
 using Nuclex.Input;
 using Nuclex.Input.Devices;
 using Microsoft.Xna.Framework.Graphics;
+using Project_WB.Framework.Audio;
+using Project_WB.Framework.Particles;
 
 namespace Project_WB.Framework.Entities {
 	class EntityManager {
@@ -19,6 +21,10 @@ namespace Project_WB.Framework.Entities {
 		protected internal int tileSize = 32;
 		public Texture2D EtcTextures;
 		public Texture2D DefaultSpritesheet;
+
+		protected internal AudioManager audioManager;
+		protected internal SoundLibrary soundLibrary;
+		protected internal ParticleManager particleManager;
 
 		Unit selectedUnit;
 		#endregion
@@ -38,12 +44,12 @@ namespace Project_WB.Framework.Entities {
 		}
 		#endregion
 
-		public EntityManager(Texture2D etcTextures) {
-			this.EtcTextures = etcTextures;
-		}
-		public EntityManager(Texture2D etcTextures, Texture2D defaultSpritesheet) {
+		public EntityManager(Texture2D etcTextures, Texture2D defaultSpritesheet, AudioManager audioManager, SoundLibrary soundLibrary, ParticleManager particleManager) {
 			this.EtcTextures = etcTextures;
 			this.DefaultSpritesheet = defaultSpritesheet;
+			this.audioManager = audioManager;
+			this.soundLibrary = soundLibrary;
+			this.particleManager = particleManager;
 		}
 
 		#region Methods
@@ -61,6 +67,7 @@ namespace Project_WB.Framework.Entities {
 
 		public void Draw(GameTime gameTime, ScreenManager screenManager) {
 			foreach (var entity in entities) {
+				// Entity is selected
 				if (SelectedUnit == entity) {
 					Unit unit = (Unit)entity;
 					Vector2 origin = new Vector2(haloSrcRec.Width / 2, haloSrcRec.Height / 2);
@@ -68,12 +75,18 @@ namespace Project_WB.Framework.Entities {
 					float rotation = (float)gameTime.TotalGameTime.TotalSeconds;
 					screenManager.SpriteBatch.Draw(EtcTextures, unit.Position + offset, haloSrcRec, Color.White, rotation, origin, 1, 0, 0);
 				}
+				// Mouse is over the entity
 				if (entity is Unit && entity.ContainsMouse) {
 					Unit unit = (Unit)entity;
 					Vector2 origin = new Vector2(hoverSrcRec.Width / 2, hoverSrcRec.Height / 2);
 					Vector2 offset = new Vector2(unit.Bounds.Width / 2, unit.Bounds.Height / 2);
 					float rotation = -(float)gameTime.TotalGameTime.TotalSeconds * 2;
 					screenManager.SpriteBatch.Draw(EtcTextures, unit.Position + offset, hoverSrcRec, Color.White, rotation, origin, 1, 0, 0);
+
+					Rectangle healthBar = new Rectangle((int)unit.Position.X, (int)unit.Position.Y - 5, unit.Bounds.Width, 3);
+					screenManager.SpriteBatch.Draw(screenManager.BlankTexture, healthBar, Color.Red);
+					healthBar = new Rectangle((int)unit.Position.X, (int)unit.Position.Y - 5, (int)(unit.Health / unit.MaxHealth * unit.Bounds.Width), 3);
+					screenManager.SpriteBatch.Draw(screenManager.BlankTexture, healthBar, Color.Green);
 				}
 				entity.Draw(gameTime, screenManager);
 			}
@@ -91,6 +104,7 @@ namespace Project_WB.Framework.Entities {
 						((Sprite)entity).spriteSheet = DefaultSpritesheet;
 					}
 				}
+				entity.InvokeCreated();
 
 				this.entities.Add(entity);
 			}

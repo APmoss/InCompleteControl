@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Project_WB.Framework.Audio;
+using GameStateManagement;
 
 namespace Project_WB.Framework.Entities.Units {
 	class Guy : Unit {
-		public Guy(Texture2D spriteSheet) : base(spriteSheet) {
+		public Guy() {
 			#region SetRectangles
 			var usr = new List<Rectangle>() {
 				new Rectangle(0, 224, 32, 32),
@@ -36,6 +38,12 @@ namespace Project_WB.Framework.Entities.Units {
 			#endregion
 
 			Name = "Guy";
+			TargetAnimationTime = TimeSpan.FromSeconds(.2);
+
+			// Lambda expressions!!!
+			Killed += (s, e) => { EntityManager.audioManager.AddSounds(new EnvironmentSound(EntityManager.soundLibrary.GetSound("-ugh"), ((Guy)s).Position / 32, false)); };
 		}
+
+
 	}
 }

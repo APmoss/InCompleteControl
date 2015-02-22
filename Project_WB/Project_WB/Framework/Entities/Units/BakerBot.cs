@@ -4,10 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
 namespace Project_WB.Framework.Entities.Units {
-	class BakerBot : Centurion {
+	class BakerBot : VerticalCenturion {
 		Texture2D baker;
 
-		public BakerBot(Texture2D spriteSheet, Texture2D baker) : base(spriteSheet) {
+		public BakerBot(Texture2D baker) {
 			Name = "BakerBot";
 
 			this.baker = baker;

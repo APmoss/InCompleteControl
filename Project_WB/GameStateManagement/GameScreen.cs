@@ -213,17 +213,6 @@ namespace GameStateManagement {
 		bool isSerializable = true;
 
 		/// <summary>
-		/// Each gamescreen has the potential to contain a gui screen, just
-		/// add the essential gui commands.
-		/// </summary>
-		public GuiManager Gui {
-			get { return gui; }
-			set { gui = value; }
-		}
-
-		GuiManager gui;
-
-		/// <summary>
 		/// Activates the screen. Called when the screen is added to the screen manager or if the game resumes
 		/// from being paused or tombstoned.
 		/// </summary>

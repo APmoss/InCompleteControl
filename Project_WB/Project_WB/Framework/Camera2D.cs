@@ -103,22 +103,6 @@ namespace Project_WB.Framework {
 				// Translate to the center of the screen (all camera modifcations are relative to the center)
 				Matrix.CreateTranslation(new Vector3(Viewport.Width / 2, Viewport.Height / 2, 0));
 		}
-		//TODO: REMOVE THIS
-		public Matrix Thing() {
-			return
-				// Translate to the position
-				Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) *
-				// Rotate in radians
-				//Matrix.CreateRotationX(xRotation) *
-				Matrix.CreateRotationY(yRotation) *
-				// We must flatten the 3 dimensional transformations because of the spritebatch viewing depth limitations.
-				Matrix.CreateScale(1, 1, 0) *
-				Matrix.CreateRotationZ(zRotation) *
-				// Apply scale
-				Matrix.CreateScale(scale) *
-				// Translate to the center of the screen (all camera modifcations are relative to the center)
-				Matrix.CreateTranslation(new Vector3(Viewport.Width / 2, Viewport.Height / 2, 0));
-		}
 
 		/// <summary>
 		/// Returns a matrix that applies the OLD translations, the scale, and the rotation.

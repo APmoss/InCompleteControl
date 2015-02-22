@@ -100,6 +100,7 @@
     <Compile Include="Framework\Entities\Unit.cs" />
     <Compile Include="Framework\Entities\Units\BakerBot.cs" />
     <Compile Include="Framework\Entities\Units\Centurion.cs" />
+    <Compile Include="Framework\Entities\Units\VerticalCenturion.cs" />
     <Compile Include="Framework\Entities\Units\Guy.cs" />
     <Compile Include="Framework\Entities\Units\Sango.cs" />
     <Compile Include="Framework\Particles\AnimatedParticle.cs" />

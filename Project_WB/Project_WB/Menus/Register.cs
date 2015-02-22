@@ -10,6 +10,10 @@ using System.Text.RegularExpressions;
 
 namespace Project_WB.Menus {
 	class Register : GameScreen {
+		#region Fields
+		GuiManager gui;
+		#endregion
+
 		public Register() {
 			//TODO: change back to .3
 			TransitionOnTime = TimeSpan.FromSeconds(1);
@@ -24,11 +28,7 @@ namespace Project_WB.Menus {
 		}
 
 		public override void Update(Microsoft.Xna.Framework.GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
-			Gui.Update(gameTime);
-
-			if (!coveredByOtherScreen && Gui.Screen != scrn) {
-				Gui.Screen = scrn;
-			}
+			gui.Update(gameTime);
 
 			//TODO: wither fine tune or remve this
 			if (ScreenState == GameStateManagement.ScreenState.TransitionOn || ScreenState == GameStateManagement.ScreenState.TransitionOff) {
@@ -39,7 +39,7 @@ namespace Project_WB.Menus {
 		}
 
 		public override void Draw(Microsoft.Xna.Framework.GameTime gameTime) {
-			Gui.Draw(gameTime);
+			gui.Draw(gameTime);
 
 			ScreenManager.SpriteBatch.Begin();
 
@@ -239,9 +239,12 @@ namespace Project_WB.Menus {
 		WindowControl registerWindow;
 
 		private void SetGui() {
-			Gui = ScreenManager.DefaultGui;
+			gui = new GuiManager(ScreenManager.GraphicsDeviceManager, ScreenManager.NuclexInputManager);
+			gui.Visualizer = Nuclex.UserInterface.Visuals.Flat.FlatGuiVisualizer.FromFile(ScreenManager.Game.Services, "content/gui/grey/Suave.skin.xml");
+			gui.Initialize();
+
 			scrn = new Screen(Stcs.XRes, Stcs.YRes);
-			Gui.Screen = scrn;
+			gui.Screen = scrn;
 			
 			scrn.Desktop.Bounds = new UniRectangle(0, 0, Stcs.XRes, Stcs.YRes);
 

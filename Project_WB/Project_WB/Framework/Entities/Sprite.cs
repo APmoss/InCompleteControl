@@ -20,6 +20,10 @@ namespace Project_WB.Framework.Entities {
 		protected internal Texture2D spriteSheet;
 		#endregion
 
+		public Sprite() {
+
+		}
+
 		public Sprite(Texture2D spriteSheet) {
 			this.spriteSheet = spriteSheet;
 		}

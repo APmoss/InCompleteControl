@@ -10,11 +10,32 @@ namespace Project_WB.Framework.Entities {
 
 		#region Fields
 		bool isSelected = false;
+		float health = 100;
+		protected float maxHealth = 100;
 		public float Speed = 1;
 		public LinkedList<Point> Waypoints = new LinkedList<Point>();
 		#endregion
 
 		#region Properties
+		public float Health {
+			get { return health; }
+			set {
+				if (health != (float)MathHelper.Clamp(value, 0, maxHealth) && HealthChanged != null) {
+					HealthChanged.Invoke(this, EventArgs.Empty);
+				}
+
+				health = (float)MathHelper.Clamp(value, 0, maxHealth);
+
+				if (health == 0 && Killed != null) {
+					Killed.Invoke(this, EventArgs.Empty);
+				}
+			}
+		}
+
+		public float MaxHealth {
+			get { return maxHealth; }
+		}
+
 		public Point Tile {
 			get {
 				return new Point((int)Math.Round(Position.X / EntityManager.tileSize),
@@ -47,7 +68,18 @@ namespace Project_WB.Framework.Entities {
 		public event EventHandler<EventArgs> Selected;
 		public event EventHandler<EventArgs> Deselected;
 		public event EventHandler<HotkeyEventArgs> HotkeyPressed;
+
+		public event EventHandler<EventArgs> HealthChanged;
+		public event EventHandler<EventArgs> Killed;
+
+		public event EventHandler<EventArgs> WaypointsChanged;
+		public event EventHandler<EventArgs> DestinationAchieved;
 		#endregion
+
+		public Unit() {
+			// Wooh, lambda expressions!
+			LeftClicked += (s, e) => { EntityManager.SelectedUnit = this; IsSelected = true; };
+		}
 
 		public Unit(Texture2D spriteSheet) : base(spriteSheet) {
 			// Wooh, lambda expressions!
@@ -119,6 +151,19 @@ namespace Project_WB.Framework.Entities {
 
 			return new Point((int)Math.Round(Position.X / EntityManager.tileSize),
 								(int)Math.Round(Position.Y / EntityManager.tileSize));
+		}
+		#endregion
+
+		#region Invocations
+		public void InvokeWaypointsChanged() {
+			if (WaypointsChanged != null) {
+				WaypointsChanged.Invoke(this, EventArgs.Empty);
+			}
+		}
+		public void InvokeDestinationAchieved() {
+			if (DestinationAchieved != null) {
+				DestinationAchieved.Invoke(this, EventArgs.Empty);
+			}
 		}
 		#endregion
 	}

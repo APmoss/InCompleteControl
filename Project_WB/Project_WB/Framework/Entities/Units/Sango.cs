@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Project_WB.Framework.Entities.Units {
 	class Sango : Unit {
-		public Sango(Texture2D spriteSheet) : base(spriteSheet) {
+		public Sango() {
 			#region SetRectangles
 			var usr = new List<Rectangle>() {
 				new Rectangle(0, 96, 32, 32),
@@ -36,6 +36,7 @@ namespace Project_WB.Framework.Entities.Units {
 			#endregion
 
 			Name = "Sango";
+			TargetAnimationTime = TimeSpan.FromSeconds(.2);
 		}
 	}
 }

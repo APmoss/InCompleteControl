@@ -17,6 +17,8 @@ namespace Project_WB.Menus {
 	/// </summary>
 	class SignIn : GameScreen {
 		#region Fields
+		// A gui manager for all gui elements
+		GuiManager gui;
 		//TODO: finalize background
 		List<Vector2> points1 = new List<Vector2>();
 		List<Vector2> points2 = new List<Vector2>();
@@ -51,13 +53,7 @@ namespace Project_WB.Menus {
 
 		#region Overridden Methods
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
-			if (!coveredByOtherScreen) {
-				Gui.Update(gameTime);
-			}
-
-			if (!coveredByOtherScreen && Gui.Screen != scrn) {
-				Gui.Screen = scrn;
-			}
+			gui.Update(gameTime);
 
 			//TODO: finalize background
 			for (int i = 0; i < points1.Count; i++) {
@@ -73,7 +69,7 @@ namespace Project_WB.Menus {
 				newPos.Y = (Stcs.YRes * 3 / 4) + (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds + newPos.X) * (float)(40 * (Math.Sin(gameTime.TotalGameTime.TotalSeconds) + 1));
 				points3[i] = newPos;
 			}
-
+			
 			titlePos.X = r.Next((int)baseTitlePos.X - 1, (int)baseTitlePos.X + 2);
 			titlePos.Y = r.Next((int)baseTitlePos.Y - 1, (int)baseTitlePos.Y + 2);
 
@@ -90,12 +86,12 @@ namespace Project_WB.Menus {
 				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)points3[i].X, (int)points3[i].Y, 2, 2), Color.Blue * TransitionAlpha);
 			}
 
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "RESONANT FREQUENCY", titlePos - Vector2.One, new Color(60, 0, 0) * TransitionAlpha);
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "RESONANT FREQUENCY", titlePos + Vector2.One, Color.Maroon * TransitionAlpha);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "InComplete Control", titlePos - Vector2.One, new Color(60, 0, 0) * TransitionAlpha);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "InComplete Control", titlePos + Vector2.One, Color.Maroon * TransitionAlpha);
 
 			ScreenManager.SpriteBatch.End();
 			
-			Gui.Draw(gameTime);
+			gui.Draw(gameTime);
 
 			base.Draw(gameTime);
 		}
@@ -122,9 +118,12 @@ namespace Project_WB.Menus {
 		WindowControl otherWindow;
 
 		private void SetGui() {
-			Gui = ScreenManager.DefaultGui;
+			gui = new GuiManager(ScreenManager.GraphicsDeviceManager, ScreenManager.NuclexInputManager);
+			gui.Visualizer = Nuclex.UserInterface.Visuals.Flat.FlatGuiVisualizer.FromFile(ScreenManager.Game.Services, "content/gui/grey/Suave.skin.xml");
+			gui.Initialize();
+
 			scrn = new Screen(Stcs.XRes, Stcs.YRes);
-			Gui.Screen = scrn;
+			gui.Screen = scrn;
 			
 			scrn.Desktop.Bounds = new UniRectangle(0, 0, Stcs.XRes, Stcs.YRes);
 
@@ -181,7 +180,7 @@ namespace Project_WB.Menus {
 			loginButton.Text = Strings.SignIn;
 			loginButton.Bounds = new UniRectangle(10, 170, 160, 35);
 			loginButton.Pressed += delegate {
-				Gui.Screen.Desktop.Children.Clear();
+				gui.Dispose();
 				ScreenManager.AddScreen(new Gameplay.TestThing(), null);
 				ExitScreen();
 			};

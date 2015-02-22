@@ -32,6 +32,8 @@ namespace Project_WB.Framework.Entities {
 		public event EventHandler<EntityInputEventArgs> LeftClicked;
 		public event EventHandler<EntityInputEventArgs> MiddleClicked;
 		public event EventHandler<EntityInputEventArgs> RightClicked;
+
+		public event EventHandler<EventArgs> Created;
 		#endregion
 
 		#region Methods
@@ -73,6 +75,12 @@ namespace Project_WB.Framework.Entities {
 
 		public virtual void Draw(GameTime gameTime, ScreenManager screenManager) {
 		
+		}
+
+		public void InvokeCreated() {
+			if (Created != null) {
+				Created.Invoke(this, EventArgs.Empty);
+			}
 		}
 		#endregion
 	}
