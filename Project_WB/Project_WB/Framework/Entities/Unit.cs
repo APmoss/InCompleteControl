@@ -6,15 +6,25 @@ using GameStateManagement;
 
 namespace Project_WB.Framework.Entities {
 	class Unit : AnimatedSprite {
+		const int nearestDistance = 3;
+
 		#region Fields
 		bool isSelected = false;
-		LinkedList<Point> Waypoints = new LinkedList<Point>();
+		public float Speed = 1;
+		public LinkedList<Point> Waypoints = new LinkedList<Point>();
 
 		//remove?
 		int haloOrbPadding = 5;
 		#endregion
 
 		#region Properties
+		public Point Tile {
+			get {
+				return new Point((int)Math.Round(Position.X / EntityManager.tileSize),
+								(int)Math.Round(Position.Y / EntityManager.tileSize));
+			}
+		}
+
 		public bool IsSelected {
 			get { return isSelected; }
 			set{
@@ -43,9 +53,8 @@ namespace Project_WB.Framework.Entities {
 		#endregion
 
 		public Unit(Texture2D spriteSheet) : base(spriteSheet) {
-			LeftClicked += delegate {
-				IsSelected = true;
-			};
+			// Wooh, lambda expressions!
+			LeftClicked += (s, e) => { EntityManager.SelectedUnit = this; IsSelected = true; };
 		}
 		public Unit(Texture2D spriteSheet,
 						List<Rectangle> upSourceRectangles,
@@ -55,15 +64,31 @@ namespace Project_WB.Framework.Entities {
 
 			SetSourceRectangles(upSourceRectangles, downSourceRectangles, leftSourceRectangles, rightSourceRectangles);
 
-			LeftClicked += delegate(object sender, EntityInputEventArgs e) {
-				EntityManager.SelectedEntity = this;
-
-				IsSelected = true;
-			};
+			// Wooh, lambda expressions!
+			LeftClicked += (s, e) => { EntityManager.SelectedUnit = this; IsSelected = true; };
 		}
 
-		#region Methods
+		#region Overridden Methods
 		public override void Update(GameTime gameTime) {
+			if (Waypoints.Count > 0) {
+				var ts = EntityManager.tileSize;
+
+				if (Vector2.Distance(Position, new Vector2(Waypoints.First.Value.X * ts, Waypoints.First.Value.Y * ts)) < nearestDistance) {
+					Waypoints.RemoveFirst();
+				}
+				else {
+					var targetVector = new Vector2(Waypoints.First.Value.X * ts - Position.X,
+													Waypoints.First.Value.Y * ts - Position.Y);
+					targetVector.Normalize();
+					targetVector *= Speed;
+
+					Velocity = targetVector;
+				}
+			}
+			else {
+				Velocity = Vector2.Zero;
+			}
+
 			base.Update(gameTime);
 		}
 
@@ -83,6 +108,18 @@ namespace Project_WB.Framework.Entities {
 			}
 
 			base.Draw(gameTime, screenManager);
+		}
+		#endregion
+
+		#region Public Methods
+		public Point GetTile(bool centered) {
+			if (centered) {
+				return new Point((int)Math.Round((Position.X + Bounds.Width / 2) / EntityManager.tileSize),
+								(int)Math.Round((Position.Y + Bounds.Height / 2) / EntityManager.tileSize));
+			}
+
+			return new Point((int)Math.Round(Position.X / EntityManager.tileSize),
+								(int)Math.Round(Position.Y / EntityManager.tileSize));
 		}
 		#endregion
 	}

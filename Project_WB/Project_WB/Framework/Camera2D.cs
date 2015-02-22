@@ -96,7 +96,7 @@ namespace Project_WB.Framework {
 				Matrix.CreateRotationX(xRotation) *
 				Matrix.CreateRotationY(yRotation) *
 				// We must flatten the 3 dimensional transformations because of the spritebatch viewing depth limitations.
-				Matrix.CreateScale(1, 1, 0) *
+				//Matrix.CreateScale(1, 1, 0) *
 				Matrix.CreateRotationZ(zRotation) *
 				// Apply scale
 				Matrix.CreateScale(scale) *
@@ -133,7 +133,7 @@ namespace Project_WB.Framework {
 				Matrix.CreateRotationX(lastXRotation) *
 				Matrix.CreateRotationY(lastYRotation) *
 				// We must flatten the 3 dimensional transformations because of the spritebatch viewing depth limitations.
-				Matrix.CreateScale(1, 1, 0) *
+				//Matrix.CreateScale(1, 1, 0) *
 				Matrix.CreateRotationZ(lastZRotation) *
 				// Apply old scale
 				Matrix.CreateScale(lastScale) *

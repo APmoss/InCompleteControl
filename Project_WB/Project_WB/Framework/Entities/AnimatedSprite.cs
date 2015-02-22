@@ -36,17 +36,19 @@ namespace Project_WB.Framework.Entities {
 
 		#region Methods
 		public override void Update(GameTime gameTime) {
-			if (Velocity.X < 0) {
-				animationState = AnimationState.MovingLeft;
-			}
-			else if (Velocity.X > 0) {
-				animationState = AnimationState.MovingRight;
-			}
-			if (Velocity.Y < 0) {
+			float angularDirection = (float)Math.Atan2(-Velocity.Y, Velocity.X);
+
+			if (angularDirection < 3 * MathHelper.PiOver4 && angularDirection > MathHelper.PiOver4) {
 				animationState = AnimationState.MovingUp;
 			}
-			else if (Velocity.Y > 0) {
+			else if (angularDirection > 3 * MathHelper.PiOver4 || angularDirection < -3 * MathHelper.PiOver4) {
+				animationState = AnimationState.MovingLeft;
+			}
+			else if (angularDirection > -3 * MathHelper.PiOver4 && angularDirection < -MathHelper.PiOver4) {
 				animationState = AnimationState.MovingDown;
+			}
+			else if (angularDirection < MathHelper.PiOver4 && angularDirection > -MathHelper.PiOver4) {
+				animationState = AnimationState.MovingRight;
 			}
 			if (Velocity.X == 0 && Velocity.Y == 0) {
 				animationState = AnimationState.Normal;

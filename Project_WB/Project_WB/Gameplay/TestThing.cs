@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Project_WB.Framework.Entities;
 using Microsoft.Xna.Framework.Audio;
+using Project_WB.Framework.Entities.Units;
 
 namespace Project_WB.Gameplay {
 	class TestThing : GameScreen {
@@ -20,6 +21,7 @@ namespace Project_WB.Gameplay {
 		Camera2D cam;
 		AudioManager audioManager;
 		ParticleManager particleManager;
+		EntityManager entityManager;
 		EnvironmentSound testSound;
 		MouseState mouse = new MouseState();
 		Point mouseTile = Point.Zero;
@@ -29,12 +31,12 @@ namespace Project_WB.Gameplay {
 		TimeSpan searchTime = TimeSpan.Zero;
 		RenderTarget2D mainTarget;
 		RenderTarget2D lightMask;
+		Color ambience = new Color(10, 10, 10, 255);
 
 		Map map;
 
+		AnimatedSprite mech;
 		TestCharacter character;
-		AnimatedSprite sango;
-		Unit mech;
 		bool follow = false;
 
 		Random r = new Random();
@@ -98,38 +100,11 @@ namespace Project_WB.Gameplay {
 						break;
 				}
 			};
-			character.MouseEntered += delegate {
-				ScreenManager.SoundLibrary.GetSound("tileChange1").Play();
-			};
+			character.MouseEntered += (s, e) => ScreenManager.SoundLibrary.GetSound("tileChange1").Play();
 
-			var usr = new List<Rectangle>() {
-				new Rectangle(0, 96, 32, 32),
-				new Rectangle(32, 96, 32, 32),
-				new Rectangle(64, 96, 32, 32),
-				new Rectangle(96, 96, 32, 32),
-			};
-			var dsr = new List<Rectangle>() {
-				new Rectangle(0, 0, 32, 32),
-				new Rectangle(32, 0, 32, 32),
-				new Rectangle(64, 0, 32, 32),
-				new Rectangle(96, 0, 32, 32),
-			};
-			var lsr = new List<Rectangle>() {
-				new Rectangle(0, 32, 32, 32),
-				new Rectangle(32, 32, 32, 32),
-				new Rectangle(64, 32, 32, 32),
-				new Rectangle(96, 32, 32, 32),
-			};
-			var rsr = new List<Rectangle>() {
-				new Rectangle(0, 64, 32, 32),
-				new Rectangle(32, 64, 32, 32),
-				new Rectangle(64, 64, 32, 32),
-				new Rectangle(96, 64, 32, 32),
-			};
-			sango = new AnimatedSprite(ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"),
-										usr, dsr, lsr, rsr);
-
-			usr = new List<Rectangle>() {
+			mech = new AnimatedSprite(ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"));
+			mech.SetSourceRectangles(
+				new List<Rectangle>() {
 				new Rectangle(0, 352, 32, 32),
 				new Rectangle(32, 352, 32, 32),
 				new Rectangle(64, 352, 32, 32),
@@ -138,8 +113,8 @@ namespace Project_WB.Gameplay {
 				new Rectangle(160, 352, 32, 32),
 				new Rectangle(192, 352, 32, 32),
 				new Rectangle(224, 352, 32, 32)
-			};
-			dsr = new List<Rectangle>() {
+			},
+			new List<Rectangle>() {
 				new Rectangle(0, 256, 32, 32),
 				new Rectangle(32, 256, 32, 32),
 				new Rectangle(64, 256, 32, 32),
@@ -148,8 +123,8 @@ namespace Project_WB.Gameplay {
 				new Rectangle(160, 256, 32, 32),
 				new Rectangle(192, 256, 32, 32),
 				new Rectangle(224, 256, 32, 32)
-			};
-			lsr = new List<Rectangle>() {
+			},
+			new List<Rectangle>() {
 				new Rectangle(0, 288, 32, 32),
 				new Rectangle(32, 288, 32, 32),
 				new Rectangle(64, 288, 32, 32),
@@ -158,8 +133,8 @@ namespace Project_WB.Gameplay {
 				new Rectangle(160, 288, 32, 32),
 				new Rectangle(192, 288, 32, 32),
 				new Rectangle(224, 288, 32, 32)
-			};
-			rsr = new List<Rectangle>() {
+			},
+			new List<Rectangle>() {
 				new Rectangle(0, 320, 32, 32),
 				new Rectangle(32, 320, 32, 32),
 				new Rectangle(64, 320, 32, 32),
@@ -168,9 +143,16 @@ namespace Project_WB.Gameplay {
 				new Rectangle(160, 320, 32, 32),
 				new Rectangle(192, 320, 32, 32),
 				new Rectangle(224, 320, 32, 32)
-			};
-			mech = new Unit(ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"));
-			mech.SetSourceRectangles(usr, dsr, lsr, rsr);
+			});
+
+			entityManager = new EntityManager(ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"));
+			//TODO note to me- remove the constructor dependency on the spritesheet, since the entitymanager will automatically set if if it's null to the entity manager's default.
+			// this will clear things upo and allow bettter constructor parameters, like position.
+			Sango sango = new Sango(entityManager.DefaultSpritesheet);
+			Guy guy = new Guy(entityManager.DefaultSpritesheet);
+			sango.Position = new Vector2(128, 352);
+			guy.Position = new Vector2(128 + 32, 352);
+			entityManager.AddEntities(sango, guy);
 
 			ScreenManager.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
 
@@ -188,8 +170,8 @@ namespace Project_WB.Gameplay {
 			elapsed += gameTime.ElapsedGameTime;
 
 			character.Update(gameTime);
-			sango.Update(gameTime);
 			mech.Update(gameTime);
+			entityManager.Update(gameTime);
 
 			if (follow) {
 				cam.DestPosition = character.Position;
@@ -289,6 +271,25 @@ namespace Project_WB.Gameplay {
 			if (input.IsNewKeyPress(Keys.F, null, out p)) {
 				follow = !follow;
 			}
+			if (input.IsNewKeyPress(Keys.N, null, out p)) {
+				Centurion temp = new Centurion(entityManager.DefaultSpritesheet);
+				temp.Position = new Vector2(mouseTile.X * 32, mouseTile.Y * 32);
+				entityManager.AddEntities(temp);
+			}
+
+			if (input.IsKeyPressed(Keys.PageUp, null, out p)) {
+				ambience.R += 2;
+				ambience.B += 2;
+				ambience.G += 2;
+			}
+			if (input.IsKeyPressed(Keys.PageDown, null, out p)) {
+				ambience.R -= 2;
+				ambience.B -= 2;
+				ambience.G -= 2;
+			}
+			ambience.R = (byte)MathHelper.Clamp(ambience.R, 2, 253);
+			ambience.G = (byte)MathHelper.Clamp(ambience.G, 2, 253);
+			ambience.B = (byte)MathHelper.Clamp(ambience.B, 2, 253);
 
 			if (input.IsKeyPressed(Keys.OemPlus, null, out p)) {
 				particleLoops++;
@@ -296,69 +297,132 @@ namespace Project_WB.Gameplay {
 				particleLoops--;
 			}
 
-			if (input.IsNewKeyPress(Keys.T, null, out p) || (Mouse.GetState().RightButton == ButtonState.Pressed && mouse.RightButton == ButtonState.Released)) {
-				if ((mouseTile.X >= 0 && mouseTile.X < 50 && mouseTile.Y >= 0 && mouseTile.Y < 50) && 
-					(!barrierList.Contains(mouseTile))) {
-					PathFinder pf = new PathFinder();
+			//if (input.IsNewKeyPress(Keys.T, null, out p) || (Mouse.GetState().RightButton == ButtonState.Pressed && mouse.RightButton == ButtonState.Released)) {
+			//    if ((mouseTile.X >= 0 && mouseTile.X < 50 && mouseTile.Y >= 0 && mouseTile.Y < 50) && 
+			//        (!barrierList.Contains(mouseTile))) {
+			//        PathFinder pf = new PathFinder();
 
-					LinkedList<Point> solution = new LinkedList<Point>();
+			//        LinkedList<Point> solution = new LinkedList<Point>();
 
-					var before = DateTime.Now;
+			//        var before = DateTime.Now;
 
-					if (input.IsKeyPressed(Keys.LeftShift, null, out p) && character.Waypoints.Count > 0) {
-						if (pf.QuickFind(new MapData(50, 50, character.Waypoints.Last(), mouseTile, barrierList), out solution)) {
-							solution.RemoveFirst();
-							character.Waypoints.AddRange(solution.ToList());
-							character.Angry = false;
+			//        if (input.IsKeyPressed(Keys.LeftShift, null, out p) && character.Waypoints.Count > 0) {
+			//            if (pf.QuickFind(new MapData(50, 50, character.Waypoints.Last(), mouseTile, barrierList), out solution)) {
+			//                solution.RemoveFirst();
+			//                character.Waypoints.AddRange(solution.ToList());
+			//                character.Angry = false;
 
-							switch (r.Next(4)) {
-								case 0:
-									ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
-									break;
-								case 1:
-									ScreenManager.SoundLibrary.GetSound("-recieved").Play();
-									break;
-								case 2:
-									ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
-									break;
-								case 3:
-									ScreenManager.SoundLibrary.GetSound("-roger").Play();
-									break;
+			//                switch (r.Next(4)) {
+			//                    case 0:
+			//                        ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
+			//                        break;
+			//                    case 1:
+			//                        ScreenManager.SoundLibrary.GetSound("-recieved").Play();
+			//                        break;
+			//                    case 2:
+			//                        ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
+			//                        break;
+			//                    case 3:
+			//                        ScreenManager.SoundLibrary.GetSound("-roger").Play();
+			//                        break;
+			//                }
+			//            }
+			//            else {
+			//                character.Angry = true;
+			//            }
+			//        }
+			//        else {
+			//            if (pf.QuickFind(new MapData(50, 50, character.TilePosition, mouseTile, barrierList), out solution)) {
+			//                character.Waypoints = solution.ToList();
+			//                character.Angry = false;
+
+			//                switch (r.Next(4)) {
+			//                    case 0:
+			//                        ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
+			//                        break;
+			//                    case 1:
+			//                        ScreenManager.SoundLibrary.GetSound("-recieved").Play();
+			//                        break;
+			//                    case 2:
+			//                        ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
+			//                        break;
+			//                    case 3:
+			//                        ScreenManager.SoundLibrary.GetSound("-roger").Play();
+			//                        break;
+			//                }
+			//            }
+			//            else {
+			//                character.Angry = true;
+			//            }
+			//        }
+
+			//        searchTime = DateTime.Now - before;
+			//    }
+			//    else {
+			//        character.Angry = true;
+			//    }
+			//}
+
+			if (input.IsNewMousePress(InputState.MouseButton.Right)) {
+				if (entityManager.SelectedUnit != null) {
+					if ((mouseTile.X >= 0 && mouseTile.X < 50 && mouseTile.Y >= 0 && mouseTile.Y < 50) &&
+															(!barrierList.Contains(mouseTile))) {
+						PathFinder pf = new PathFinder();
+
+						LinkedList<Point> solution = new LinkedList<Point>();
+
+						if (input.IsKeyPressed(Keys.LeftShift, null, out p) && entityManager.SelectedUnit.Waypoints.Count > 0) {
+							if (pf.QuickFind(new MapData(50, 50, entityManager.SelectedUnit.Waypoints.Last(), mouseTile, barrierList), out solution)) {
+								solution.RemoveFirst();
+								foreach (var item in solution) {
+									entityManager.SelectedUnit.Waypoints.AddLast(item);
+								}
+								character.Angry = false;
+
+								switch (r.Next(4)) {
+									case 0:
+										ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
+										break;
+									case 1:
+										ScreenManager.SoundLibrary.GetSound("-recieved").Play();
+										break;
+									case 2:
+										ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
+										break;
+									case 3:
+										ScreenManager.SoundLibrary.GetSound("-roger").Play();
+										break;
+								}
+							}
+							else {
+								character.Angry = true;
 							}
 						}
 						else {
-							character.Angry = true;
-						}
-					}
-					else {
-						if (pf.QuickFind(new MapData(50, 50, character.TilePosition, mouseTile, barrierList), out solution)) {
-							character.Waypoints = solution.ToList();
-							character.Angry = false;
+							if (pf.QuickFind(new MapData(50, 50, entityManager.SelectedUnit.Tile, mouseTile, barrierList), out solution)) {
+								entityManager.SelectedUnit.Waypoints = solution;
+								character.Angry = false;
 
-							switch (r.Next(4)) {
-								case 0:
-									ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
-									break;
-								case 1:
-									ScreenManager.SoundLibrary.GetSound("-recieved").Play();
-									break;
-								case 2:
-									ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
-									break;
-								case 3:
-									ScreenManager.SoundLibrary.GetSound("-roger").Play();
-									break;
+								switch (r.Next(4)) {
+									case 0:
+										ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
+										break;
+									case 1:
+										ScreenManager.SoundLibrary.GetSound("-recieved").Play();
+										break;
+									case 2:
+										ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
+										break;
+									case 3:
+										ScreenManager.SoundLibrary.GetSound("-roger").Play();
+										break;
+								}
+							}
+							else {
+								character.Angry = true;
 							}
 						}
-						else {
-							character.Angry = true;
-						}
 					}
-
-					searchTime = DateTime.Now - before;
-				}
-				else {
-					character.Angry = true;
 				}
 			}
 
@@ -382,36 +446,8 @@ namespace Project_WB.Gameplay {
 			}
 
 			character.UpdateInteraction(gameTime, input, cam);
-			sango.UpdateInteraction(gameTime, input, cam);
-			sango.Velocity = Vector2.Zero;
-			sango.TargetAnimationTime = TimeSpan.FromSeconds(.5);
-			//if (input.IsKeyPressed(Keys.I, null, out p)) {
-			//    sango.Velocity.Y -= 1;
-			//}
-			//if (input.IsKeyPressed(Keys.J, null, out p)) {
-			//    sango.Velocity.X -= 1;
-			//}
-			//if (input.IsKeyPressed(Keys.K, null, out p)) {
-			//    sango.Velocity.Y += 1;
-			//}
-			//if (input.IsKeyPressed(Keys.L, null, out p)) {
-			//    sango.Velocity.X += 1;
-			//}
-
 			mech.UpdateInteraction(gameTime, input, cam);
-			mech.Velocity = Vector2.Zero;
-			if (input.IsKeyPressed(Keys.I, null, out p)) {
-				mech.Velocity.Y -= 1;
-			}
-			if (input.IsKeyPressed(Keys.J, null, out p)) {
-				mech.Velocity.X -= 1;
-			}
-			if (input.IsKeyPressed(Keys.K, null, out p)) {
-				mech.Velocity.Y += 1;
-			}
-			if (input.IsKeyPressed(Keys.L, null, out p)) {
-				mech.Velocity.X += 1;
-			}
+			entityManager.UpdateInteration(gameTime, input, cam);
 
 			if (input.IsNewKeyPress(Keys.F10, null, out p)) {
 				ExitScreen();
@@ -436,8 +472,8 @@ namespace Project_WB.Gameplay {
 											Color.White * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
 			
 			character.Draw(gameTime, ScreenManager);
-			sango.Draw(gameTime, ScreenManager);
 			mech.Draw(gameTime, ScreenManager);
+			entityManager.Draw(gameTime, ScreenManager);
 
 			particleManager.Draw(gameTime, ScreenManager, cam.GetViewingRectangle());
 
@@ -459,7 +495,7 @@ namespace Project_WB.Gameplay {
 
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend); //, null, null, null, null, cam.GetMatrixTransformation());
 			testEffect.Parameters["lightMask"].SetValue(lightMask);
-			//testEffect.CurrentTechnique.Passes[0].Apply();
+			testEffect.CurrentTechnique.Passes[0].Apply();
 			ScreenManager.SpriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
 
 			ScreenManager.SpriteBatch.End();
@@ -472,7 +508,7 @@ namespace Project_WB.Gameplay {
 			ScreenManager.GraphicsDevice.Clear(Color.Black);
 
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, cam.GetMatrixTransformation());
-			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, cam.GetViewingRectangle(), new Color(10, 10, 10, 255));
+			ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, cam.GetViewingRectangle(), ambience);
 			ScreenManager.SpriteBatch.End();
 
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, cam.GetMatrixTransformation());
@@ -490,9 +526,9 @@ namespace Project_WB.Gameplay {
 										angle, new Vector2(64), new Vector2(cone, 2), SpriteEffects.None, 0);
 			ScreenManager.SpriteBatch.Draw(vignette, character.Position, null, character.flashColor,
 										0, new Vector2(48), 1, SpriteEffects.None, 0);
-			ScreenManager.SpriteBatch.Draw(vignette, sango.Position + new Vector2(9, 11), null, Color.Green,
+			ScreenManager.SpriteBatch.Draw(vignette, mech.Position + new Vector2(9, 11), null, Color.Green,
 										0, Vector2.Zero, .05f, SpriteEffects.None, 0);
-			ScreenManager.SpriteBatch.Draw(vignette, sango.Position + new Vector2(18, 11), null, Color.Green,
+			ScreenManager.SpriteBatch.Draw(vignette, mech.Position + new Vector2(18, 11), null, Color.Green,
 										0, Vector2.Zero, .05f, SpriteEffects.None, 0);
 			
 			ScreenManager.SpriteBatch.End();

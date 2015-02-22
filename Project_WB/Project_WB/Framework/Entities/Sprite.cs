@@ -17,7 +17,7 @@ namespace Project_WB.Framework.Entities {
 		public SpriteEffects SpriteEffects = SpriteEffects.None;
 
 		Rectangle sourceRectangle = Rectangle.Empty;
-		protected Texture2D spriteSheet;
+		protected internal Texture2D spriteSheet;
 		#endregion
 
 		public Sprite(Texture2D spriteSheet) {
