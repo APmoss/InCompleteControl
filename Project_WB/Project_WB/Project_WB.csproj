@@ -107,6 +107,7 @@
     <Compile Include="Framework\Particles\ParticleEmitter.cs" />
     <Compile Include="Framework\Particles\ParticleManager.cs" />
     <Compile Include="Framework\Entities\AnimatedSprite.cs" />
+    <Compile Include="Framework\RadialLight.cs" />
     <Compile Include="Gameplay\Battle.cs" />
     <Compile Include="Framework\Entities\Entity.cs" />
     <Compile Include="Framework\Pathfinding\PathMap.cs" />

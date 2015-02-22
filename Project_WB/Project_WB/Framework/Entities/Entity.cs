@@ -13,7 +13,7 @@ namespace Project_WB.Framework.Entities {
 		EntityManager entityManager;
 		protected Rectangle lastBounds = Rectangle.Empty;
 		public Rectangle Bounds = Rectangle.Empty;
-		public Dictionary<string, string> EntityData = new Dictionary<string, string>();
+		public Dictionary<string, object> EntityData = new Dictionary<string, object>();
 		#endregion
 
 		#region Properties

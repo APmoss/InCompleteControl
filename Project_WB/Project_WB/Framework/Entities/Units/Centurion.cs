@@ -51,7 +51,13 @@ namespace Project_WB.Framework.Entities.Units {
 			SetSourceRectangles(usr, dsr, lsr, rsr);
 			#endregion
 
+			Speed = 2;
 
+			var radialLights = new List<RadialLight>();
+			radialLights.Add(new RadialLight(new Vector2(3, -1), new Vector2(.06f, .15f), Color.CornflowerBlue));
+			radialLights.Add(new RadialLight(new Vector2(7, -2), new Vector2(.15f, .12f), Color.CornflowerBlue));
+
+			EntityData.Add("radialLights", radialLights);
 		}
 	}
 }

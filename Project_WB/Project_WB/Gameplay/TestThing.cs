@@ -297,72 +297,6 @@ namespace Project_WB.Gameplay {
 				particleLoops--;
 			}
 
-			//if (input.IsNewKeyPress(Keys.T, null, out p) || (Mouse.GetState().RightButton == ButtonState.Pressed && mouse.RightButton == ButtonState.Released)) {
-			//    if ((mouseTile.X >= 0 && mouseTile.X < 50 && mouseTile.Y >= 0 && mouseTile.Y < 50) && 
-			//        (!barrierList.Contains(mouseTile))) {
-			//        PathFinder pf = new PathFinder();
-
-			//        LinkedList<Point> solution = new LinkedList<Point>();
-
-			//        var before = DateTime.Now;
-
-			//        if (input.IsKeyPressed(Keys.LeftShift, null, out p) && character.Waypoints.Count > 0) {
-			//            if (pf.QuickFind(new MapData(50, 50, character.Waypoints.Last(), mouseTile, barrierList), out solution)) {
-			//                solution.RemoveFirst();
-			//                character.Waypoints.AddRange(solution.ToList());
-			//                character.Angry = false;
-
-			//                switch (r.Next(4)) {
-			//                    case 0:
-			//                        ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
-			//                        break;
-			//                    case 1:
-			//                        ScreenManager.SoundLibrary.GetSound("-recieved").Play();
-			//                        break;
-			//                    case 2:
-			//                        ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
-			//                        break;
-			//                    case 3:
-			//                        ScreenManager.SoundLibrary.GetSound("-roger").Play();
-			//                        break;
-			//                }
-			//            }
-			//            else {
-			//                character.Angry = true;
-			//            }
-			//        }
-			//        else {
-			//            if (pf.QuickFind(new MapData(50, 50, character.TilePosition, mouseTile, barrierList), out solution)) {
-			//                character.Waypoints = solution.ToList();
-			//                character.Angry = false;
-
-			//                switch (r.Next(4)) {
-			//                    case 0:
-			//                        ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
-			//                        break;
-			//                    case 1:
-			//                        ScreenManager.SoundLibrary.GetSound("-recieved").Play();
-			//                        break;
-			//                    case 2:
-			//                        ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
-			//                        break;
-			//                    case 3:
-			//                        ScreenManager.SoundLibrary.GetSound("-roger").Play();
-			//                        break;
-			//                }
-			//            }
-			//            else {
-			//                character.Angry = true;
-			//            }
-			//        }
-
-			//        searchTime = DateTime.Now - before;
-			//    }
-			//    else {
-			//        character.Angry = true;
-			//    }
-			//}
-
 			if (input.IsNewMousePress(InputState.MouseButton.Right)) {
 				if (entityManager.SelectedUnit != null) {
 					if ((mouseTile.X >= 0 && mouseTile.X < 50 && mouseTile.Y >= 0 && mouseTile.Y < 50) &&
@@ -514,8 +448,6 @@ namespace Project_WB.Gameplay {
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, cam.GetMatrixTransformation());
 
 			foreach (var particle in particleManager.GetParticles()) {
-				//ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)particlePosition.X - 8, (int)particlePosition.Y - 8, 16, 16), Color.White);
-				//ScreenManager.SpriteBatch.Draw(CreateRadialLightTexture(4, 4), new Rectangle((int)particlePosition.X - 8, (int)particlePosition.Y - 8, 16, 16), Color.White);
 				ScreenManager.SpriteBatch.Draw(vignette, new Rectangle((int)particle.Position.X - 8, (int)particle.Position.Y - 8, 16, 16), particle.Tint);
 			}
 
@@ -530,6 +462,18 @@ namespace Project_WB.Gameplay {
 										0, Vector2.Zero, .05f, SpriteEffects.None, 0);
 			ScreenManager.SpriteBatch.Draw(vignette, mech.Position + new Vector2(18, 11), null, Color.Green,
 										0, Vector2.Zero, .05f, SpriteEffects.None, 0);
+
+			foreach (var entity in entityManager.GetEntities()) {
+				if (entity is Centurion) {
+					Centurion cent = (Centurion)entity;
+
+					List<RadialLight> radialLights = (List<RadialLight>)entity.EntityData["radialLights"];
+
+					foreach (var light in radialLights) {
+						ScreenManager.SpriteBatch.Draw(vignette, ((Sprite)entity).Position + light.Position, null, light.Tint, 0, Vector2.Zero, light.Scale, 0, 0);
+					}
+				}
+			}
 			
 			ScreenManager.SpriteBatch.End();
 
