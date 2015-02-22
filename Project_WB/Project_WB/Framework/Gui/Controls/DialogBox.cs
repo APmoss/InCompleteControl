@@ -14,7 +14,8 @@ namespace Project_WB.Framework.Gui.Controls {
 
 		int characterDisplays = 0;
 
-		Button okButton;
+		public bool HasButton = true;
+		public Button OkButton;
 		#endregion
 
 		#region Properties
@@ -40,13 +41,15 @@ namespace Project_WB.Framework.Gui.Controls {
 		protected internal override void Initialize() {
 			ReformatText();
 
-			okButton = new Button(GlobalBounds.Right - 110, GlobalBounds.Bottom - 50, 100, "Ok");
-			okButton.GuiManager = this.GuiManager;
-			okButton.Initialize();
+			OkButton = new Button(GlobalBounds.Right - 110, GlobalBounds.Bottom - 50, 100, "Ok");
+			OkButton.GuiManager = this.GuiManager;
+			OkButton.Initialize();
 
-			okButton.LeftClicked += delegate {
-				GuiManager.RemoveControl(this);
-			};
+			if (HasButton) {
+				OkButton.LeftClicked += delegate {
+					GuiManager.RemoveControl(this);
+				};
+			}
 
 
 			base.Initialize();
@@ -62,14 +65,19 @@ namespace Project_WB.Framework.Gui.Controls {
 				}
 			}
 
-			okButton.Update(gameTime);
-			
+			if (HasButton) {
+				OkButton.Update(gameTime);
+			}			
+
 			base.Update(gameTime);
 		}
 
 		public override void UpdateInteraction(InputState input) {
-			okButton.UpdateInteraction(input);
+			if (HasButton) {
+				OkButton.UpdateInteraction(input);
 			
+			}
+
 			base.UpdateInteraction(input);
 		}
 
@@ -80,8 +88,10 @@ namespace Project_WB.Framework.Gui.Controls {
 			// Draw the dialog box text
 			screenManager.SpriteBatch.DrawString(GuiManager.font, Text.Substring(0, characterDisplays), new Vector2(GlobalBounds.X + 10, GlobalBounds.Y + 10), TextTint);
 
-			//Draw the Ok button
-			okButton.Draw(gameTime, screenManager);
+			if (HasButton) {
+				//Draw the Ok button
+				OkButton.Draw(gameTime, screenManager);
+			}
 			
 			base.Draw(gameTime, screenManager);
 		}
@@ -90,6 +100,7 @@ namespace Project_WB.Framework.Gui.Controls {
 		/// Reformats the structure of the text to wrap like a dialog box.
 		/// </summary>
 		protected void ReformatText() {
+			characterDisplays = 0;
 			int position = 0;
 			int count = 0;
 

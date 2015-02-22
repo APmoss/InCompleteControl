@@ -10,17 +10,22 @@
  </layer>
  <layer name="ground2" width="32" height="32">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC81WSQ7CMAwMIEW9ApdegUu/w/YBBA+g/F8ilVrJsmLHS0qpNGoPjmfGcVKvQgjrhbBJ2CbsEuL41qIVxjXguxvfe8Cfg1VTaX0k+JsZuDhQ/jtDLgtK9af2r0ZtWsQfK+x3bf/S3rbWbeC/IFyddS31TkT8D4SnUYu1/pif0qIBp/uMYjl+KzjdL2WuW0JvxF2QPxcLOT/B/rwFOnCsl1OrQ/LgnpH2oEQHFQs5Yc9w/QDzTj3I6ehRLO7THNewN9TZyvnjdIRMPPQIuTR3MfQ35ad0bDPxnEcLYF1wraX/35o6IDC/Z/bQzgj4/6/N45kXYtDNPx4uqqYa/jmA+eEZs/jVzku/8E/5aP6o/rXmXs/589TSur7EL/Hjua8G/kPCcSGcEr5232PcABAAAA==
+   H4sIAAAAAAAAC82Wzw6CMAzGpyYLV/XCVb3wOoo+gP8eQHz/xJFA0tR2a7shkvwCh7Lva7tBF8655UysAuvAJuCHu5ZaGFeB52a4b4E+hdVT6n3P6FcTaMXg8m8Ma1lI1Z/rX4na1EjfF+h36fyle9tat17/hGgz65raOx7p3xAPoxdr/bE+50VDzPcRxcb0rcR8P5VrnQMd4pIRh6Fi4Vpv931diXXuRNxL4APHcpoWfYkPyYX3DNVD3PNW6IOLhZpQj+oz1cPRT8xHx3gfNSmtvjfc2aLyi/lwRDzMEWppvsUwv3F9zseaiI/laAHWBdda+v8t6QOC9XNmD+2MgP//2nVy5gXvdPNPjhZXU43+FGB9eMYs+WrnpV/kz+VR/VH9S829Oecvp5bW91P6knxyvle9/i6wn4lD4AOISuzhABAAAA==
   </data>
  </layer>
  <layer name="tree1" width="32" height="32">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+2XQQoAIQhF3eoN6v4HnRFmSKSt/qD/IMSN9XIhmoiM90xA1C+i8HdYyDXl1WT/IT3/8Xtm/y5O7X83J/gjUfD9aH9CCEGCnH8Ocv45t89/+uPY+VfvILH+zr96B4n12f+1Bxkguv8DaSIMzgAQAAA=
+   H4sIAAAAAAAAC+2XQQrAMAgEveoP0v8/tBUCFclVV8gOBPFiMvEgmois7zyAqDui8HdYyDXl1WT/Jb3/kf27mdb/bib4I1Hw/Wh/QghBgpx/DnL+ObfPf/rjOPlX7yCx/sm/egeJ9dn/fw82QHT/F91Wb2UAEAAA
   </data>
  </layer>
- <layer name="collision" width="32" height="32" opacity="0">
+ <layer name="tree2" width="32" height="32">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+2VQQoAIAgEt/9/uqsIQVA6gg54i2YJabUk0UPh/dl5KD/9/rTf5+jsJ+nuH+6I7JXT2ax+i+zHlxw/qfbf01lov4XO0NlP78D46/mjM9n7K/ozqeIHZwMe/W5xABAAAA==
+   H4sIAAAAAAAAC+NkYGDgAmJOOtMwIAnEUgNAo7uD3mCg3QGzF+YOegNa+5+QubT2PyFzR+N/YOyFgcGS/0fBKBgFIxeM9HJopNd/o/4f9f+o/+kP0P1P7/4verjTu/8LAwCCBr/DABAAAA==
+  </data>
+ </layer>
+ <layer name="collision" width="32" height="32" opacity="0.01">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2X2woAEBBE1///tCclYSeXHaxTHhTOtMlGgoh4H4lyvpNaBit/rwYWWPi1c1/3a5ziZ+HdfxPoXR250621SL9A9yD+EZ/GTI6VsN+aVg5WllNy5Fm8+dn1//7vZ/xBtB7D9luB9F0HIwLtJhsYABAAAA==
   </data>
  </layer>
 </map>

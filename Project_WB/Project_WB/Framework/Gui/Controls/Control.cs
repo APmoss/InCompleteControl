@@ -5,20 +5,29 @@ using GameStateManagement;
 using MouseButton = GameStateManagement.InputState.MouseButton;
 
 namespace Project_WB.Framework.Gui.Controls {
+	/// <summary>
+	/// The base class for all gui controls. Contains essentials such as boundaries
+	/// and reference to an internal gui manager.
+	/// </summary>
 	class Control {
 		#region Fields
 		protected internal GuiManager GuiManager;
 		protected internal Control Parent;
 
+		// New an old bounds for interaction
 		protected Rectangle lastBounds = Rectangle.Empty;
 		public Rectangle Bounds = Rectangle.Empty;
 
 		public bool Enabled = true;
 
+		// Used for removal from manager
 		internal bool needsRemoval = false;
 		#endregion
 
 		#region Properties
+		/// <summary>
+		/// Gets the position in screen space of the control.
+		/// </summary>
 		public Vector2 GlobalPosition {
 			get {
 				if (Parent != null) {
@@ -28,6 +37,9 @@ namespace Project_WB.Framework.Gui.Controls {
 				return new Vector2(Bounds.X, Bounds.Y); 
 			}
 		}
+		/// <summary>
+		/// Gets the inherited bounds of the control from parents if applicable.
+		/// </summary>
 		public Rectangle GlobalBounds {
 			get {
 				if (Parent != null) {

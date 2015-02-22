@@ -61,6 +61,7 @@ namespace Project_WB.Gameplay {
 			cam = new Camera2D(ScreenManager.Game.GraphicsDevice.Viewport);
 			audioManager = new AudioManager(cam);
 			particleManager = new ParticleManager(ScreenManager.Game.Content.Load<Texture2D>("textures/particles"));
+			particleManager.MaxParticleCount = 4096;
 			testSound = new EnvironmentSound(ScreenManager.SoundLibrary.GetSound("creepyNoise"), new Vector2(256/32, 1344/32), true, TimeSpan.FromSeconds(30));
 			audioManager.AddSounds(testSound);
 
@@ -108,6 +109,7 @@ namespace Project_WB.Gameplay {
 			entityManager = new EntityManager(ScreenManager.Game.Content.Load<Texture2D>("textures/etc"), ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"), audioManager, ScreenManager.SoundLibrary, particleManager);
 			//TODO note to me- remove the constructor dependency on the spritesheet, since the entitymanager will automatically set if if it's null to the entity manager's default.
 			// this will clear things upo and allow bettter constructor parameters, like position.
+			entityManager.LoadMap(map);
 			Sango sango = new Sango();
 			Guy guy = new Guy();
 			sango.Position = new Vector2(128, 352);

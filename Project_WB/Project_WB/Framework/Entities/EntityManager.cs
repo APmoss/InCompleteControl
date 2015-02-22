@@ -54,7 +54,7 @@ namespace Project_WB.Framework.Entities {
 		/// </summary>
 		protected PathFinder pathFinder = new PathFinder();
 		// The initial data for the current map
-		protected MapData mapData;
+		public MapData mapData;
 
 		// The currently selected unit in the entity manager
 		Unit selectedUnit;
@@ -102,8 +102,15 @@ namespace Project_WB.Framework.Entities {
 
 		#region Methods
 		public void Update(GameTime gameTime) {
-			foreach (var entity in entities) {
-				entity.Update(gameTime);
+			for (int i = 0; i < entities.Count; i++) {
+				entities[i].Update(gameTime);
+
+				if (entities[i] is Unit) {
+					if (((Unit)entities[i]).NeedsRemoval) {
+						entities.RemoveAt(i);
+						i--;
+					}
+				}
 			}
 		}
 
@@ -123,7 +130,12 @@ namespace Project_WB.Framework.Entities {
 						if (!mapData.Barriers.Contains(tile) && (tile.X >= 0 && tile.X < mapData.NumberColumns) && (tile.Y >= 0 && tile.Y < mapData.NumberRows)) {
 							var drawRec = new Rectangle(tile.X * tileSize, tile.Y * tileSize, tileSize - 1, tileSize - 1);
 							float dist = Vector2.Distance(new Vector2(SelectedUnit.Tile.X, SelectedUnit.Tile.Y), new Vector2(tile.X, tile.Y));
-							screenManager.SpriteBatch.Draw(screenManager.BlankTexture, drawRec, Color.Blue * (float)((Math.Sin(-gameTime.TotalGameTime.TotalSeconds * 3 + dist) / 4 + .5)));
+							if (SelectedUnit.Team == controllingTeam) {
+								screenManager.SpriteBatch.Draw(screenManager.BlankTexture, drawRec, Color.Blue * (float)((Math.Sin(-gameTime.TotalGameTime.TotalSeconds * 3 + dist) / 4 + .5)));
+							}
+							else {
+								screenManager.SpriteBatch.Draw(screenManager.BlankTexture, drawRec, Color.DarkOrange * (float)((Math.Sin(-gameTime.TotalGameTime.TotalSeconds * 3 + dist) / 4 + .5)));
+							}
 						}
 					}
 				}
@@ -192,6 +204,22 @@ namespace Project_WB.Framework.Entities {
 				entity.InvokeCreated();
 
 				this.entities.Add(entity);
+			}
+		}
+
+		public void RemoveEntities(params Entity[] entities) {
+			foreach (var entity in entities) {
+				this.entities.Remove(entity);
+			}
+		}
+
+		public void ResetEntities() {
+			foreach (var entity in entities) {
+				if (entity is Unit) {
+					Unit unit = entity as Unit;
+					unit.Moved = false;
+					unit.HasAttacked = false;
+				}
 			}
 		}
 

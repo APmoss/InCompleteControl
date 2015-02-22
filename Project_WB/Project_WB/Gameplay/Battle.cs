@@ -30,7 +30,15 @@ namespace Project_WB.Gameplay {
 		Rectangle bottomCameraMovementBound;
 
 		protected Point mouseTile = Point.Zero;
+		protected bool combatLocked = false;
+		bool showGui = false;
+		int totalTeams = 2;
 		#endregion
+
+		public Battle() {
+			TransitionOnTime = TimeSpan.FromSeconds(.5);
+			TransitionOffTime = TimeSpan.FromSeconds(.5);
+		}
 
 		#region Overridden Methods
 		public override void Activate(bool instancePreserved) {
@@ -54,49 +62,60 @@ namespace Project_WB.Gameplay {
 		}
 
 		public override void HandleInput(GameTime gameTime, InputState input) {
-			entityManager.UpdateInteration(gameTime, input, camera);
 			guiManager.UpdateInteraction(input);
 
-			PlayerIndex p = PlayerIndex.One;
+			if (!combatLocked) {
+				entityManager.UpdateInteration(gameTime, input, camera);
 
-			int x = (int)MathHelper.Clamp(Mouse.GetState().X, 0, 1279);
-			int y = (int)MathHelper.Clamp(Mouse.GetState().Y, 0, 719);
-			Mouse.SetPosition(x, y);
+				PlayerIndex p = PlayerIndex.One;
 
-			// Check the mouse positions to move the camera (camera will move if mouse is on the borders)
-			if (leftCameraMovementBound.Contains(x, y)) {
-				camera.DestPosition.X -= 5;
-			}
-			if (rightCameraMovementBound.Contains(x, y)) {
-				camera.DestPosition.X += 5;
-			}
-			if (topCameraMovementBound.Contains(x, y)) {
-				camera.DestPosition.Y -= 5;
-			}
-			if (bottomCameraMovementBound.Contains(x, y)) {
-				camera.DestPosition.Y += 5;
-			}
+				int x = (int)MathHelper.Clamp(Mouse.GetState().X, 0, 1279);
+				int y = (int)MathHelper.Clamp(Mouse.GetState().Y, 0, 719);
+				Mouse.SetPosition(x, y);
 
-			// Check for directional keys to move the camera
-			if (input.IsKeyPressed(Keys.Left, null, out p)) {
-				camera.DestPosition.X -= 5;
-			}
-			if (input.IsKeyPressed(Keys.Right, null, out p)) {
-				camera.DestPosition.X += 5;
-			}
-			if (input.IsKeyPressed(Keys.Up, null, out p)) {
-				camera.DestPosition.Y -= 5;
-			}
-			if (input.IsKeyPressed(Keys.Down, null, out p)) {
-				camera.DestPosition.Y += 5;
-			}
+				// Unselects units and hides the gui
+				if (input.IsNewKeyPress(Keys.Escape, null, out p)) {
+					entityManager.SelectedUnit = null;
+				}
 
-			// Check for mouse scroll delta for camera zooming
-			if (input.CurrentMouseState.ScrollWheelValue > input.LastMouseState.ScrollWheelValue) {
-				camera.DestScale += .001f * (input.CurrentMouseState.ScrollWheelValue - input.LastMouseState.ScrollWheelValue);
-			}
-			if (input.CurrentMouseState.ScrollWheelValue < input.LastMouseState.ScrollWheelValue) {
-				camera.DestScale += .001f * (input.CurrentMouseState.ScrollWheelValue - input.LastMouseState.ScrollWheelValue);
+				// Check the mouse positions to move the camera (camera will move if mouse is on the borders)
+				if (leftCameraMovementBound.Contains(x, y)) {
+					camera.DestPosition.X -= 5;
+				}
+				if (rightCameraMovementBound.Contains(x, y)) {
+					camera.DestPosition.X += 5;
+				}
+				if (topCameraMovementBound.Contains(x, y)) {
+					camera.DestPosition.Y -= 5;
+				}
+				if (bottomCameraMovementBound.Contains(x, y)) {
+					camera.DestPosition.Y += 5;
+				}
+
+				// Check for directional keys to move the camera
+				if (input.IsKeyPressed(Keys.Left, null, out p)) {
+					camera.DestPosition.X -= 5;
+				}
+				if (input.IsKeyPressed(Keys.Right, null, out p)) {
+					camera.DestPosition.X += 5;
+				}
+				if (input.IsKeyPressed(Keys.Up, null, out p)) {
+					camera.DestPosition.Y -= 5;
+				}
+				if (input.IsKeyPressed(Keys.Down, null, out p)) {
+					camera.DestPosition.Y += 5;
+				}
+
+				camera.DestPosition.X = (float)MathHelper.Clamp(camera.DestPosition.X, 100, map.Width * map.TileWidth - 100);
+				camera.DestPosition.Y = (float)MathHelper.Clamp(camera.DestPosition.Y, 100, map.Height * map.TileHeight - 100);
+
+				// Check for mouse scroll delta for camera zooming
+				if (input.CurrentMouseState.ScrollWheelValue > input.LastMouseState.ScrollWheelValue) {
+					camera.DestScale += .001f * (input.CurrentMouseState.ScrollWheelValue - input.LastMouseState.ScrollWheelValue);
+				}
+				if (input.CurrentMouseState.ScrollWheelValue < input.LastMouseState.ScrollWheelValue) {
+					camera.DestScale += .001f * (input.CurrentMouseState.ScrollWheelValue - input.LastMouseState.ScrollWheelValue);
+				}
 			}
 
 			// Update the tile the mouse is currently on
@@ -145,7 +164,17 @@ namespace Project_WB.Gameplay {
 
 		#region Methods
 		protected void UpdateHud() {
+			if (showGui) {
+				entityHudPanel.Bounds.Y = (int)MathHelper.Lerp((float)entityHudPanel.Bounds.Y, Stcs.YRes - 150, .1f);
+			}
+			else {
+				entityHudPanel.Bounds.Y = (int)MathHelper.Lerp((float)entityHudPanel.Bounds.Y, Stcs.YRes, .1f);
+			}
+			entityHudPanel.Bounds.Y = (int)MathHelper.Clamp(entityHudPanel.Bounds.Y, Stcs.YRes - 150, Stcs.YRes);
+
 			if (entityManager.SelectedUnit != null) {
+				showGui = true;
+
 				var unit = entityManager.SelectedUnit;
 
 				unitNameLabel.Text = unit.Name;
@@ -157,10 +186,15 @@ namespace Project_WB.Gameplay {
 				unitAttackDistance.Text = string.Format("Attack Dist.: {0}", unit.attackDistance);
 				unitTile.Text = string.Format("Tile: {0} - {1}", unit.Tile.X, unit.Tile.Y);
 			}
+			else {
+				showGui = false;
+			}
 		}
 		#endregion
 
 		#region SetGui
+		protected DialogBox notificationBox;
+
 		Label unitNameLabel;
 		Label unitHealthLabel;
 		Bar unitRedBar;
@@ -171,10 +205,14 @@ namespace Project_WB.Gameplay {
 		Label unitTravelDistance;
 		Label unitAttackDistance;
 		Label unitTile;
+
+		Button endButton;
 		Panel entityHudPanel;
 
 		private void SetGui() {
 			guiManager = new GuiManager(ScreenManager.FontLibrary.SmallSegoeUIMono);
+
+			notificationBox = new DialogBox(10, 10, Stcs.XRes - 20, 40, "Notification:");
 			
 			unitNameLabel = new Label(10, 10, "");
 			unitNameLabel.Bounds.Width = 200;
@@ -210,6 +248,14 @@ namespace Project_WB.Gameplay {
 
 			unitTile = new Label(640, 10, "Tile:");
 			unitTile.Bounds.Width = 200;
+
+			endButton = new Button(Stcs.XRes - 110, 10, 100, "End Turn");
+			endButton.LeftClicked += delegate {
+				if (entityManager.controllingTeam == 1) {
+					entityManager.controllingTeam = 2;
+					entityManager.ResetEntities();
+				}
+			};
 			
 			entityHudPanel = new Panel(0, Stcs.YRes - 150, Stcs.XRes, 150);
 			entityHudPanel.Tint = new Color(10, 10, 10, 256);
@@ -223,12 +269,9 @@ namespace Project_WB.Gameplay {
 			entityHudPanel.AddChild(unitTravelDistance);
 			entityHudPanel.AddChild(unitAttackDistance);
 			entityHudPanel.AddChild(unitTile);
+			entityHudPanel.AddChild(endButton);
 
-			//Temp, remove
-			guiManager.AddControl(new DialogBox(50, 50, 300, 300, "Welcom to the test level! " +
-																	"This is a test of stuff that you can do inside the game. " +
-																	"This type of dialog box can be use for many things, such as tutorials!"));
-
+			guiManager.AddControl(notificationBox);
 			guiManager.AddControl(entityHudPanel);
 		}
 		#endregion

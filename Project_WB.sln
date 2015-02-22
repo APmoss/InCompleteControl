@@ -9,7 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GSM", "Project_WB\GameState
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalLibs", "ExternalLibs", "{126CD985-5FF2-4961-92E1-229067E0D95C}"
 	ProjectSection(SolutionItems) = preProject
+		Project_WB\ExternalLibs\MySql.Data.dll = Project_WB\ExternalLibs\MySql.Data.dll
 		Project_WB\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.dll = Project_WB\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.dll
+		Project_WB\ExternalLibs\Nuclex.Input.dll = Project_WB\ExternalLibs\Nuclex.Input.dll
+		Project_WB\ExternalLibs\Nuclex.Input.xml = Project_WB\ExternalLibs\Nuclex.Input.xml
+		Project_WB\ExternalLibs\SlimDX.DirectInput.dll = Project_WB\ExternalLibs\SlimDX.DirectInput.dll
+		Project_WB\ExternalLibs\SlimDX.DirectInput.xml = Project_WB\ExternalLibs\SlimDX.DirectInput.xml
 	EndProjectSection
 EndProject
 Global

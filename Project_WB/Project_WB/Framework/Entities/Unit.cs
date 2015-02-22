@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Project_WB.Framework.Audio;
 using MouseButton = GameStateManagement.InputState.MouseButton;
+using Project_WB.Framework.Particles.Emitters;
 
 namespace Project_WB.Framework.Entities {
 	class Unit : AnimatedSprite {
@@ -31,6 +32,8 @@ namespace Project_WB.Framework.Entities {
 		public bool Moved = false;
 		// Whether the unit has attacked yet
 		public bool HasAttacked = false;
+		// Whether the unit needs to be removed from the entity manager
+		public bool NeedsRemoval = false;
 		// The team the unit is a part of, from 1 - 4
 		public int Team = 0;
 		// The collection of waypoints the unit needs to travel
@@ -80,7 +83,12 @@ namespace Project_WB.Framework.Entities {
 			}
 
 			set {
-				Position = new Vector2(value.X * EntityManager.tileSize, value.Y * EntityManager.tileSize);
+				if (EntityManager != null) {
+					Position = new Vector2(value.X * EntityManager.tileSize, value.Y * EntityManager.tileSize);
+				}
+				else {
+					Position = new Vector2(value.X * 32, value.Y * 32);
+				}
 			}
 		}
 
@@ -167,6 +175,12 @@ namespace Project_WB.Framework.Entities {
 			DestinationAchieved += (s, e) => {
 				Moved = true;
 			};
+
+			Killed += (s, e) => {
+				NeedsRemoval = true;
+				EntityManager.particleManager.AddParticleEmitter(new Explosion(TimeSpan.Zero, TimeSpan.FromSeconds(.2), Bounds));
+				EntityManager.SelectedUnit = null;
+			};
 		}
 
 		#region Overridden Methods
@@ -222,7 +236,7 @@ namespace Project_WB.Framework.Entities {
 
 			// Move the unit with right click
 			if (!Moved) {
-				if (IsSelected && input.IsNewMousePress(MouseButton.Right) && GetTravelableTiles().Contains(mouseTile) && Waypoints.Count == 0) {
+				if (IsSelected && input.IsNewMousePress(MouseButton.Right) && GetTravelableTiles().Contains(mouseTile) && Waypoints.Count == 0 && Team == EntityManager.controllingTeam) {
 					var solution = new LinkedList<Point>();
 					var otherBarriers = new List<Point>();
 					// Calculate other barriers needed such as other entities and other moving units
@@ -259,7 +273,7 @@ namespace Project_WB.Framework.Entities {
 				}
 			}
 			// Attack with the unit with right click
-			else if (Moved && !HasAttacked && input.IsNewMousePress(MouseButton.Right)) {
+			else if (!HasAttacked && input.IsNewMousePress(MouseButton.Right) && Team == EntityManager.controllingTeam) {
 				foreach (var entity in EntityManager.GetEntities()) {
 					if (entity is Unit) {
 						Unit unit = entity as Unit;
@@ -267,6 +281,10 @@ namespace Project_WB.Framework.Entities {
 						if (GetAttackableTiles().Contains(mouseTile) && mouseTile == unit.Tile && unit.Team != Team) {
 							unit.Health -= Damage;
 							HasAttacked = true;
+
+							EntityManager.particleManager.AddParticleEmitter(
+														new LightBullet(TimeSpan.FromSeconds(.1), TimeSpan.FromSeconds(.5),
+														this.Position + new Vector2(Bounds.Width / 2, Bounds.Height / 2), unit.Position + new Vector2(unit.Bounds.Width / 2, unit.Bounds.Height / 2)));
 						}
 					}
 				}

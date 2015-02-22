@@ -7,16 +7,21 @@ namespace Project_WB.Framework.Particles {
 		#region Fields
 		public TimeSpan EmissionFrequency = TimeSpan.Zero;
 		TimeSpan elapsed = TimeSpan.Zero;
+		public TimeSpan LifeSpan = TimeSpan.Zero;
 		public int Iterations = 1;
+
+		protected internal ParticleManager particleManager;
 		#endregion
 
-		protected ParticleEmitter(TimeSpan emissionFrequency) {
-
+		protected ParticleEmitter(TimeSpan emissionFrequency, TimeSpan lifeSpan) {
+			this.EmissionFrequency = emissionFrequency;
+			this.LifeSpan = lifeSpan;
 		}
 
 		#region Methods
 		public virtual void Update(GameTime gameTime) {
 			elapsed += gameTime.ElapsedGameTime;
+			LifeSpan -= gameTime.ElapsedGameTime;
 
 			if (elapsed > EmissionFrequency) {
 				elapsed -= EmissionFrequency;
@@ -26,7 +31,7 @@ namespace Project_WB.Framework.Particles {
 		}
 
 		public virtual void Emit() {
-
+			
 		}
 		#endregion
 	}

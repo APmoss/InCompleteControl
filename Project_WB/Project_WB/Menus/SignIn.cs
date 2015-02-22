@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Audio;
 using Project_WB.Framework.Gui;
 using Project_WB.Framework.Gui.Controls;
 using Project_WB.Gameplay;
+using Project_WB.Framework.IO;
 
 
 namespace Project_WB.Menus {
@@ -24,7 +25,7 @@ namespace Project_WB.Menus {
 		List<Vector2> points2 = new List<Vector2>();
 		List<Vector2> points3 = new List<Vector2>();
 		Vector2 titlePos;
-		Vector2 baseTitlePos = new Vector2(230, 333);
+		Vector2 baseTitlePos = Vector2.Zero;
 		Random r = new Random();
 		#endregion
 
@@ -37,6 +38,9 @@ namespace Project_WB.Menus {
 		public override void Activate(bool instancePreserved) {
 			SetGui();
 
+			var font = ScreenManager.FontLibrary.HighTowerText;
+			baseTitlePos = new Vector2(Stcs.XRes / 2 - font.MeasureString("INCOMPLETE CONTROL").X / 2, Stcs.YRes / 2 - font.MeasureString("I").Y / 2 + 10);
+
 			//TODO:remove and stuff
 			for (int i = 0; i < Stcs.XRes; i++) {
 				points1.Add(new Vector2(i, Stcs.YRes * 1 / 4));
@@ -45,9 +49,6 @@ namespace Project_WB.Menus {
 			}
 
 			base.Activate(instancePreserved);
-		}
-		public override void Unload() {			
-			base.Unload();
 		}
 		#endregion
 
@@ -92,8 +93,8 @@ namespace Project_WB.Menus {
 				ScreenManager.SpriteBatch.Draw(ScreenManager.BlankTexture, new Rectangle((int)points3[i].X, (int)points3[i].Y, 2, 2), Color.Blue * TransitionAlpha);
 			}
 
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "HERPDERP", titlePos - Vector2.One, new Color(60, 0, 0) * TransitionAlpha);
-			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "HERPDERP", titlePos + Vector2.One, Color.Maroon * TransitionAlpha);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "INCOMPLETE CONTROL", titlePos - Vector2.One, new Color(60, 0, 0) * TransitionAlpha);
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "INCOMPLETE CONTROL", titlePos + Vector2.One, Color.Maroon * TransitionAlpha);
 
 			gui.Draw(gameTime, ScreenManager);
 
@@ -108,15 +109,18 @@ namespace Project_WB.Menus {
 		Button testButton;
 
 		Label languageLabel;
-		//ComboBox languageComboBox;
+		Button englishButton;
+		Button spanishButton;
+		Button frenchButton;
 		Panel languagePanel;
 
 		Label usernameLabel;
-		//TextBox usernameBox;
+		InputBox usernameBox;
 		Label passwordLabel;
-		//TextBox passwordBox;
+		InputBox passwordBox;
 		Button loginButton;
 		Button registerButton;
+		Button offlineButton;
 		Panel loginPanel;
 
 		Button creditsButton;
@@ -131,80 +135,102 @@ namespace Project_WB.Menus {
 
 			testButton = new Button(1000, 200, 100, "TEST :D");
 			testButton.LeftClicked += delegate {
-				ScreenManager.AddScreen(new TestBattle(), null);
+				//ScreenManager.AddScreen(new TestBattle(), null);
+				//Project_WB.Framework.IO.IOManager.CreateNewUser("newuser", "password", "bob", "bobby", "bob@bob");
+				//ScreenManager.AddScreen(new MessageBox("header stuff", "message message message message message message message message message message message message message message "), null);
+				ScreenManager.AddScreen(new MiniGame(), null);
 			};
 
-			languageLabel = new Label(10, 35, Strings.SwitchLanguage + ":");
+			languageLabel = new Label(10, 10, Strings.SwitchLanguage + ":");
+			languageLabel.Bounds.Width = 200;
 
-			//languageComboBox = new ComboBox(10, 60, 180, "Language");
-			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.English + " (English)"));
-			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164)));
-			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.French + string.Format(" (Fran{0}ais)", (char)135)));
-			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Murrikan"));
-			//languageList.SelectionChanged += delegate {
-			//    string culture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+			englishButton = new Button(10, 60, 200, string.Format("English ({0})", Strings.English));
+			englishButton.LeftClicked += delegate {
+				System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+				ResetText();
+			};
+			spanishButton = new Button(10, 110, 200, string.Format("Spanish ({0})", Strings.Spanish));
+			spanishButton.LeftClicked += delegate {
+				System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("es-ES");
+				ResetText();
+			};
+			frenchButton = new Button(10, 160, 200, string.Format("French ({0})", Strings.French));
+			frenchButton.LeftClicked += delegate {
+				System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
+				ResetText();
+			};
 
-			//    if (languageList.SelectedItems.Count == 1) {
-			//        if (languageList.SelectedItems[0] == 0) {
-			//            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
-			//        }
-			//        else if (languageList.SelectedItems[0] == 1) {
-			//            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("es-ES");
-			//        }
-			//        else if (languageList.SelectedItems[0] == 2) {
-			//            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
-			//        }
-
-			//        ResetText();
-			//    }
-			//};
-
-			languagePanel = new Panel(Stcs.XRes - 230, Stcs.YRes - 200, 200, 175);
+			languagePanel = new Panel(Stcs.XRes - 230, Stcs.YRes - 250, 220, 210);
 			languagePanel.AddChild(languageLabel);
-			//languagePanel.AddWidget(languageComboBox);
+			languagePanel.AddChild(englishButton);
+			languagePanel.AddChild(spanishButton);
+			languagePanel.AddChild(frenchButton);
 
-			usernameLabel = new Label(10, 35, Strings.Username);
+			usernameLabel = new Label(10, 10, Strings.Username);
 
-			//usernameBox = new TextBox(2, 16);
-			////usernameBox.Bounds = new UniRectangle(10, 60, 330, 30);
+			usernameBox = new InputBox(120, 10, 220, 35, false, "Enter a username", ScreenManager);
 			
-			passwordLabel = new Label(10, 100, Strings.Password);
-			
-			//passwordBox = new TextBox(2, 16);
-			//passwordBox.Bounds = new UniRectangle(10, 125, 330, 30);
+			passwordLabel = new Label(10, 60, Strings.Password);
 
-			loginButton = new Button(10, 170, 160, Strings.SignIn);
+			passwordBox = new InputBox(120, 60, 220, 35, true, "Enter a password", ScreenManager);
+
+			loginButton = new Button(10, 110, 160, Strings.SignIn);
 			loginButton.LeftClicked += delegate {
-				ScreenManager.AddScreen(new Gameplay.TestThing(), null);
+				bool success = false;
+
+				if (IOManager.LogIn(usernameBox.Text, passwordBox.internalText, out success)) {
+					if (success) {
+						ExitScreen();
+						ScreenManager.AddScreen(new MainMenu(), null);
+					}
+					else {
+						ScreenManager.AddScreen(new MessageBox("Bad Login",
+												string.Format("Could not log in under user \"{0}\" and the password entered.", usernameBox.Text)), null);
+					}
+				}
+				else {
+					ScreenManager.AddScreen(new MessageBox("Bad Connection", "Could not access the database. Please use offline mode."), null);
+				}
 			};
 
-			registerButton = new Button(180, 170, 160, Strings.Register);
-			//registerButton.Pressed += delegate {
-			//    ScreenManager.AddScreen(new Register(), null);
-			//};
+			registerButton = new Button(180, 110, 160, Strings.Register);
+			registerButton.LeftClicked += delegate {
+				ScreenManager.AddScreen(new Register(), null);
+			};
+
+			offlineButton = new Button(10, 170, 330, "Offline Login");
+			offlineButton.Tint = new Color(50, 30, 30);
+			offlineButton.LeftClicked += delegate {
+				Session.OfflineMode = true;
+				Session.LoggedIn = true;
+				Session.LoginTime = DateTime.Now;
+
+				ExitScreen();
+				ScreenManager.AddScreen(new MainMenu(), null);
+			};
 
 			loginPanel = new Panel(Stcs.XRes / 2 - 175, Stcs.YRes - 235, 350, 225);
-			////loginWindow.Title = "BAKERNET Account Login";
 			loginPanel.AddChild(usernameLabel);
-			//loginPanel.AddWidget(usernameBox);
+			loginPanel.AddChild(usernameBox);
 			loginPanel.AddChild(passwordLabel);
-			//loginPanel.AddWidget(passwordBox);
+			loginPanel.AddChild(passwordBox);
 			loginPanel.AddChild(loginButton);
 			loginPanel.AddChild(registerButton);
+			loginPanel.AddChild(offlineButton);
 
-			creditsButton = new Button(10, 35, 180, "Credits");
+			creditsButton = new Button(10, 10, 180, "Credits");
 
-			optionsButton = new Button(10, 80, 180, "Options");
+			optionsButton = new Button(10, 60, 180, "Options");
 			optionsButton.LeftClicked += delegate {
 				ScreenManager.AddScreen(new Options(), null);
 			};
 
-			quitButton = new Button(10, 125, 180, "Quit Game");
+			quitButton = new Button(10, 110, 180, "Quit Game");
 			quitButton.LeftClicked += delegate {
 				ScreenManager.Game.Exit();
 			};
 
-			otherPanel = new Panel(30, Stcs.YRes - 205, 200, 175);
+			otherPanel = new Panel(30, Stcs.YRes - 205, 200, 160);
 			otherPanel.AddChild(creditsButton);
 			otherPanel.AddChild(optionsButton);
 			otherPanel.AddChild(quitButton);
@@ -214,29 +240,20 @@ namespace Project_WB.Menus {
 			gui.AddControl(languagePanel);
 			gui.AddControl(loginPanel);
 			gui.AddControl(otherPanel);
-			
-			//TEMP REMOVE
-			gui.AddControl(new Slider(0, 0, 1280, 75));
-			gui.AddControl(new DialogBox(0, 100, 800, 300, "This is a test where I write lots of text in order to fill in a lot of empty space " +
-															"and stuff am,dadslkaf asdf as df df adsfdsafas asdf asdf asd dd as dfasdf asdf sadf " +
-															"asdf asdff f asd fas d d d asdfasdfasdf asdf asdfasdfasdfasdfasdfa sdfasdfasdfasdfadfasdfasdfsadfasdfasdfasdfasdfasdfasdf asdfasdfasdfasdf" +
-															"as df asdf sad f ds f sad fasfdasdfasdfasdfasdfsadfasdfasdfasd fasdfasdfasdfasdfasdfsadfsadfsadfasdfasdf sadfasdfsadf"));
 		}
 		#endregion
 
 		#region Methods
 		void ResetText() {
-			//languageLabel.Text = Strings.SwitchLanguage + ":";
+			languageLabel.Text = Strings.SwitchLanguage + ":";
 
-			//languageComboBox.DropDownItems.Clear();
-			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.English + " (English)"));
-			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164)));
-			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.French + string.Format(" (Fran{0}ais)", (char)135)));
-			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem("MURRIKANNNN"));
+			englishButton.Text = string.Format("English ({0})", Strings.English);
+			spanishButton.Text = string.Format("Spanish ({0})", Strings.Spanish);
+			frenchButton.Text = string.Format("French ({0})", Strings.French);
 
-			//usernameLabel.Text = Strings.Username;
+			usernameLabel.Text = Strings.Username;
 
-			//passwordLabel.Text = Strings.Password;
+			passwordLabel.Text = Strings.Password;
 
 			loginButton.Text = Strings.SignIn;
 

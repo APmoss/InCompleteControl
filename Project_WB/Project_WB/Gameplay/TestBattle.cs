@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Project_WB.Framework.Entities.Units;
 using GameStateManagement;
 using Project_WB.Framework.Entities;
+using Project_WB.Framework;
 
 namespace Project_WB.Gameplay {
 	class TestBattle : Battle {
@@ -46,16 +47,18 @@ namespace Project_WB.Gameplay {
 			foreach (var entity in entityManager.GetEntities()) {
 				if (entity is Unit) {
 					if (((Unit)entity).Team != entityManager.controllingTeam) {
-						((Unit)entity).Tint = Color.LightPink;
+						((Unit)entity).Tint = Color.DarkOrange;
 					}
 				}
 			}
+
+			entityManager.particleManager.AddParticleEmitter(new Project_WB.Framework.Particles.Emitters.SiegeBullet(TimeSpan.FromSeconds(.3), TimeSpan.FromSeconds(60), new Vector2(100, 100), new Vector2(500, 500)));
 		}
 
 		public override void HandleInput(GameTime gameTime, InputState input) {
 			PlayerIndex p = PlayerIndex.One;
-
-			if (input.IsNewKeyPress(Keys.Escape, null, out p)) {
+				
+			if (input.IsNewKeyPress(Keys.F10, null, out p)) {
 				ExitScreen();
 			}
 			
@@ -63,7 +66,13 @@ namespace Project_WB.Gameplay {
 		}
 
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
-			
+			DebugOverlay.DebugText.AppendFormat("ParticleCount: {0}", particleManager.ParticleCount).AppendLine();
+			DebugOverlay.DebugText.AppendFormat("ParticleEmitterCount: {0}", particleManager.ParticleEmitterCount).AppendLine();
+
+			if (particleManager.ParticleEmitterCount <= 1) {
+				entityManager.particleManager.AddParticleEmitter(new Project_WB.Framework.Particles.Emitters.Explosion(TimeSpan.Zero, TimeSpan.FromSeconds(60), new Rectangle(32, 32, 64, 64)));
+			}
+			//entityManager.particleManager.AddParticle(new Framework.Particles.Particle(new Rectangle(0, 0, 16, 16)) { Velocity = new Vector2(1, 1) });
 
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}

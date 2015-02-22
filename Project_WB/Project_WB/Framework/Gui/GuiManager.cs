@@ -37,8 +37,8 @@ namespace Project_WB.Framework.Gui {
 		}
 
 		public void UpdateInteraction(InputState input) {
-			foreach (var control in controls) {
-				control.UpdateInteraction(input);
+			for (int i = 0; i < controls.Count; i++) {
+				controls[i].UpdateInteraction(input);
 			}
 		}
 

@@ -11,8 +11,8 @@ namespace Project_WB.Framework {
 	class Camera2D {
 		#region Constants
 		// Maximum and minimum scale amounts
-		private const float MAX_SCALE = 100;
-		private const float MIN_SCALE = .01f;
+		private const float MAX_SCALE =3f;
+		private const float MIN_SCALE = .5f;
 		#endregion
 
 		#region Fields

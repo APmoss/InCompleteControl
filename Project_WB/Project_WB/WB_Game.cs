@@ -23,7 +23,7 @@ namespace Project_WB {
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 
-			Stcs.InternalVersion = new Version("0.0.7.9");
+			Stcs.InternalVersion = new Version("0.5.7.9");
 
 			// Make the mouse visible
 			IsMouseVisible = true;
@@ -98,8 +98,8 @@ namespace Project_WB {
 		private void AddInitialScreens() {
 			screenManager.AddScreen(new DebugOverlay(), null);
 			//TODO: Start at splash
-			//screenManager.AddScreen(new Menus.Splash(), null);
-			screenManager.AddScreen(new Menus.Title(), null);
+			screenManager.AddScreen(new Menus.Splash(), null);
+			//screenManager.AddScreen(new Menus.Title(), null);
 			//screenManager.AddScreen(new Menus.SignIn(), null);
 			//screenManager.AddScreen(new Menus.Register(), null);
 		}

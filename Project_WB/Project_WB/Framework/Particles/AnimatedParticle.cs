@@ -24,7 +24,7 @@ namespace Project_WB.Framework.Particles {
 		#region Methods
 		public override void Update(GameTime gameTime) {
 			elapsedAnimationTime += gameTime.ElapsedGameTime;
-
+			
 			if (elapsedAnimationTime > TargetAnimationTime) {
 				elapsedAnimationTime -= TargetAnimationTime;
 

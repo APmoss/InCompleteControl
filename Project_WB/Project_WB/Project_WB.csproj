@@ -65,7 +65,15 @@
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="mscorlib" />
+    <Reference Include="MySql.Data, Version=6.4.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.Input">
+      <HintPath>..\ExternalLibs\Nuclex.Input.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -95,6 +103,7 @@
     <Compile Include="Framework\Gui\Controls\Button.cs" />
     <Compile Include="Framework\Gui\Controls\Control.cs" />
     <Compile Include="Framework\Gui\Controls\DialogBox.cs" />
+    <Compile Include="Framework\Gui\Controls\InputBox.cs" />
     <Compile Include="Framework\Gui\Controls\Label.cs" />
     <Compile Include="Framework\Gui\Controls\Panel.cs" />
     <Compile Include="Framework\Gui\Controls\Slider.cs" />
@@ -103,7 +112,10 @@
     <Compile Include="Framework\IO\Session.cs" />
     <Compile Include="Framework\IO\SettingsFile.cs" />
     <Compile Include="Framework\Particles\AnimatedParticle.cs" />
-    <Compile Include="Framework\Particles\Emitters\StarEmitter.cs" />
+    <Compile Include="Framework\Particles\Emitters\BulletEmitter.cs" />
+    <Compile Include="Framework\Particles\Emitters\Explosion.cs" />
+    <Compile Include="Framework\Particles\Emitters\LightBullet.cs" />
+    <Compile Include="Framework\Particles\Emitters\SiegeBullet.cs" />
     <Compile Include="Framework\Particles\Particle.cs" />
     <Compile Include="Framework\Particles\ParticleEmitter.cs" />
     <Compile Include="Framework\Particles\ParticleManager.cs" />
@@ -117,8 +129,13 @@
     <Compile Include="Framework\Entities\Sprite.cs" />
     <Compile Include="Gameplay\TestBattle.cs" />
     <Compile Include="Gameplay\TestThing.cs" />
+    <Compile Include="Gameplay\Tutorial.cs" />
     <Compile Include="LicensesAndAknowledgements.cs" />
+    <Compile Include="Menus\InputScreen.cs" />
     <Compile Include="Menus\LoadingScreen.cs" />
+    <Compile Include="Menus\MainMenu.cs" />
+    <Compile Include="Menus\MessageBox.cs" />
+    <Compile Include="Menus\MiniGame.cs" />
     <Compile Include="Menus\Options.cs" />
     <Compile Include="Menus\Register.cs" />
     <Compile Include="Menus\SignIn.cs" />
@@ -191,6 +208,7 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

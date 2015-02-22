@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework;
 using GameStateManagement;
 
 namespace Project_WB.Framework.Gui.Controls {
+	/// <summary>
+	/// A clickable control that glows when hovered over.
+	/// </summary>
 	class Button : Control {
 		#region Fields
 		public string Text = string.Empty;
@@ -19,12 +22,15 @@ namespace Project_WB.Framework.Gui.Controls {
 
 		#region Methods
 		protected internal override void Initialize() {
-			this.Bounds.Height = (int)(GuiManager.font.MeasureString(Text).Y * GuiManager.TextScale) + GuiManager.Padding * 2;
+			if (Bounds.Height == 0) {
+				this.Bounds.Height = (int)(GuiManager.font.MeasureString(Text).Y * GuiManager.TextScale) + GuiManager.Padding * 2;
+			}
 			
 			base.Initialize();
 		}
 
 		public override void Draw(GameTime gameTime, ScreenManager screenManager) {
+			// Calculate centers of control
 			Vector2 textCenter = GuiManager.font.MeasureString(Text) * GuiManager.TextScale / 2;
 			Vector2 center = GlobalPosition +
 								new Vector2(Bounds.Width / 2, Bounds.Height / 2) -
@@ -32,6 +38,7 @@ namespace Project_WB.Framework.Gui.Controls {
 
 			screenManager.SpriteBatch.Draw(screenManager.BlankTexture, GlobalBounds, Tint);
 			if (ContainsMouse) {
+				// Draw the glow
 				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, GlobalBounds, Color.White * .2f);
 			}
 			screenManager.SpriteBatch.DrawString(GuiManager.font, Text, center, Color.White, 0, Vector2.Zero, GuiManager.TextScale, 0, 0);

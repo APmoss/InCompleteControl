@@ -3,18 +3,27 @@ using System.Collections.Generic;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Project_WB.Menus {
 	class Title : GameScreen {
+		Texture2D title;
+
 		public Title() {
-			TransitionOnTime = TimeSpan.FromSeconds(.3);
-			TransitionOffTime = TimeSpan.FromSeconds(.3);
+			TransitionOnTime = TimeSpan.FromSeconds(.5);
+			TransitionOffTime = TimeSpan.FromSeconds(.5);
+		}
+
+		public override void Activate(bool instancePreserved) {
+			title = ScreenManager.Game.Content.Load<Texture2D>("textures/title");
+			
+			base.Activate(instancePreserved);
 		}
 
 		public override void HandleInput(GameTime gameTime, InputState input) {
 			KeyboardState k = (KeyboardState)input.CurrentKeyboardStates.GetValue(0);
 
-			if (k.GetPressedKeys().Length > 0) {
+			if (k.GetPressedKeys().Length > 0 && ScreenState == GameStateManagement.ScreenState.Active) {
 				ExitScreen();
 				ScreenManager.AddScreen(new SignIn(), null);
 			}
@@ -22,22 +31,17 @@ namespace Project_WB.Menus {
 			base.HandleInput(gameTime, input);
 		}
 
-		public override void Update(Microsoft.Xna.Framework.GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
+		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
 
-		public override void Draw(Microsoft.Xna.Framework.GameTime gameTime) {
-			//TODO: Change the drawing stuff
+		public override void Draw(GameTime gameTime) {
 			ScreenManager.SpriteBatch.Begin();
 
-			if (ScreenState == GameStateManagement.ScreenState.TransitionOn || ScreenState == GameStateManagement.ScreenState.TransitionOff) {
-				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(180, 350),
-					Color.Red * TransitionAlpha);
-			}
-			else {
-				ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.Centaur, "JUST PRESS A BUTTON ALREADY", new Vector2(180, 350),
-					Color.Red * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)));
-			}
+			ScreenManager.SpriteBatch.Draw(title, new Rectangle(0, 0, Stcs.XRes, Stcs.YRes), Color.White * TransitionAlpha);
+
+			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "Press any key to continue...", new Vector2(290, Stcs.YRes - 200),
+				Color.Red * (float)((Math.Sin(gameTime.TotalGameTime.TotalSeconds * 6) / 4 + .375)) * TransitionAlpha);
 
 			ScreenManager.SpriteBatch.End();
 

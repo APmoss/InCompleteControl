@@ -9,9 +9,10 @@ namespace Project_WB.Framework.Particles {
 		//TODO: finish documentation
 
 		#region Fields
-		int maxParticleCount = (32768 * 2);
+		int maxParticleCount = 512;
 
 		List<Particle> particles = new List<Particle>();
+		List<ParticleEmitter> particleEmitters = new List<ParticleEmitter>();
 
 		Texture2D particleSheet;
 		#endregion
@@ -33,6 +34,9 @@ namespace Project_WB.Framework.Particles {
 		public int ParticleCount {
 			get { return particles.Count; }
 		}
+		public int ParticleEmitterCount {
+			get { return particleEmitters.Count; }
+		}
 		#endregion
 
 		public ParticleManager(Texture2D particleSheet) {
@@ -41,6 +45,14 @@ namespace Project_WB.Framework.Particles {
 
 		#region Methods
 		public void Update(GameTime gameTime) {
+			for (int i = 0; i < particleEmitters.Count; i++) {
+				particleEmitters[i].Update(gameTime);
+
+				if (particleEmitters[i].LifeSpan < TimeSpan.Zero) {
+					particleEmitters.RemoveAt(i);
+					i--;
+				}
+			}
 			for (int i = 0; i < particles.Count; i++) {
 				particles[i].Update(gameTime);
 
@@ -73,6 +85,11 @@ namespace Project_WB.Framework.Particles {
 				particles.Add(particle);
 			}
 		}
+
+		public void AddParticleEmitter(ParticleEmitter particleEmitter) {
+			particleEmitter.particleManager = this;
+			particleEmitters.Add(particleEmitter);
+		} 
 
 		/// <summary>
 		/// Return a copy if the particle list to prevent modifications.
