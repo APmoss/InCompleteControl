@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Project_WB.Framework.Gui;
 using Project_WB.Framework.Gui.Controls;
+using Project_WB.Gameplay;
 
 
 namespace Project_WB.Menus {
@@ -104,6 +105,8 @@ namespace Project_WB.Menus {
 
 		#region SetGui
 		Label versionLabel;
+		Button testButton;
+
 		Label languageLabel;
 		//ComboBox languageComboBox;
 		Panel languagePanel;
@@ -124,7 +127,12 @@ namespace Project_WB.Menus {
 		private void SetGui() {
 			gui = new GuiManager(ScreenManager.FontLibrary.SmallSegoeUIMono);
 
-			versionLabel = new Label(10, Stcs.YRes - 20, Stcs.InternalVersion.ToString());
+			versionLabel = new Label(10, Stcs.YRes - 40, Stcs.InternalVersion.ToString());
+
+			testButton = new Button(1000, 200, 100, "TEST :D");
+			testButton.LeftClicked += delegate {
+				ScreenManager.AddScreen(new TestBattle(), null);
+			};
 
 			languageLabel = new Label(10, 35, Strings.SwitchLanguage + ":");
 
@@ -202,12 +210,17 @@ namespace Project_WB.Menus {
 			otherPanel.AddChild(quitButton);
 			
 			gui.AddControl(versionLabel);
+			gui.AddControl(testButton);
 			gui.AddControl(languagePanel);
 			gui.AddControl(loginPanel);
 			gui.AddControl(otherPanel);
 			
 			//TEMP REMOVE
 			gui.AddControl(new Slider(0, 0, 1280, 75));
+			gui.AddControl(new DialogBox(0, 100, 800, 300, "This is a test where I write lots of text in order to fill in a lot of empty space " +
+															"and stuff am,dadslkaf asdf as df df adsfdsafas asdf asdf asd dd as dfasdf asdf sadf " +
+															"asdf asdff f asd fas d d d asdfasdfasdf asdf asdfasdfasdfasdfasdfa sdfasdfasdfasdfadfasdfasdfsadfasdfasdfasdfasdfasdfasdf asdfasdfasdfasdf" +
+															"as df asdf sad f ds f sad fasfdasdfasdfasdfasdfsadfasdfasdfasd fasdfasdfasdfasdfasdfsadfsadfsadfasdfasdf sadfasdfsadf"));
 		}
 		#endregion
 

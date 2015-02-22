@@ -532,7 +532,7 @@ namespace Project_WB.Gameplay {
 		public float Speed = .5f;
 		Texture2D maru;
 		public Color flashColor = Color.White;
-
+		
 		public TestCharacter(Rectangle sourceRectangle, Texture2D spriteSheet, Point tilePosition, Texture2D maru) : base(sourceRectangle, spriteSheet) {
 			this.TilePosition = tilePosition;
 			Position = new Vector2(TilePosition.X * 32, TilePosition.Y * 32);

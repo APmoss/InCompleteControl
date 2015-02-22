@@ -14,6 +14,8 @@ namespace Project_WB.Framework.Gui.Controls {
 		public Rectangle Bounds = Rectangle.Empty;
 
 		public bool Enabled = true;
+
+		internal bool needsRemoval = false;
 		#endregion
 
 		#region Properties

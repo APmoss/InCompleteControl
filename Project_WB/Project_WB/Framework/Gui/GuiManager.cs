@@ -22,6 +22,15 @@ namespace Project_WB.Framework.Gui {
 		}
 
 		public void Update(GameTime gameTime) {
+			for (int i = 0; i < controls.Count; i++) {
+				if (controls[i].needsRemoval) {
+					controls.RemoveAt(i);
+					i--;
+					continue;
+				}
+
+				controls[i].Update(gameTime);
+			}
 			foreach (var control in controls) {
 				control.Update(gameTime);
 			}
@@ -45,6 +54,10 @@ namespace Project_WB.Framework.Gui {
 			control.Initialize();
 
 			controls.Add(control);
+		}
+
+		public void RemoveControl(Control control) {
+			control.needsRemoval = true;
 		}
 		#endregion
 	}

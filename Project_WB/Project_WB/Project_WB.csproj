@@ -91,6 +91,7 @@
     <Compile Include="Framework\Entities\Units\Sango.cs" />
     <Compile Include="Framework\Gui\Controls\Button.cs" />
     <Compile Include="Framework\Gui\Controls\Control.cs" />
+    <Compile Include="Framework\Gui\Controls\DialogBox.cs" />
     <Compile Include="Framework\Gui\Controls\Label.cs" />
     <Compile Include="Framework\Gui\Controls\Panel.cs" />
     <Compile Include="Framework\Gui\Controls\Slider.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Framework\Pathfinding\MapData.cs" />
     <Compile Include="Framework\Pathfinding\PathFinder.cs" />
     <Compile Include="Framework\Entities\Sprite.cs" />
+    <Compile Include="Gameplay\TestBattle.cs" />
     <Compile Include="Gameplay\TestThing.cs" />
     <Compile Include="LicensesAndAknowledgements.cs" />
     <Compile Include="Menus\LoadingScreen.cs" />

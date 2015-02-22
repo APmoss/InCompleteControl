@@ -52,7 +52,7 @@ using GameStateManagement;namespace Project_WB.Framework.Gui.Controls {
 		public override void UpdateInteraction(InputState input) {
 			if (ContainsMouse && input.IsMousePressed(MouseButton.Left)) {
 				caretX = input.CurrentMouseState.X;
-				caretX = MathHelper.Clamp(caretX, GlobalBounds.X + GuiManager.Padding, GlobalBounds.X + GlobalBounds.Width - GuiManager.Padding);
+				caretX = MathHelper.Clamp(caretX, GlobalBounds.X + GuiManager.Padding, GlobalBounds.Right - GuiManager.Padding);
 				double fraction = (caretX - (GlobalBounds.X + GuiManager.Padding)) / (GlobalBounds.Width - GuiManager.Padding * 2);
 				value = (float)Math.Round(fraction, 2);
 			}
