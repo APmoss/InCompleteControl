@@ -89,6 +89,14 @@ namespace Project_WB.Gameplay {
 				camera.DestPosition.Y += 5;
 			}
 
+			// Check for mouse scroll delta for camera zooming
+			if (input.CurrentMouseState.ScrollWheelValue > input.LastMouseState.ScrollWheelValue) {
+				camera.DestScale += .001f * (input.CurrentMouseState.ScrollWheelValue - input.LastMouseState.ScrollWheelValue);
+			}
+			if (input.CurrentMouseState.ScrollWheelValue < input.LastMouseState.ScrollWheelValue) {
+				camera.DestScale += .001f * (input.CurrentMouseState.ScrollWheelValue - input.LastMouseState.ScrollWheelValue);
+			}
+
 			base.HandleInput(gameTime, input);
 		}
 
@@ -102,8 +110,11 @@ namespace Project_WB.Gameplay {
 
 			if (entityManager.SelectedUnit != null) {
 				entityHudNameLabel.Text = entityManager.SelectedUnit.Name;
+				entityHudHealthGreen.Bounds.Width = (int)entityManager.SelectedUnit.MaxHealth;
+				entityHudHealthRed.Bounds.Width = (int)entityManager.SelectedUnit.Health;
+				entityHudHealthCount.Text = entityManager.SelectedUnit.Health + " / " + entityManager.SelectedUnit.MaxHealth;
 			}
-
+			
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
 
@@ -132,19 +143,38 @@ namespace Project_WB.Gameplay {
 		#region SetGui
 		Label entityHudNameLabel;
 		Label entityHudHealthLabel;
+		Label entityHudHealthRed;
+		Label entityHudHealthGreen;
+		Label entityHudHealthCount;
 		Panel entityHudPanel;
 
 		private void SetGui() {
 			guiManager = new GuiManager(ScreenManager.FontLibrary.SmallSegoeUIMono);
 
-			entityHudNameLabel = new Label(10, 10, "                 ");
+			entityHudNameLabel = new Label(10, 10, "                ");
 
 			entityHudHealthLabel = new Label(10, 50, "Health");
+
+			entityHudHealthRed = new Label(100, 50, " ");
+			entityHudHealthRed.BackgroundTint = Color.Red;
+
+			entityHudHealthGreen = new Label(100, 50, " ");
+			entityHudHealthGreen.BackgroundTint = Color.Green;
+
+			entityHudHealthCount = new Label(200, 50, " ");
 
 			entityHudPanel = new Panel(0, Stcs.YRes - 150, Stcs.XRes, 150);
 			entityHudPanel.Tint = new Color(10, 10, 10, 256);
 			entityHudPanel.AddChild(entityHudNameLabel);
+			entityHudPanel.AddChild(entityHudHealthRed);
+			entityHudPanel.AddChild(entityHudHealthGreen);
+			entityHudPanel.AddChild(entityHudHealthCount);
 			entityHudPanel.AddChild(entityHudHealthLabel);
+
+			//Temp, remove
+			guiManager.AddControl(new DialogBox(50, 50, 300, 300, "Welcom to the test level! " +
+																	"This is a test of stuff that you can do inside the game. " +
+																	"This type of dialog box can be use for many things, such as tutorials!"));
 
 			guiManager.AddControl(entityHudPanel);
 		}

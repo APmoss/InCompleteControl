@@ -23,6 +23,8 @@ namespace Project_WB.Framework.Entities {
 		public Texture2D EtcTextures;
 		public Texture2D DefaultSpritesheet;
 
+		protected internal Random r = new Random();
+
 		protected internal AudioManager audioManager;
 		protected internal SoundLibrary soundLibrary;
 		protected internal ParticleManager particleManager;
@@ -38,6 +40,10 @@ namespace Project_WB.Framework.Entities {
 			get { return selectedUnit; }
 			set {
 				if (selectedUnit != value) {
+					if (NewSelectedUnit != null) {
+						NewSelectedUnit.Invoke(this, EventArgs.Empty);
+					}
+
 					foreach (var entity in entities) {
 						if (entity is Unit) {
 							((Unit)entity).IsSelected = false;
@@ -48,6 +54,10 @@ namespace Project_WB.Framework.Entities {
 				}
 			}
 		}
+		#endregion
+
+		#region Events
+		public event EventHandler<EventArgs> NewSelectedUnit;
 		#endregion
 
 		public EntityManager(Texture2D etcTextures, Texture2D defaultSpritesheet, AudioManager audioManager, SoundLibrary soundLibrary, ParticleManager particleManager) {

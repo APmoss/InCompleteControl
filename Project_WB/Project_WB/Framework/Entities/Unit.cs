@@ -12,11 +12,13 @@ namespace Project_WB.Framework.Entities {
 		const int nearestDistance = 3;
 
 		#region Fields
-		protected Random r = new Random();
 		bool isSelected = false;
-		float health = 100;
+		protected float health = 100;
 		protected float maxHealth = 100;
 		public float Speed = 1;
+		public int distance = 5;
+		public int attackDistance = 1;
+		public bool spent = false;
 		public LinkedList<Point> Waypoints = new LinkedList<Point>();
 
 		protected List<string> selectCommandVoices = new List<string>();
@@ -111,15 +113,18 @@ namespace Project_WB.Framework.Entities {
 
 			Selected += (s, e) => {
 				if (selectCommandVoices.Count > 0) {
-					InterfaceSound inS = new InterfaceSound(EntityManager.soundLibrary.GetSound(selectCommandVoices[r.Next(selectCommandVoices.Count)]));
+					InterfaceSound inS = new InterfaceSound(EntityManager.soundLibrary.GetSound(selectCommandVoices[EntityManager.r.Next(selectCommandVoices.Count)]));
 					EntityManager.audioManager.AddSounds(inS);
 				}
 			};
 			WaypointsChanged += (s, e) => {
 				if (moveCommandVoices.Count > 0) {
-					InterfaceSound inS = new InterfaceSound(EntityManager.soundLibrary.GetSound(moveCommandVoices[r.Next(moveCommandVoices.Count)]));
+					InterfaceSound inS = new InterfaceSound(EntityManager.soundLibrary.GetSound(moveCommandVoices[EntityManager.r.Next(moveCommandVoices.Count)]));
 					EntityManager.audioManager.AddSounds(inS);
 				}
+			};
+			DestinationAchieved += (s, e) => {
+				spent = true;
 			};
 		}
 
@@ -138,6 +143,9 @@ namespace Project_WB.Framework.Entities {
 
 				if (Vector2.Distance(Position, new Vector2(Waypoints.First.Value.X * ts, Waypoints.First.Value.Y * ts)) < nearestDistance) {
 					Waypoints.RemoveFirst();
+					if (Waypoints.Count == 0) {
+						InvokeDestinationAchieved();
+					}
 				}
 				else {
 					var targetVector = new Vector2(Waypoints.First.Value.X * ts - Position.X,
@@ -159,8 +167,8 @@ namespace Project_WB.Framework.Entities {
 			PlayerIndex p = PlayerIndex.One;
 			if (IsSelected && input.IsNewMousePress(MouseButton.Right)) {
 				var relativeMouse = camera.ToRelativePosition(input.CurrentMouseState.X, input.CurrentMouseState.Y);
-				relativeMouse.X -= Bounds.Width / 2;
-				relativeMouse.Y -= Bounds.Height / 2;
+				relativeMouse.X -= EntityManager.tileSize / 2;
+				relativeMouse.Y -= EntityManager.tileSize / 2;
 				var mouseTile = new Point((int)Math.Round(relativeMouse.X / 32),
 									(int)Math.Round(relativeMouse.Y / 32));
 
@@ -191,9 +199,15 @@ namespace Project_WB.Framework.Entities {
 		}
 
 		public override void Draw(GameTime gameTime, ScreenManager screenManager) {
-			if (IsSelected && Waypoints.Count > 0 && DownSourceRectangles.Count > 0) {
-				int ts = EntityManager.tileSize;
+			int ts = EntityManager.tileSize;
 
+			if (isSelected) {
+				foreach (var tile in GetTravelableTiles()) {
+					screenManager.SpriteBatch.Draw(screenManager.BlankTexture, new Rectangle(tile.X * ts, tile.Y * ts, ts - 1, ts - 1), new Color(10, 100, 10, 50));
+				}
+			}
+
+			if (IsSelected && Waypoints.Count > 0 && DownSourceRectangles.Count > 0) {
 				foreach (var waypoint in Waypoints) {
 					Rectangle dotPosition = new Rectangle((int)(waypoint.X * ts + ts / 2), (int)(waypoint.Y * ts + ts / 2), 4, 4);
 					screenManager.SpriteBatch.Draw(screenManager.BlankTexture, dotPosition, null, Color.DarkBlue, (float)gameTime.TotalGameTime.TotalSeconds * 4, new Vector2(.5f), 0, 0);
@@ -204,6 +218,10 @@ namespace Project_WB.Framework.Entities {
 			}
 
 			base.Draw(gameTime, screenManager);
+
+			if (spent) {
+				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, Bounds, new Color(10, 10, 10, 150));
+			}
 		}
 		#endregion
 
@@ -216,6 +234,21 @@ namespace Project_WB.Framework.Entities {
 
 			return new Point((int)Math.Round(Position.X / EntityManager.tileSize),
 								(int)Math.Round(Position.Y / EntityManager.tileSize));
+		}
+
+		public List<Point> GetTravelableTiles() {
+			List<Point> tiles = new List<Point>();
+			int ts = EntityManager.tileSize;
+
+			for (int i = -distance; i <= distance; i++) {
+				for (int j = -distance; j <= distance; j++) {
+					if (Vector2.Distance(new Vector2(Tile.X, Tile.Y), new Vector2(i + Tile.X, j + Tile.Y)) <= distance) {
+						tiles.Add(new Point(i + Tile.X, j + Tile.Y));
+					}
+				}
+			}
+
+			return tiles;
 		}
 		#endregion
 

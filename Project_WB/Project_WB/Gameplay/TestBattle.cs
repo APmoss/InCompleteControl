@@ -14,8 +14,12 @@ namespace Project_WB.Gameplay {
 			base.Activate(instancePreserved);
 
 			Centurion cen = new Centurion();
-			entityManager.AddEntities(cen);
-			cen.Tile = new Point(3, 3);
+			Ballistarius bal = new Ballistarius();
+			Accensus acc = new Accensus();
+			entityManager.AddEntities(cen, bal, acc);
+			cen.Tile = new Point(4, 3);
+			bal.Tile = new Point(5, 3);
+			acc.Tile = new Point(6, 3);
 		}
 
 		public override void HandleInput(GameTime gameTime, InputState input) {
