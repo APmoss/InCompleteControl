@@ -18,8 +18,6 @@ using Microsoft.Xna.Framework.Input.Touch;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Xml.Linq;
-using Nuclex.Input;
-using Nuclex.UserInterface;
 #endregion
 
 namespace GameStateManagement {
@@ -48,17 +46,12 @@ namespace GameStateManagement {
 		bool traceEnabled;
 
 		GraphicsDeviceManager graphicsDeviceManager;
-		InputManager nuclexInputManager;
 
 		#endregion
 
 		#region Properties
 		public GraphicsDeviceManager GraphicsDeviceManager {
 			get { return graphicsDeviceManager; }
-		}
-
-		public InputManager NuclexInputManager {
-			get { return nuclexInputManager; }
 		}
 
 		/// <summary>
@@ -127,9 +120,6 @@ namespace GameStateManagement {
 		/// Initializes the screen manager component.
 		/// </summary>
 		public override void Initialize() {
-			nuclexInputManager = new InputManager(Game.Services, Game.Window.Handle);
-			Game.Components.Add(nuclexInputManager);
-
 			base.Initialize();
 
 			isInitialized = true;

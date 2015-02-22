@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
-using Ruminate.GUI.Framework;
-using Ruminate.GUI.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
+using Project_WB.Framework.Gui;
+using Project_WB.Framework.Gui.Controls;
 
 namespace Project_WB.Menus {
 	class Register : GameScreen {
 		#region Fields
-		Gui gui;
+		GuiManager gui;
 		#endregion
 
 		public Register() {
@@ -28,13 +28,19 @@ namespace Project_WB.Menus {
 		}
 
 		public override void Update(Microsoft.Xna.Framework.GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
-			gui.Update();
+			gui.Update(gameTime);
 			
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
 
+		public override void HandleInput(GameTime gameTime, InputState input) {
+			gui.UpdateInteraction(input);
+			
+			base.HandleInput(gameTime, input);
+		}
+
 		public override void Draw(Microsoft.Xna.Framework.GameTime gameTime) {
-			gui.Draw();
+			gui.Draw(gameTime, ScreenManager);
 
 			ScreenManager.SpriteBatch.Begin();
 
@@ -65,7 +71,7 @@ namespace Project_WB.Menus {
 				//Good, now submit it!
 			}
 			else {
-				warningLabel.Text = message;
+				//warningLabel.Text = message;
 			}
 		}
 
@@ -219,94 +225,92 @@ namespace Project_WB.Menus {
 		#endregion
 
 		#region SetGui
-		Label countryLabel;
-		ComboBox countryComboBox;
-		Label birthLabel;
-		TextBox monthBox, dateBox, yearBox;
-		Label nameLabel;
-		TextBox firstNameBox, lastNameBox;
-		Label emailLabel;
-		TextBox emailBox, confirmEmail;
-		Label usernameLabel;
-		TextBox usernameBox, confirmUsername;
-		Label passwordLabel;
-		TextBox passwordBox, confirmPassword;
+		//Label countryLabel;
+		//ComboBox countryComboBox;
+		//Label birthLabel;
+		//TextBox monthBox, dateBox, yearBox;
+		//Label nameLabel;
+		//TextBox firstNameBox, lastNameBox;
+		//Label emailLabel;
+		//TextBox emailBox, confirmEmail;
+		//Label usernameLabel;
+		//TextBox usernameBox, confirmUsername;
+		//Label passwordLabel;
+		//TextBox passwordBox, confirmPassword;
 		Button confirmButton, cancelButton;
-		Label disclaimer;
-		Label warningLabel, warningStar;
-		Panel registerPanel;
+		//Label disclaimer;
+		//Label warningLabel, warningStar;
+		//Panel registerPanel;
 
 		private void SetGui() {
-			var skin = new Skin(ScreenManager.Game.Content.Load<Texture2D>("gui/greySkin/imageMap"), File.OpenText("Content/gui/greySkin/map.txt").ReadToEnd());
-			var text = new Text(ScreenManager.FontLibrary.Consolas, Color.White);
-			gui = new Gui(ScreenManager.Game, skin, text);
+			gui = new GuiManager(ScreenManager.FontLibrary.Consolas);
 
-			countryLabel = new Label(10, 35, "Country of Residence");
+			//countryLabel = new Label(10, 35, "Country of Residence");
 
-			countryComboBox = new ComboBox(10, 60, 580, "United -------States");
-			countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("United States"));
-			countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Not the United States"));
-			countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Narnia"));
-			countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Chernarus"));
-			countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Lingor Island"));
-			countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Fallujah"));
-			countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Takistan"));
-			countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Utes"));
-			countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Panthera"));
+			//countryComboBox = new ComboBox(10, 60, 580, "United -------States");
+			//countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("United States"));
+			//countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Not the United States"));
+			//countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Narnia"));
+			//countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Chernarus"));
+			//countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Lingor Island"));
+			//countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Fallujah"));
+			//countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Takistan"));
+			//countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Utes"));
+			//countryComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Panthera"));
 
-			birthLabel = new Label(10, 145, Strings.DateOfBirth + " (ex.- 8 | 16 | 1995)");
+			//birthLabel = new Label(10, 145, Strings.DateOfBirth + " (ex.- 8 | 16 | 1995)");
 
-			monthBox = new TextBox(2, 2);
-			//monthBox.Text = Strings.Month;
-			//monthBox.Bounds = new UniRectangle(10, 170, 55, 30);
+			//monthBox = new TextBox(2, 2);
+			////monthBox.Text = Strings.Month;
+			////monthBox.Bounds = new UniRectangle(10, 170, 55, 30);
 
-			dateBox = new TextBox(2, 2);
-			//dateBox.Text = Strings.Date;
-			//dateBox.Bounds = new UniRectangle(75, 170, 55, 30);
+			//dateBox = new TextBox(2, 2);
+			////dateBox.Text = Strings.Date;
+			////dateBox.Bounds = new UniRectangle(75, 170, 55, 30);
 
-			yearBox = new TextBox(2, 4);
-			//yearBox.Text = Strings.Year;
-			//yearBox.Bounds = new UniRectangle(140, 170, 75, 30);
+			//yearBox = new TextBox(2, 4);
+			////yearBox.Text = Strings.Year;
+			////yearBox.Bounds = new UniRectangle(140, 170, 75, 30);
 
-			nameLabel = new Label(10, 210, Strings.Name + " (ex.- Byran Baker)");
+			//nameLabel = new Label(10, 210, Strings.Name + " (ex.- Byran Baker)");
 
-			firstNameBox = new TextBox(2, 20);
-			//firstNameBox.Text = Strings.FirstName;
-			//firstNameBox.Bounds = new UniRectangle(10, 235, 285, 30);
+			//firstNameBox = new TextBox(2, 20);
+			////firstNameBox.Text = Strings.FirstName;
+			////firstNameBox.Bounds = new UniRectangle(10, 235, 285, 30);
 
-			lastNameBox = new TextBox(2, 20);
-			//lastNameBox.Text = Strings.LastName;
-			//lastNameBox.Bounds = new UniRectangle(305, 235, 285, 30);
+			//lastNameBox = new TextBox(2, 20);
+			////lastNameBox.Text = Strings.LastName;
+			////lastNameBox.Bounds = new UniRectangle(305, 235, 285, 30);
 
-			emailLabel = new Label(10, 275, "E-Mail Address");
+			//emailLabel = new Label(10, 275, "E-Mail Address");
 
-			emailBox = new TextBox(2, 20);
-			//emailBox.Text = "E-Mail Address";
-			//emailBox.Bounds = new UniRectangle(10, 300, 285, 30);
+			//emailBox = new TextBox(2, 20);
+			////emailBox.Text = "E-Mail Address";
+			////emailBox.Bounds = new UniRectangle(10, 300, 285, 30);
 
-			confirmEmail = new TextBox(2, 20);
-			//confirmEmail.Text = "Confirm E-Mail Address";
-			//confirmEmail.Bounds = new UniRectangle(305, 300, 285, 30);
+			//confirmEmail = new TextBox(2, 20);
+			////confirmEmail.Text = "Confirm E-Mail Address";
+			////confirmEmail.Bounds = new UniRectangle(305, 300, 285, 30);
 
-			usernameLabel = new Label(10, 340, Strings.Username + " (must be 6-16 characters long)");
+			//usernameLabel = new Label(10, 340, Strings.Username + " (must be 6-16 characters long)");
 
-			usernameBox = new TextBox(2, 20);
-			//usernameBox.Text = "BAKERNET Username";
-			//usernameBox.Bounds =  new UniRectangle(10, 365, 285, 30);
+			//usernameBox = new TextBox(2, 20);
+			////usernameBox.Text = "BAKERNET Username";
+			////usernameBox.Bounds =  new UniRectangle(10, 365, 285, 30);
 
-			confirmUsername = new TextBox(2, 20);
-			//confirmUsername.Text = "Confirm Username";
-			//confirmUsername.Bounds = new UniRectangle(305, 365, 285, 30);
+			//confirmUsername = new TextBox(2, 20);
+			////confirmUsername.Text = "Confirm Username";
+			////confirmUsername.Bounds = new UniRectangle(305, 365, 285, 30);
 
-			passwordLabel = new Label(10, 405, Strings.Password + " (6-16 characters, at least one capital, one lowercase, and one number");
+			//passwordLabel = new Label(10, 405, Strings.Password + " (6-16 characters, at least one capital, one lowercase, and one number");
 
-			passwordBox = new TextBox(2, 20);
-			//passwordBox = new PasswordInputControl('*');
-			//passwordBox.Bounds = new UniRectangle(10, 430, 285, 30);
+			//passwordBox = new TextBox(2, 20);
+			////passwordBox = new PasswordInputControl('*');
+			////passwordBox.Bounds = new UniRectangle(10, 430, 285, 30);
 
-			confirmPassword = new TextBox(2, 20);
-			//confirmPassword = new PasswordInputControl('*');
-			//confirmPassword.Bounds = new UniRectangle(305, 430, 285, 30);
+			//confirmPassword = new TextBox(2, 20);
+			////confirmPassword = new PasswordInputControl('*');
+			////confirmPassword.Bounds = new UniRectangle(305, 430, 285, 30);
 
 			confirmButton = new Button(10, 480, 285, "Confirm & Create");
 			//confirmButton.Pressed += delegate {
@@ -318,39 +322,43 @@ namespace Project_WB.Menus {
 			//    ExitScreen();
 			//};
 
-			disclaimer = new Label(10, 540, "*By creating a free BAKERNET account, you agree to give us all your money.");
+			//disclaimer = new Label(10, 540, "*By creating a free BAKERNET account, you agree to give us all your money.");
 
-			warningLabel = new Label(10, 570, string.Empty);
+			//warningLabel = new Label(10, 570, string.Empty);
 
-			warningStar = new Label(disclaimer.AbsoluteArea.X, disclaimer.AbsoluteArea.Y, string.Empty);
+			//warningStar = new Label(disclaimer.AbsoluteArea.X, disclaimer.AbsoluteArea.Y, string.Empty);
 
-			registerPanel = new Panel(Stcs.XRes / 2 - 300, Stcs.YRes / 2 - 300, 600, 600);
-			//registerWindow.Title = "Register a new BAKERNET Account";
-			registerPanel.AddWidget(countryLabel);
-			registerPanel.AddWidget(countryComboBox);
-			registerPanel.AddWidget(birthLabel);
-			registerPanel.AddWidget(monthBox);
-			registerPanel.AddWidget(dateBox);
-			registerPanel.AddWidget(yearBox);
-			registerPanel.AddWidget(nameLabel);
-			registerPanel.AddWidget(firstNameBox);
-			registerPanel.AddWidget(lastNameBox);
-			registerPanel.AddWidget(emailLabel);
-			registerPanel.AddWidget(emailBox);
-			registerPanel.AddWidget(confirmEmail);
-			registerPanel.AddWidget(usernameLabel);
-			registerPanel.AddWidget(usernameBox);
-			registerPanel.AddWidget(confirmUsername);
-			registerPanel.AddWidget(passwordLabel);
-			registerPanel.AddWidget(passwordBox);
-			registerPanel.AddWidget(confirmPassword);
-			registerPanel.AddWidget(confirmButton);
-			registerPanel.AddWidget(cancelButton);
-			registerPanel.AddWidget(disclaimer);
-			registerPanel.AddWidget(warningLabel);
-			registerPanel.AddWidget(warningStar);
+			//registerPanel = new Panel(Stcs.XRes / 2 - 300, Stcs.YRes / 2 - 300, 600, 600);
+			////registerWindow.Title = "Register a new BAKERNET Account";
+			//registerPanel.AddWidget(countryLabel);
+			//registerPanel.AddWidget(countryComboBox);
+			//registerPanel.AddWidget(birthLabel);
+			//registerPanel.AddWidget(monthBox);
+			//registerPanel.AddWidget(dateBox);
+			//registerPanel.AddWidget(yearBox);
+			//registerPanel.AddWidget(nameLabel);
+			//registerPanel.AddWidget(firstNameBox);
+			//registerPanel.AddWidget(lastNameBox);
+			//registerPanel.AddWidget(emailLabel);
+			//registerPanel.AddWidget(emailBox);
+			//registerPanel.AddWidget(confirmEmail);
+			//registerPanel.AddWidget(usernameLabel);
+			//registerPanel.AddWidget(usernameBox);
+			//registerPanel.AddWidget(confirmUsername);
+			//registerPanel.AddWidget(passwordLabel);
+			//registerPanel.AddWidget(passwordBox);
+			//registerPanel.AddWidget(confirmPassword);
+			//registerPanel.AddWidget(confirmButton);
+			//registerPanel.AddWidget(cancelButton);
+			//registerPanel.AddWidget(disclaimer);
+			//registerPanel.AddWidget(warningLabel);
+			//registerPanel.AddWidget(warningStar);
 
-			gui.AddWidget(registerPanel);
+			//gui.AddWidget(registerPanel);
+
+			//temp, remove once panels are implemented
+			gui.AddControl(confirmButton);
+			gui.AddControl(cancelButton);
 		}
 		#endregion
 	}

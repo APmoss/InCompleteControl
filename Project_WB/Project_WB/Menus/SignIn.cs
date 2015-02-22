@@ -4,9 +4,9 @@ using System.IO;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Ruminate.GUI.Framework;
-using Ruminate.GUI.Content;
 using Microsoft.Xna.Framework.Audio;
+using Project_WB.Framework.Gui;
+using Project_WB.Framework.Gui.Controls;
 
 
 namespace Project_WB.Menus {
@@ -17,7 +17,7 @@ namespace Project_WB.Menus {
 	class SignIn : GameScreen {
 		#region Fields
 		// A gui manager for all gui elements
-		Gui gui;
+		GuiManager gui;
 		//TODO: finalize background
 		List<Vector2> points1 = new List<Vector2>();
 		List<Vector2> points2 = new List<Vector2>();
@@ -52,7 +52,7 @@ namespace Project_WB.Menus {
 
 		#region Overridden Methods
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
-			gui.Update();
+			gui.Update(gameTime);
 
 			//TODO: finalize background
 			for (int i = 0; i < points1.Count; i++) {
@@ -75,6 +75,12 @@ namespace Project_WB.Menus {
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 		}
 
+		public override void HandleInput(GameTime gameTime, InputState input) {
+			gui.UpdateInteraction(input);
+			
+			base.HandleInput(gameTime, input);
+		}
+
 		public override void Draw(GameTime gameTime) {
 			//TODO: remove and stuff
 			ScreenManager.SpriteBatch.Begin();
@@ -88,49 +94,45 @@ namespace Project_WB.Menus {
 			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "InComplete Control", titlePos - Vector2.One, new Color(60, 0, 0) * TransitionAlpha);
 			ScreenManager.SpriteBatch.DrawString(ScreenManager.FontLibrary.HighTowerText, "InComplete Control", titlePos + Vector2.One, Color.Maroon * TransitionAlpha);
 
+			gui.Draw(gameTime, ScreenManager);
+
 			ScreenManager.SpriteBatch.End();
 			
-			gui.Draw();
-
 			base.Draw(gameTime);
 		}
 		#endregion
 
 		#region SetGui
-		Label versionLabel;
-		Label languageLabel;
-		ComboBox languageComboBox;
-		Panel languagePanel;
+		//Label versionLabel;
+		//Label languageLabel;
+		//ComboBox languageComboBox;
+		//Panel languagePanel;
 
-		Label usernameLabel;
-		TextBox usernameBox;
-		Label passwordLabel;
-		TextBox passwordBox;
+		//Label usernameLabel;
+		//TextBox usernameBox;
+		//Label passwordLabel;
+		//TextBox passwordBox;
 		Button loginButton;
 		Button registerButton;
-		Panel loginPanel;
+		//Panel loginPanel;
 
 		Button creditsButton;
 		Button optionsButton;
 		Button quitButton;
-		Panel otherPanel;
+		//Panel otherPanel;
 
 		private void SetGui() {
-			string t = File.OpenText("Content/gui/greySkin/map.txt").ReadToEnd();
-			Texture2D y = ScreenManager.Game.Content.Load<Texture2D>("gui/greySkin/imageMap");
-			var skin = new Skin(y, t);
-			var text = new Text(ScreenManager.FontLibrary.Consolas, Color.White);
-			gui = new Gui(ScreenManager.Game, skin, text);
+			gui = new GuiManager(ScreenManager.FontLibrary.SmallSegoeUIMono);
 
-			versionLabel = new Label(10, Stcs.YRes - 20, Stcs.InternalVersion.ToString());
+			//versionLabel = new Label(10, Stcs.YRes - 20, Stcs.InternalVersion.ToString());
 
-			languageLabel = new Label(10, 35, Strings.SwitchLanguage + ":");
+			//languageLabel = new Label(10, 35, Strings.SwitchLanguage + ":");
 
-			languageComboBox = new ComboBox(10, 60, 180, "Language");
-			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.English + " (English)"));
-			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164)));
-			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.French + string.Format(" (Fran{0}ais)", (char)135)));
-			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Murrikan"));
+			//languageComboBox = new ComboBox(10, 60, 180, "Language");
+			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.English + " (English)"));
+			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164)));
+			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.French + string.Format(" (Fran{0}ais)", (char)135)));
+			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Murrikan"));
 			//languageList.SelectionChanged += delegate {
 			//    string culture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
 
@@ -149,18 +151,18 @@ namespace Project_WB.Menus {
 			//    }
 			//};
 
-			languagePanel = new Panel(Stcs.XRes - 230, Stcs.YRes - 200, 200, 175);
-			languagePanel.AddWidget(languageLabel);
-			languagePanel.AddWidget(languageComboBox);
+			//languagePanel = new Panel(Stcs.XRes - 230, Stcs.YRes - 200, 200, 175);
+			//languagePanel.AddWidget(languageLabel);
+			//languagePanel.AddWidget(languageComboBox);
 
-			usernameLabel = new Label(10, 35, Strings.Username);
+			//usernameLabel = new Label(10, 35, Strings.Username);
 
-			usernameBox = new TextBox(2, 16);
-			//usernameBox.Bounds = new UniRectangle(10, 60, 330, 30);
+			//usernameBox = new TextBox(2, 16);
+			////usernameBox.Bounds = new UniRectangle(10, 60, 330, 30);
 			
-			passwordLabel = new Label(10, 100, Strings.Password);
+			//passwordLabel = new Label(10, 100, Strings.Password);
 			
-			passwordBox = new TextBox(2, 16);
+			//passwordBox = new TextBox(2, 16);
 			//passwordBox.Bounds = new UniRectangle(10, 125, 330, 30);
 
 			loginButton = new Button(10, 170, 160, Strings.SignIn);
@@ -175,14 +177,14 @@ namespace Project_WB.Menus {
 			//    ScreenManager.AddScreen(new Register(), null);
 			//};
 
-			loginPanel = new Panel(Stcs.XRes / 2 - 175, Stcs.YRes - 235, 350, 225);
-			//loginWindow.Title = "BAKERNET Account Login";
-			loginPanel.AddWidget(usernameLabel);
-			loginPanel.AddWidget(usernameBox);
-			loginPanel.AddWidget(passwordLabel);
-			loginPanel.AddWidget(passwordBox);
-			loginPanel.AddWidget(loginButton);
-			loginPanel.AddWidget(registerButton);
+			//loginPanel = new Panel(Stcs.XRes / 2 - 175, Stcs.YRes - 235, 350, 225);
+			////loginWindow.Title = "BAKERNET Account Login";
+			//loginPanel.AddWidget(usernameLabel);
+			//loginPanel.AddWidget(usernameBox);
+			//loginPanel.AddWidget(passwordLabel);
+			//loginPanel.AddWidget(passwordBox);
+			//loginPanel.AddWidget(loginButton);
+			//loginPanel.AddWidget(registerButton);
 
 			creditsButton = new Button(10, 35, 180, "Credits");
 
@@ -193,31 +195,38 @@ namespace Project_WB.Menus {
 			//    ScreenManager.Game.Exit();
 			//};
 
-			otherPanel = new Panel(30, Stcs.YRes - 205, 200, 175);
-			otherPanel.AddWidget(creditsButton);
-			otherPanel.AddWidget(optionsButton);
-			otherPanel.AddWidget(quitButton);
+			//otherPanel = new Panel(30, Stcs.YRes - 205, 200, 175);
+			//otherPanel.AddWidget(creditsButton);
+			//otherPanel.AddWidget(optionsButton);
+			//otherPanel.AddWidget(quitButton);
 			
-			gui.AddWidget(versionLabel);
-			gui.AddWidget(languagePanel);
-			gui.AddWidget(loginPanel);
-			gui.AddWidget(otherPanel);
+			//gui.AddWidget(versionLabel);
+			//gui.AddWidget(languagePanel);
+			//gui.AddWidget(loginPanel);
+			//gui.AddWidget(otherPanel);
+
+			//temp adding controls, remove once panels are implemented
+			gui.AddControl(loginButton);
+			gui.AddControl(registerButton);
+			gui.AddControl(creditsButton);
+			gui.AddControl(optionsButton);
+			gui.AddControl(quitButton);
 		}
 		#endregion
 
 		#region Methods
 		void ResetText() {
-			languageLabel.Text = Strings.SwitchLanguage + ":";
+			//languageLabel.Text = Strings.SwitchLanguage + ":";
 
-			languageComboBox.DropDownItems.Clear();
-			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.English + " (English)"));
-			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164)));
-			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.French + string.Format(" (Fran{0}ais)", (char)135)));
-			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem("MURRIKANNNN"));
+			//languageComboBox.DropDownItems.Clear();
+			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.English + " (English)"));
+			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164)));
+			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.French + string.Format(" (Fran{0}ais)", (char)135)));
+			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem("MURRIKANNNN"));
 
-			usernameLabel.Text = Strings.Username;
+			//usernameLabel.Text = Strings.Username;
 
-			passwordLabel.Text = Strings.Password;
+			//passwordLabel.Text = Strings.Password;
 
 			loginButton.Text = Strings.SignIn;
 

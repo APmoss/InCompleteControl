@@ -31,9 +31,6 @@
     <Reference Include="Nuclex.Fonts.Content.TrueTypeImporter">
       <HintPath>..\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.dll</HintPath>
     </Reference>
-    <Reference Include="Osiris.Content.Pipeline">
-      <HintPath>..\ExternalLibs\Osiris.Content.Pipeline.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="maps\tilesets\tilesetAv1.0.png">

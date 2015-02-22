@@ -10,8 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalLibs", "ExternalLibs", "{126CD985-5FF2-4961-92E1-229067E0D95C}"
 	ProjectSection(SolutionItems) = preProject
 		Project_WB\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.dll = Project_WB\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.dll
-		Project_WB\ExternalLibs\Osiris.Content.Pipeline.dll = Project_WB\ExternalLibs\Osiris.Content.Pipeline.dll
-		Project_WB\ExternalLibs\RuminateGui.dll = Project_WB\ExternalLibs\RuminateGui.dll
 	EndProjectSection
 EndProject
 Global
