@@ -65,21 +65,9 @@
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="mscorlib" />
-    <Reference Include="Nuclex.Input, Version=4.0.0.0, Culture=neutral, PublicKeyToken=96bb577564343f16, processorArchitecture=x86">
+    <Reference Include="RuminateGui, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Nuclex.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.Support">
-      <HintPath>..\ExternalLibs\Nuclex.Support.dll</HintPath>
-    </Reference>
-    <Reference Include="Nuclex.UserInterface">
-      <HintPath>..\ExternalLibs\Nuclex.UserInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\ExternalLibs\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="SlimDX.DirectInput">
-      <HintPath>..\ExternalLibs\SlimDX.DirectInput.dll</HintPath>
+      <HintPath>..\ExternalLibs\RuminateGui.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />

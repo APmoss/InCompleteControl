@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Nuclex.UserInterface;
-using Nuclex.UserInterface.Controls.Desktop;
 using Microsoft.Xna.Framework.Input;
 
 namespace Project_WB {
 	/// <summary>
 	/// An extension of InputControl that allows password input using the specified filler character.
 	/// </summary>
-	class PasswordInputControl : InputControl {
+	class PasswordInputControl {
+		/*
 		#region Fields
 		// The filler character that will be used instead showing the password
 		char fillerCharacter = '*';
@@ -82,5 +81,6 @@ namespace Project_WB {
 			return internalText;
 		}
 		#endregion
+		*/
 	}
 }

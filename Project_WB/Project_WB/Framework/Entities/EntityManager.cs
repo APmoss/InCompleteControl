@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
 using Project_WB.Framework.Entities;
-using Nuclex.Input;
-using Nuclex.Input.Devices;
 using Microsoft.Xna.Framework.Graphics;
 using Project_WB.Framework.Audio;
 using Project_WB.Framework.Particles;

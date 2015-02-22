@@ -31,6 +31,9 @@
     <Reference Include="Nuclex.Fonts.Content.TrueTypeImporter">
       <HintPath>..\ExternalLibs\Nuclex.Fonts.Content.TrueTypeImporter.dll</HintPath>
     </Reference>
+    <Reference Include="Osiris.Content.Pipeline">
+      <HintPath>..\ExternalLibs\Osiris.Content.Pipeline.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="maps\tilesets\tilesetAv1.0.png">
@@ -73,40 +76,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="gui\grey\SuaveSheet.png">
-      <Name>SuaveSheet</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="gui\grey\Suave.skin.xml">
-      <Name>Suave.skin</Name>
-      <Importer>XmlImporter</Importer>
-      <Processor>PassThroughProcessor</Processor>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="maps\test.tmx">
       <Name>test</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="gui\grey\DefaultFont.spritefont">
-      <Name>DefaultFont</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="gui\grey\TitleFont.spritefont">
-      <Name>TitleFont</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="gui\grey\skin.xsd">
-      <Name>skin</Name>
-      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +225,17 @@
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gui\greySkin\imageMap.png">
+      <Name>imageMap</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <None Include="gui\greySkin\map.txt">
+      <Name>map</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 

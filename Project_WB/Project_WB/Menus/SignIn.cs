@@ -4,9 +4,8 @@ using System.IO;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Nuclex.UserInterface.Controls.Desktop;
-using Nuclex.UserInterface;
-using Nuclex.UserInterface.Controls;
+using Ruminate.GUI.Framework;
+using Ruminate.GUI.Content;
 using Microsoft.Xna.Framework.Audio;
 
 
@@ -18,7 +17,7 @@ namespace Project_WB.Menus {
 	class SignIn : GameScreen {
 		#region Fields
 		// A gui manager for all gui elements
-		GuiManager gui;
+		Gui gui;
 		//TODO: finalize background
 		List<Vector2> points1 = new List<Vector2>();
 		List<Vector2> points2 = new List<Vector2>();
@@ -53,7 +52,7 @@ namespace Project_WB.Menus {
 
 		#region Overridden Methods
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
-			gui.Update(gameTime);
+			gui.Update();
 
 			//TODO: finalize background
 			for (int i = 0; i < points1.Count; i++) {
@@ -91,155 +90,130 @@ namespace Project_WB.Menus {
 
 			ScreenManager.SpriteBatch.End();
 			
-			gui.Draw(gameTime);
+			gui.Draw();
 
 			base.Draw(gameTime);
 		}
 		#endregion
 
 		#region SetGui
-		Screen scrn;
-		LabelControl versionLabel;
-		LabelControl languageLabel;
-		ListControl languageList;
-		WindowControl languageWindow;
+		Label versionLabel;
+		Label languageLabel;
+		ComboBox languageComboBox;
+		Panel languagePanel;
 
-		LabelControl usernameLabel;
-		InputControl usernameBox;
-		LabelControl passwordLabel;
-		PasswordInputControl passwordBox;
-		ButtonControl loginButton;
-		ButtonControl registerButton;
-		WindowControl loginWindow;
+		Label usernameLabel;
+		TextBox usernameBox;
+		Label passwordLabel;
+		TextBox passwordBox;
+		Button loginButton;
+		Button registerButton;
+		Panel loginPanel;
 
-		ButtonControl creditsButton;
-		ButtonControl optionsButton;
-		ButtonControl quitButton;
-		WindowControl otherWindow;
+		Button creditsButton;
+		Button optionsButton;
+		Button quitButton;
+		Panel otherPanel;
 
 		private void SetGui() {
-			gui = new GuiManager(ScreenManager.GraphicsDeviceManager, ScreenManager.NuclexInputManager);
-			gui.Visualizer = Nuclex.UserInterface.Visuals.Flat.FlatGuiVisualizer.FromFile(ScreenManager.Game.Services, "content/gui/grey/Suave.skin.xml");
-			gui.Initialize();
+			string t = File.OpenText("Content/gui/greySkin/map.txt").ReadToEnd();
+			Texture2D y = ScreenManager.Game.Content.Load<Texture2D>("gui/greySkin/imageMap");
+			var skin = new Skin(y, t);
+			var text = new Text(ScreenManager.FontLibrary.Consolas, Color.White);
+			gui = new Gui(ScreenManager.Game, skin, text);
 
-			scrn = new Screen(Stcs.XRes, Stcs.YRes);
-			gui.Screen = scrn;
+			versionLabel = new Label(10, Stcs.YRes - 20, Stcs.InternalVersion.ToString());
+
+			languageLabel = new Label(10, 35, Strings.SwitchLanguage + ":");
+
+			languageComboBox = new ComboBox(10, 60, 180, "Language");
+			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.English + " (English)"));
+			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164)));
+			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.French + string.Format(" (Fran{0}ais)", (char)135)));
+			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem("Murrikan"));
+			//languageList.SelectionChanged += delegate {
+			//    string culture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+
+			//    if (languageList.SelectedItems.Count == 1) {
+			//        if (languageList.SelectedItems[0] == 0) {
+			//            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+			//        }
+			//        else if (languageList.SelectedItems[0] == 1) {
+			//            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("es-ES");
+			//        }
+			//        else if (languageList.SelectedItems[0] == 2) {
+			//            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
+			//        }
+
+			//        ResetText();
+			//    }
+			//};
+
+			languagePanel = new Panel(Stcs.XRes - 230, Stcs.YRes - 200, 200, 175);
+			languagePanel.AddWidget(languageLabel);
+			languagePanel.AddWidget(languageComboBox);
+
+			usernameLabel = new Label(10, 35, Strings.Username);
+
+			usernameBox = new TextBox(2, 16);
+			//usernameBox.Bounds = new UniRectangle(10, 60, 330, 30);
 			
-			scrn.Desktop.Bounds = new UniRectangle(0, 0, Stcs.XRes, Stcs.YRes);
-
-			versionLabel = new LabelControl(Stcs.InternalVersion.ToString());
-			versionLabel.Bounds = new UniRectangle(10, Stcs.YRes - 20, 300, 20);
-
-			languageLabel = new LabelControl(Strings.SwitchLanguage + ":");
-			languageLabel.Bounds = new UniRectangle(10, 35, 180, 20);
-
-			languageList = new ListControl();
-			languageList.Bounds = new UniRectangle(10, 60, 180, 100);
-			languageList.SelectionMode = ListSelectionMode.Single;
-			languageList.Items.Add(Strings.English + " (English)");
-			languageList.Items.Add(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164));
-			languageList.Items.Add(Strings.French + string.Format(" (Fran{0}ais)", (char)135));
-			languageList.Items.Add("Murrikan");
-			languageList.SelectionChanged += delegate {
-				string culture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-
-				if (languageList.SelectedItems.Count == 1) {
-					if (languageList.SelectedItems[0] == 0) {
-						System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
-					}
-					else if (languageList.SelectedItems[0] == 1) {
-						System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("es-ES");
-					}
-					else if (languageList.SelectedItems[0] == 2) {
-						System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
-					}
-
-					ResetText();
-				}
-			};
-
-			languageWindow = new WindowControl();
-			languageWindow.Bounds = new UniRectangle(Stcs.XRes - 230, Stcs.YRes - 200, 200, 175);
-			languageWindow.Title = "Language Options";
-			languageWindow.Children.Add(languageLabel);
-			languageWindow.Children.Add(languageList);
-
-			usernameLabel = new LabelControl(Strings.Username);
-			usernameLabel.Bounds = new UniRectangle(10, 35, 330, 20);
-
-			usernameBox = new InputControl();
-			usernameBox.Bounds = new UniRectangle(10, 60, 330, 30);
+			passwordLabel = new Label(10, 100, Strings.Password);
 			
-			passwordLabel = new LabelControl(Strings.Password);
-			passwordLabel.Bounds = new UniRectangle(10, 100, 330, 20);
+			passwordBox = new TextBox(2, 16);
+			//passwordBox.Bounds = new UniRectangle(10, 125, 330, 30);
+
+			loginButton = new Button(10, 170, 160, Strings.SignIn);
+			//loginButton.Pressed += delegate {
+			//    gui.Dispose();
+			//    ScreenManager.AddScreen(new Gameplay.TestThing(), null);
+			//    ExitScreen();
+			//};
+
+			registerButton = new Button(180, 170, 160, Strings.Register);
+			//registerButton.Pressed += delegate {
+			//    ScreenManager.AddScreen(new Register(), null);
+			//};
+
+			loginPanel = new Panel(Stcs.XRes / 2 - 175, Stcs.YRes - 235, 350, 225);
+			//loginWindow.Title = "BAKERNET Account Login";
+			loginPanel.AddWidget(usernameLabel);
+			loginPanel.AddWidget(usernameBox);
+			loginPanel.AddWidget(passwordLabel);
+			loginPanel.AddWidget(passwordBox);
+			loginPanel.AddWidget(loginButton);
+			loginPanel.AddWidget(registerButton);
+
+			creditsButton = new Button(10, 35, 180, "Credits");
+
+			optionsButton = new Button(10, 80, 180, "Options");
+
+			quitButton = new Button(10, 125, 180, "Quit Game");
+			//quitButton.Pressed += delegate {
+			//    ScreenManager.Game.Exit();
+			//};
+
+			otherPanel = new Panel(30, Stcs.YRes - 205, 200, 175);
+			otherPanel.AddWidget(creditsButton);
+			otherPanel.AddWidget(optionsButton);
+			otherPanel.AddWidget(quitButton);
 			
-			passwordBox = new PasswordInputControl('*');
-			passwordBox.Bounds = new UniRectangle(10, 125, 330, 30);
-
-			loginButton = new ButtonControl();
-			loginButton.Text = Strings.SignIn;
-			loginButton.Bounds = new UniRectangle(10, 170, 160, 35);
-			loginButton.Pressed += delegate {
-				gui.Dispose();
-				ScreenManager.AddScreen(new Gameplay.TestThing(), null);
-				ExitScreen();
-			};
-
-			registerButton = new ButtonControl();
-			registerButton.Text = Strings.Register;
-			registerButton.Bounds = new UniRectangle(180, 170, 160, 35);
-			registerButton.Pressed += delegate {
-				ScreenManager.AddScreen(new Register(), null);
-			};
-
-			loginWindow = new WindowControl();
-			loginWindow.Bounds = new UniRectangle(Stcs.XRes / 2 - 175, Stcs.YRes - 235, 350, 225);
-			loginWindow.Title = "BAKERNET Account Login";
-			loginWindow.Children.Add(usernameLabel);
-			loginWindow.Children.Add(usernameBox);
-			loginWindow.Children.Add(passwordLabel);
-			loginWindow.Children.Add(passwordBox);
-			loginWindow.Children.Add(loginButton);
-			loginWindow.Children.Add(registerButton);
-
-			creditsButton = new ButtonControl();
-			creditsButton.Bounds = new UniRectangle(10, 35, 180, 35);
-			creditsButton.Text = "Credits";
-
-			optionsButton = new ButtonControl();
-			optionsButton.Bounds = new UniRectangle(10, 80, 180, 35);
-			optionsButton.Text = "Options";
-
-			quitButton = new ButtonControl();
-			quitButton.Bounds = new UniRectangle(10, 125, 180, 35);
-			quitButton.Text = "Quit Game";
-			quitButton.Pressed += delegate {
-				ScreenManager.Game.Exit();
-			};
-
-			otherWindow = new WindowControl();
-			otherWindow.Bounds = new UniRectangle(30, Stcs.YRes - 205, 200, 175);
-			otherWindow.Title = "Other";
-			otherWindow.Children.Add(creditsButton);
-			otherWindow.Children.Add(optionsButton);
-			otherWindow.Children.Add(quitButton);
-			
-			scrn.Desktop.Children.Add(versionLabel);
-			scrn.Desktop.Children.Add(languageWindow);
-			scrn.Desktop.Children.Add(loginWindow);
-			scrn.Desktop.Children.Add(otherWindow);
+			gui.AddWidget(versionLabel);
+			gui.AddWidget(languagePanel);
+			gui.AddWidget(loginPanel);
+			gui.AddWidget(otherPanel);
 		}
 		#endregion
 
 		#region Methods
 		void ResetText() {
-			languageLabel = new LabelControl(Strings.SwitchLanguage + ":");
+			languageLabel.Text = Strings.SwitchLanguage + ":";
 
-			languageList.Items.Clear();
-			languageList.Items.Add(Strings.English + " (English)");
-			languageList.Items.Add(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164));
-			languageList.Items.Add(Strings.French + string.Format(" (Fran{0}ais)", (char)135));
-			languageList.Items.Add("MURRIKANNNN");
+			languageComboBox.DropDownItems.Clear();
+			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.English + " (English)"));
+			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.Spanish + string.Format(" (Espa{0}ol)", (char)164)));
+			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.French + string.Format(" (Fran{0}ais)", (char)135)));
+			languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem("MURRIKANNNN"));
 
 			usernameLabel.Text = Strings.Username;
 
