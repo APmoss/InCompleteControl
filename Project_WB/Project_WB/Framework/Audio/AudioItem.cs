@@ -8,7 +8,7 @@ namespace Project_WB.Framework.Audio {
 	abstract class AudioItem {
 		#region Fields
 		// The name of the sound effect asset when loaded
-		string assetName;
+		protected string assetName;
 		/// <summary>
 		/// The instance of the sound effect passed in.
 		/// With a sound instance, we can modify the sound in more ways.
@@ -16,16 +16,16 @@ namespace Project_WB.Framework.Audio {
 		public SoundEffectInstance SoundInstance;
 
 		// If the sound has a timed lifetime, this should be true
-		protected bool Decays = false;
+		protected internal bool Decays = false;
 		// The lifespan for which the sound will exist.
-		protected TimeSpan lifeSpan = TimeSpan.Zero;
+		protected internal TimeSpan LifeSpan = TimeSpan.Zero;
 		#endregion
 
 		#region Properties
 		/// <summary>
 		/// The asset name of the sound effect.
 		/// </summary>
-		public string SoundEffectName {
+		public string Name {
 			get { return assetName; }
 		}
 		#endregion

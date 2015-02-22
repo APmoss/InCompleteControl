@@ -58,6 +58,16 @@ namespace GameStateManagement {
 
 		bool overrideInput = false;
 
+		/// <summary>
+		/// Indicated whether this screen should be drawn last.
+		/// </summary>
+		public bool Topmost {
+			get { return topmost; }
+			protected set { topmost = value; }
+		}
+
+		bool topmost = false;
+
 
 		/// <summary>
 		/// Indicates how long the screen takes to

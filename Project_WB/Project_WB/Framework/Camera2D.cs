@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿// Made by Alex Pabst
+// Publicly available
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Project_WB.Framework {

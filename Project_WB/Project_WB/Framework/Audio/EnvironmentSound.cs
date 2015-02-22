@@ -13,30 +13,29 @@ namespace Project_WB.Framework.Audio {
 		/// Gets the item's emitter, which contains position, velocity, etc.
 		/// </summary>
 		public AudioEmitter Emitter {
-			get; protected set;
+			get; protected internal set;
 		}
 		#endregion
 
 		#region Initialization
 		public EnvironmentSound(SoundEffect soundEffect, Vector2 position, bool loops) : base(soundEffect) {
+			// Name the sound
+			this.assetName = soundEffect.Name;
 			// Initialize the audio emitter
-			this.Emitter = new AudioEmitter();
+			this.Emitter = new AudioEmitter() {
+				Forward = Vector3.Backward
+			};
 			// Set the position of the emitter
 			this.Emitter.Position = new Vector3(position, 0);
 			// Set the looping property of the sound instance
 			this.SoundInstance.IsLooped = loops;
 		}
-		public EnvironmentSound(SoundEffect soundEffect, Vector2 position, TimeSpan lifeSpan, bool loops) : base(soundEffect) {
-			// Initialize the audio emitter
-			this.Emitter = new AudioEmitter();
-			// Set the position of the emitter
-			this.Emitter.Position = new Vector3(position, 0);
-			// Set the looping property of the sound instance
-			this.SoundInstance.IsLooped = loops;
+		// Overloaded with a lifespan to the sound effect
+		public EnvironmentSound(SoundEffect soundEffect, Vector2 position, bool loops, TimeSpan lifeSpan) : this(soundEffect, position, loops) {
 			// If they specified a lifespan, that means it will decay
 			this.Decays = true;
 			// Set the lifespan of the sound
-			this.lifeSpan = lifeSpan;
+			this.LifeSpan = lifeSpan;
 		}
 		#endregion
 	}

@@ -103,30 +103,30 @@ namespace Project_WB.Menus {
 		#endregion
 
 		#region SetGui
-		//Label versionLabel;
-		//Label languageLabel;
+		Label versionLabel;
+		Label languageLabel;
 		//ComboBox languageComboBox;
-		//Panel languagePanel;
+		Panel languagePanel;
 
-		//Label usernameLabel;
+		Label usernameLabel;
 		//TextBox usernameBox;
-		//Label passwordLabel;
+		Label passwordLabel;
 		//TextBox passwordBox;
 		Button loginButton;
 		Button registerButton;
-		//Panel loginPanel;
+		Panel loginPanel;
 
 		Button creditsButton;
 		Button optionsButton;
 		Button quitButton;
-		//Panel otherPanel;
+		Panel otherPanel;
 
 		private void SetGui() {
 			gui = new GuiManager(ScreenManager.FontLibrary.SmallSegoeUIMono);
 
-			//versionLabel = new Label(10, Stcs.YRes - 20, Stcs.InternalVersion.ToString());
+			versionLabel = new Label(10, Stcs.YRes - 20, Stcs.InternalVersion.ToString());
 
-			//languageLabel = new Label(10, 35, Strings.SwitchLanguage + ":");
+			languageLabel = new Label(10, 35, Strings.SwitchLanguage + ":");
 
 			//languageComboBox = new ComboBox(10, 60, 180, "Language");
 			//languageComboBox.DropDownItems.Add(new ComboBox.DropDownItem(Strings.English + " (English)"));
@@ -151,40 +151,38 @@ namespace Project_WB.Menus {
 			//    }
 			//};
 
-			//languagePanel = new Panel(Stcs.XRes - 230, Stcs.YRes - 200, 200, 175);
-			//languagePanel.AddWidget(languageLabel);
+			languagePanel = new Panel(Stcs.XRes - 230, Stcs.YRes - 200, 200, 175);
+			languagePanel.AddChild(languageLabel);
 			//languagePanel.AddWidget(languageComboBox);
 
-			//usernameLabel = new Label(10, 35, Strings.Username);
+			usernameLabel = new Label(10, 35, Strings.Username);
 
 			//usernameBox = new TextBox(2, 16);
 			////usernameBox.Bounds = new UniRectangle(10, 60, 330, 30);
 			
-			//passwordLabel = new Label(10, 100, Strings.Password);
+			passwordLabel = new Label(10, 100, Strings.Password);
 			
 			//passwordBox = new TextBox(2, 16);
 			//passwordBox.Bounds = new UniRectangle(10, 125, 330, 30);
 
 			loginButton = new Button(10, 170, 160, Strings.SignIn);
-			//loginButton.Pressed += delegate {
-			//    gui.Dispose();
-			//    ScreenManager.AddScreen(new Gameplay.TestThing(), null);
-			//    ExitScreen();
-			//};
+			loginButton.LeftClicked += delegate {
+				ScreenManager.AddScreen(new Gameplay.TestThing(), null);
+			};
 
 			registerButton = new Button(180, 170, 160, Strings.Register);
 			//registerButton.Pressed += delegate {
 			//    ScreenManager.AddScreen(new Register(), null);
 			//};
 
-			//loginPanel = new Panel(Stcs.XRes / 2 - 175, Stcs.YRes - 235, 350, 225);
+			loginPanel = new Panel(Stcs.XRes / 2 - 175, Stcs.YRes - 235, 350, 225);
 			////loginWindow.Title = "BAKERNET Account Login";
-			//loginPanel.AddWidget(usernameLabel);
+			loginPanel.AddChild(usernameLabel);
 			//loginPanel.AddWidget(usernameBox);
-			//loginPanel.AddWidget(passwordLabel);
+			loginPanel.AddChild(passwordLabel);
 			//loginPanel.AddWidget(passwordBox);
-			//loginPanel.AddWidget(loginButton);
-			//loginPanel.AddWidget(registerButton);
+			loginPanel.AddChild(loginButton);
+			loginPanel.AddChild(registerButton);
 
 			creditsButton = new Button(10, 35, 180, "Credits");
 
@@ -195,22 +193,18 @@ namespace Project_WB.Menus {
 			//    ScreenManager.Game.Exit();
 			//};
 
-			//otherPanel = new Panel(30, Stcs.YRes - 205, 200, 175);
-			//otherPanel.AddWidget(creditsButton);
-			//otherPanel.AddWidget(optionsButton);
-			//otherPanel.AddWidget(quitButton);
+			otherPanel = new Panel(30, Stcs.YRes - 205, 200, 175);
+			otherPanel.AddChild(creditsButton);
+			otherPanel.AddChild(optionsButton);
+			otherPanel.AddChild(quitButton);
 			
-			//gui.AddWidget(versionLabel);
-			//gui.AddWidget(languagePanel);
-			//gui.AddWidget(loginPanel);
-			//gui.AddWidget(otherPanel);
-
-			//temp adding controls, remove once panels are implemented
-			gui.AddControl(loginButton);
-			gui.AddControl(registerButton);
-			gui.AddControl(creditsButton);
-			gui.AddControl(optionsButton);
-			gui.AddControl(quitButton);
+			gui.AddControl(versionLabel);
+			gui.AddControl(languagePanel);
+			gui.AddControl(loginPanel);
+			gui.AddControl(otherPanel);
+			
+			//TEMP REMOVE
+			gui.AddControl(new Slider(0, 0, 1280, 75));
 		}
 		#endregion
 

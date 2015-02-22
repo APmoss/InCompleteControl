@@ -31,13 +31,15 @@ namespace Project_WB.Framework.Entities {
 		public Unit SelectedUnit {
 			get { return selectedUnit; }
 			set {
-				foreach (var entity in entities) {
-					if (entity is Unit) {
-						((Unit)entity).IsSelected = false;
+				if (selectedUnit != value) {
+					foreach (var entity in entities) {
+						if (entity is Unit) {
+							((Unit)entity).IsSelected = false;
+						}
 					}
-				}
 
-				selectedUnit = value;
+					selectedUnit = value;
+				}
 			}
 		}
 		#endregion
@@ -101,6 +103,9 @@ namespace Project_WB.Framework.Entities {
 					if (((Sprite)entity).spriteSheet == null) {
 						((Sprite)entity).spriteSheet = DefaultSpritesheet;
 					}
+				}
+				if (entity is Unit) {
+					((Unit)entity).Initialize();
 				}
 				entity.InvokeCreated();
 

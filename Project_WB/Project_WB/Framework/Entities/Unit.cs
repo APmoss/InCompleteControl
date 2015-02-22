@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using GameStateManagement;
+using Project_WB.Framework.Audio;
 
 namespace Project_WB.Framework.Entities {
 	class Unit : AnimatedSprite {
 		const int nearestDistance = 3;
 
 		#region Fields
+		protected Random r = new Random();
 		bool isSelected = false;
 		float health = 100;
 		protected float maxHealth = 100;
 		public float Speed = 1;
 		public LinkedList<Point> Waypoints = new LinkedList<Point>();
+
+		protected List<string> selectCommandVoices = new List<string>();
+		protected List<string> moveCommandVoices = new List<string>();
 		#endregion
 
 		#region Properties
@@ -47,13 +52,13 @@ namespace Project_WB.Framework.Entities {
 			get { return isSelected; }
 			set{
 				// Was not previously selected, but is now (Not Selected -> Selected)
-				if ((isSelected == false) && value) {
+				if ((isSelected == false) && (value == true)) {
 					if (Selected != null) {
 						Selected.Invoke(this, EventArgs.Empty);
 					}
 				}
 				// Was previously selected, but not anymore (Selected -> Not Selected)
-				else if (isSelected && (value == false)) {
+				else if ((isSelected == true) && (value == false)) {
 					if (Deselected != null) {
 						Deselected.Invoke(this, EventArgs.Empty);
 					}
@@ -77,13 +82,11 @@ namespace Project_WB.Framework.Entities {
 		#endregion
 
 		public Unit() {
-			// Wooh, lambda expressions!
-			LeftClicked += (s, e) => { EntityManager.SelectedUnit = this; IsSelected = true; };
+			sharedConstruct();
 		}
 
 		public Unit(Texture2D spriteSheet) : base(spriteSheet) {
-			// Wooh, lambda expressions!
-			LeftClicked += (s, e) => { EntityManager.SelectedUnit = this; IsSelected = true; };
+			sharedConstruct();
 		}
 		public Unit(Texture2D spriteSheet,
 						List<Rectangle> upSourceRectangles,
@@ -93,11 +96,36 @@ namespace Project_WB.Framework.Entities {
 
 			SetSourceRectangles(upSourceRectangles, downSourceRectangles, leftSourceRectangles, rightSourceRectangles);
 
+			sharedConstruct();
+		}
+
+		void sharedConstruct() {
 			// Wooh, lambda expressions!
 			LeftClicked += (s, e) => { EntityManager.SelectedUnit = this; IsSelected = true; };
+
+			Selected += (s, e) => {
+				if (selectCommandVoices.Count > 0) {
+					InterfaceSound inS = new InterfaceSound(EntityManager.soundLibrary.GetSound(selectCommandVoices[r.Next(selectCommandVoices.Count)]));
+					EntityManager.audioManager.AddSounds(inS);
+				}
+			};
+			WaypointsChanged += (s, e) => {
+				if (moveCommandVoices.Count > 0) {
+					InterfaceSound inS = new InterfaceSound(EntityManager.soundLibrary.GetSound(moveCommandVoices[r.Next(moveCommandVoices.Count)]));
+					EntityManager.audioManager.AddSounds(inS);
+				}
+			};
 		}
 
 		#region Overridden Methods
+		/// <summary>
+		/// Starts second-stage initialization for the unit,
+		/// with access to the entity manager.
+		/// </summary>
+		public virtual void Initialize() {
+
+		}
+
 		public override void Update(GameTime gameTime) {
 			if (Waypoints.Count > 0) {
 				var ts = EntityManager.tileSize;

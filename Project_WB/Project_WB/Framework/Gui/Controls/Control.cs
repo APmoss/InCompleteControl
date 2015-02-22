@@ -23,9 +23,27 @@ namespace Project_WB.Framework.Gui.Controls {
 					return new Vector2(Bounds.X, Bounds.Y) +
 							Parent.GlobalPosition;
 				}
-				else {
-					return new Vector2(Bounds.X, Bounds.Y); 
+				return new Vector2(Bounds.X, Bounds.Y); 
+			}
+		}
+		public Rectangle GlobalBounds {
+			get {
+				if (Parent != null) {
+					return new Rectangle(Bounds.X + (int)Parent.GlobalPosition.X, Bounds.Y + (int)Parent.GlobalPosition.Y,
+										Bounds.Width, Bounds.Height);
 				}
+				return new Rectangle((int)GlobalPosition.X, (int)GlobalPosition.Y,
+										Bounds.Width, Bounds.Height);
+			}
+		}
+		protected Rectangle LastGlobalBounds {
+			get {
+				if (Parent != null) {
+					return new Rectangle(lastBounds.X + (int)Parent.GlobalPosition.X, Bounds.Y + (int)Parent.GlobalPosition.Y,
+										lastBounds.Width, lastBounds.Height);
+				}
+				return new Rectangle((int)GlobalPosition.X, (int)GlobalPosition.Y,
+										lastBounds.Width, lastBounds.Height);
 			}
 		}
 		public bool ContainsMouse {
@@ -54,19 +72,23 @@ namespace Project_WB.Framework.Gui.Controls {
 		}
 
 		public virtual void UpdateInteraction(InputState input) {
-			if (Bounds != Rectangle.Empty) {
+			if (GlobalBounds != Rectangle.Empty) {
 				// Last mouse point
 				var lmPoint = new Point(input.LastMouseState.X, input.LastMouseState.Y);
 				// Current mouse point
 				var cmPoint = new Point(input.CurrentMouseState.X, input.CurrentMouseState.Y);
 
-				if (!lastBounds.Contains(lmPoint) && Bounds.Contains(cmPoint)) {
+				if (GlobalBounds.Contains(cmPoint)) {
 					ContainsMouse = true;
+				}
+				else {
+					ContainsMouse = false;
+				}
+				if (!LastGlobalBounds.Contains(lmPoint) && GlobalBounds.Contains(cmPoint)) {
 					if (MouseEntered != null)
 						MouseEntered.Invoke(this, EventArgs.Empty);
 				}
-				else if (lastBounds.Contains(lmPoint) && !Bounds.Contains(cmPoint)) {
-					ContainsMouse = false;
+				else if (LastGlobalBounds.Contains(lmPoint) && !GlobalBounds.Contains(cmPoint)) {
 					if (MouseExited != null)
 						MouseExited.Invoke(this, EventArgs.Empty);
 				}

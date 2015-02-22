@@ -75,6 +75,8 @@
     <Compile Include="Framework\Audio\AudioItem.cs" />
     <Compile Include="Framework\Audio\AudioManager.cs" />
     <Compile Include="Framework\Audio\EnvironmentSound.cs" />
+    <Compile Include="Framework\Audio\InterfaceSound.cs" />
+    <Compile Include="Framework\Audio\MusicTrack.cs" />
     <Compile Include="Framework\Camera2D.cs" />
     <Compile Include="Framework\DebugOverlay.cs" />
     <Compile Include="Framework\Entities\EntityEventArgs.cs" />
@@ -89,6 +91,9 @@
     <Compile Include="Framework\Entities\Units\Sango.cs" />
     <Compile Include="Framework\Gui\Controls\Button.cs" />
     <Compile Include="Framework\Gui\Controls\Control.cs" />
+    <Compile Include="Framework\Gui\Controls\Label.cs" />
+    <Compile Include="Framework\Gui\Controls\Panel.cs" />
+    <Compile Include="Framework\Gui\Controls\Slider.cs" />
     <Compile Include="Framework\Gui\GuiManager.cs" />
     <Compile Include="Framework\Particles\AnimatedParticle.cs" />
     <Compile Include="Framework\Particles\Emitters\StarEmitter.cs" />

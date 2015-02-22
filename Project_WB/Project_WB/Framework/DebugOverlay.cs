@@ -25,6 +25,7 @@ namespace Project_WB.Framework {
 		public DebugOverlay() {
 			IsPopup = true;
 			OverrideInput = true;
+			Topmost = true;
 		}
 
 		#region Overridden Methods

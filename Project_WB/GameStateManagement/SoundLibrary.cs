@@ -18,17 +18,27 @@ namespace GameStateManagement {
 		}
 
 		public void LoadSounds(ContentManager content) {
+			// Clear the current collection
 			sounds.Clear();
 
+			// Get the directories of all of the sounds contained in the "audio" folder
 			string[] soundDirs = Directory.GetFiles(content.RootDirectory + "\\audio", "*.xnb", SearchOption.AllDirectories);
 
 			if (content != null) {
 				foreach (var soundDir in soundDirs) {
-					var contentDir = new DirectoryInfo(content.RootDirectory + "/audio").Name;
+					// Remove the Content\\ from the beginning to load the item.
+					// -soundDir: Content\\audio\\blah.xnb
+					// -loadDir: audio\\blah.xnb
+					string loadDir = soundDir.Replace("Content\\", string.Empty);
+					// Remove the extension (.xnb)
+					loadDir = loadDir.Replace(".xnb", string.Empty);
 
-					//TODO: CHANGE THIS
-					sounds.Add(Path.GetFileNameWithoutExtension(soundDir).ToLower(),
-								content.Load<SoundEffect>(Path.Combine(contentDir, "effects", Path.GetFileNameWithoutExtension(soundDir))));
+					string key = Path.GetFileNameWithoutExtension(soundDir).ToLower();
+					SoundEffect value = content.Load<SoundEffect>(loadDir);
+					// Set the sound effect name to the asset name
+					value.Name = key;
+
+					sounds.Add(key, value);
 				}
 			}
 		}

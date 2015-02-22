@@ -16,9 +16,10 @@ namespace Project_WB.Framework.Gui.Controls {
 			this.Text = text;
 		}
 
+		#region Methods
 		protected internal override void Initialize() {
 			this.Bounds.Height = (int)(GuiManager.font.MeasureString(Text).Y * GuiManager.TextScale) + GuiManager.Padding * 2;
-
+			
 			base.Initialize();
 		}
 
@@ -28,13 +29,14 @@ namespace Project_WB.Framework.Gui.Controls {
 								new Vector2(Bounds.Width / 2, Bounds.Height / 2) -
 								textCenter;
 
-			screenManager.SpriteBatch.Draw(screenManager.BlankTexture, Bounds, new Color(50, 50, 50));
+			screenManager.SpriteBatch.Draw(screenManager.BlankTexture, GlobalBounds, new Color(10, 10, 10));
 			if (ContainsMouse) {
-				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, Bounds, Color.White * .5f);
+				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, GlobalBounds, Color.White * .2f);
 			}
 			screenManager.SpriteBatch.DrawString(GuiManager.font, Text, center, Color.White, 0, Vector2.Zero, GuiManager.TextScale, 0, 0);
 			
 			base.Draw(gameTime, screenManager);
 		}
+		#endregion
 	}
 }

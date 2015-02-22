@@ -228,10 +228,20 @@ namespace GameStateManagement {
 		/// Tells each screen to draw itself.
 		/// </summary>
 		public override void Draw(GameTime gameTime) {
+			List<GameScreen> topBatch = new List<GameScreen>();
+
 			foreach (GameScreen screen in screens) {
 				if (screen.ScreenState == ScreenState.Hidden)
 					continue;
+				if (screen.Topmost) {
+					topBatch.Add(screen);
+				}
+				else {
+					screen.Draw(gameTime);
+				}
+			}
 
+			foreach (var screen in topBatch) {
 				screen.Draw(gameTime);
 			}
 		}

@@ -45,6 +45,10 @@ namespace Project_WB.Gameplay {
 
 		List<Point> highlightedTiles = new List<Point>();
 		List<Point> barrierList = new List<Point>();
+
+		bool partyTime = false;
+		TimeSpan partyTimeElapsed = TimeSpan.Zero;
+		TimeSpan targetPartyTime = TimeSpan.FromSeconds(.2);
 		#endregion
 
 		public TestThing() {
@@ -56,7 +60,7 @@ namespace Project_WB.Gameplay {
 			cam = new Camera2D(ScreenManager.Game.GraphicsDevice.Viewport);
 			audioManager = new AudioManager(cam);
 			particleManager = new ParticleManager(ScreenManager.Game.Content.Load<Texture2D>("textures/particles"));
-			testSound = new EnvironmentSound(ScreenManager.SoundLibrary.GetSound("creepyNoise"), new Vector2(256/32, 1344/32), true);
+			testSound = new EnvironmentSound(ScreenManager.SoundLibrary.GetSound("creepyNoise"), new Vector2(256/32, 1344/32), true, TimeSpan.FromSeconds(30));
 			audioManager.AddSounds(testSound);
 
 			map = Map.Load(@"maps\test.tmx", ScreenManager.Game.Content);
@@ -79,22 +83,22 @@ namespace Project_WB.Gameplay {
 			character.LeftClicked += delegate {
 				switch (r.Next(6)) {
 					case 0:
-						ScreenManager.SoundLibrary.GetSound("-orders").Play();
+						//ScreenManager.SoundLibrary.GetSound("-orders").Play();
 						break;
 					case 1:
-						ScreenManager.SoundLibrary.GetSound("-reporting").Play();
+						//ScreenManager.SoundLibrary.GetSound("-reporting").Play();
 						break;
 					case 2:
-						ScreenManager.SoundLibrary.GetSound("-yes").Play();
+						//ScreenManager.SoundLibrary.GetSound("-yes").Play();
 						break;
 					case 3:
-						ScreenManager.SoundLibrary.GetSound("-good").Play();
+						//ScreenManager.SoundLibrary.GetSound("-good").Play();
 						break;
 					case 4:
-						ScreenManager.SoundLibrary.GetSound("-iread").Play();
+						//ScreenManager.SoundLibrary.GetSound("-iread").Play();
 						break;
 					case 5:
-						ScreenManager.SoundLibrary.GetSound("-what").Play();
+						//ScreenManager.SoundLibrary.GetSound("-what").Play();
 						break;
 				}
 			};
@@ -135,6 +139,43 @@ namespace Project_WB.Gameplay {
 					cam.DestScale = 1;
 					//cam.DestXRotation = MathHelper.ToRadians(0);
 				}
+			}
+
+			partyTimeElapsed += gameTime.ElapsedGameTime;
+			if (partyTimeElapsed >= targetPartyTime) {
+				partyTimeElapsed -= targetPartyTime;
+
+				if (partyTime) {
+					if (cam.DestZRotation == MathHelper.ToRadians(-10)) {
+						cam.DestZRotation = MathHelper.ToRadians(10);
+
+						ambience.R += 50;
+						ambience.G += 50;
+						ambience.B += 50;
+					}
+					else if (cam.DestZRotation == MathHelper.ToRadians(10)) {
+						cam.DestZRotation = MathHelper.ToRadians(-10);
+
+						ambience.R -= 50;
+						ambience.G -= 50;
+						ambience.B -= 50;
+					}
+					if (cam.DestScale == 3.5) {
+						cam.DestScale = 2.5f;
+					}
+					else if (cam.DestScale == 2.5) {
+						cam.DestScale = 3.5f;
+					}
+				}
+			}
+
+			for (int i = 0; i < 3; i++) {
+				particleManager.AddParticle(new Particle(new Rectangle(0, 16, 16, 16)) {
+					LifeSpan = new TimeSpan(0, 0, 8),
+					Position = new Vector2(r.Next(2048), 0),
+					Velocity = new Vector2(r.Next(-2, 0), r.Next(7, 15)),
+					Tint = Color.White
+				});	
 			}
 
 			if (mouse.LeftButton == ButtonState.Pressed) {
@@ -178,8 +219,7 @@ namespace Project_WB.Gameplay {
 				}
 			}
 
-			if(!gameTime.IsRunningSlowly)
-				particleManager.Update(gameTime);
+			particleManager.Update(gameTime);
 
 			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 			DebugOverlay.DebugText.AppendFormat("-Mouse X: {0}  |  Y: {1}", mouse.X, mouse.Y).AppendLine();
@@ -189,7 +229,11 @@ namespace Project_WB.Gameplay {
 			DebugOverlay.DebugText.AppendFormat("-ParticleTotal: {0}", particleManager.ParticleCount).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("-ParticleLoops: {0}", particleLoops).AppendLine();
 			DebugOverlay.DebugText.AppendFormat("-SearchTime: {0}", searchTime.TotalMilliseconds).AppendLine();
-			
+
+			DebugOverlay.DebugText.AppendFormat("musicTransitionAlpha: {0}", audioManager.musicTransitionAlpha).AppendLine();
+			foreach (var sound in audioManager.AudioItems) {
+				DebugOverlay.DebugText.AppendFormat("--{0}: {1}", sound.Name, sound.LifeSpan).AppendLine();
+			}			
 		}
 		
 		public override void HandleInput(GameTime gameTime, InputState input) {
@@ -209,10 +253,10 @@ namespace Project_WB.Gameplay {
 			}
 
 			if (input.IsKeyPressed(Keys.E, null, out p)) {
-				cam.DestZRotation += MathHelper.ToRadians(1);
+				cam.DestZRotation += MathHelper.ToRadians(10);
 			}
 			if (input.IsKeyPressed(Keys.Q, null, out p)) {
-				cam.DestZRotation -= MathHelper.ToRadians(1);
+				cam.DestZRotation -= MathHelper.ToRadians(10);
 			}
 			if (input.IsButtonPressed(Buttons.DPadUp, null, out p)) {
 				cam.DestXRotation -= MathHelper.ToRadians(1);
@@ -231,6 +275,11 @@ namespace Project_WB.Gameplay {
 				cam.DestPosition = Vector2.Zero;
 				cam.DestScale = 1;
 				cam.DestZRotation = MathHelper.ToRadians(0);
+			}
+			if (input.IsNewKeyPress(Keys.K, null, out p)) {
+				partyTime = !partyTime;
+				cam.DestZRotation = MathHelper.ToRadians(10);
+				cam.DestScale = 2.5f;
 			}
 			if (input.IsNewKeyPress(Keys.H, null, out p)) {
 				map.Layers["collision"].Opacity = (map.Layers["collision"].Opacity == .65f ? 0 : .65f);
@@ -286,8 +335,16 @@ namespace Project_WB.Gameplay {
 
 			if (input.IsKeyPressed(Keys.OemPlus, null, out p)) {
 				particleLoops++;
-			} if (input.IsKeyPressed(Keys.OemMinus, null, out p)) {
+			}
+			if (input.IsKeyPressed(Keys.OemMinus, null, out p)) {
 				particleLoops--;
+			}
+
+			if (input.IsNewKeyPress(Keys.OemSemicolon, null, out p)) {
+				audioManager.AddSounds(new MusicTrack(ScreenManager.SoundLibrary.GetSound("blaster")));
+			}
+			if (input.IsNewKeyPress(Keys.OemQuotes, null, out p)) {
+				audioManager.AddSounds(new MusicTrack(ScreenManager.SoundLibrary.GetSound("southSea")));
 			}
 
 			if (input.IsNewMousePress(InputState.MouseButton.Right)) {
@@ -308,16 +365,16 @@ namespace Project_WB.Gameplay {
 
 								switch (r.Next(4)) {
 									case 0:
-										ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
+										//ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
 										break;
 									case 1:
-										ScreenManager.SoundLibrary.GetSound("-recieved").Play();
+										//ScreenManager.SoundLibrary.GetSound("-recieved").Play();
 										break;
 									case 2:
-										ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
+										//ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
 										break;
 									case 3:
-										ScreenManager.SoundLibrary.GetSound("-roger").Play();
+										//ScreenManager.SoundLibrary.GetSound("-roger").Play();
 										break;
 								}
 							}
@@ -332,16 +389,16 @@ namespace Project_WB.Gameplay {
 
 								switch (r.Next(4)) {
 									case 0:
-										ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
+										//ScreenManager.SoundLibrary.GetSound("-affirmative").Play();
 										break;
 									case 1:
-										ScreenManager.SoundLibrary.GetSound("-recieved").Play();
+										//ScreenManager.SoundLibrary.GetSound("-recieved").Play();
 										break;
 									case 2:
-										ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
+										//ScreenManager.SoundLibrary.GetSound("-rightaway").Play();
 										break;
 									case 3:
-										ScreenManager.SoundLibrary.GetSound("-roger").Play();
+										//ScreenManager.SoundLibrary.GetSound("-roger").Play();
 										break;
 								}
 							}
@@ -349,6 +406,8 @@ namespace Project_WB.Gameplay {
 								character.Angry = true;
 							}
 						}
+
+						entityManager.SelectedUnit.InvokeWaypointsChanged();
 					}
 				}
 			}
@@ -377,7 +436,6 @@ namespace Project_WB.Gameplay {
 
 			if (input.IsNewKeyPress(Keys.F10, null, out p)) {
 				ExitScreen();
-				ScreenManager.AddScreen(new Menus.SignIn(), null);
 			}
 
 			base.HandleInput(gameTime, input);
