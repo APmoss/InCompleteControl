@@ -12,16 +12,36 @@ namespace Project_WB.Framework.Entities {
 		//TODO: finish documentation
 		
 		#region Fields
+		protected readonly Rectangle haloSrcRec = new Rectangle(0, 0, 48, 48);
+
 		List<Entity> entities = new List<Entity>();
-		public Unit SelectedUnit;
 		protected internal int tileSize = 32;
+		public Texture2D EtcTextures;
 		public Texture2D DefaultSpritesheet;
+
+		Unit selectedUnit;
 		#endregion
 
-		public EntityManager() {
+		#region Properties
+		public Unit SelectedUnit {
+			get { return selectedUnit; }
+			set {
+				foreach (var entity in entities) {
+					if (entity is Unit) {
+						((Unit)entity).IsSelected = false;
+					}
+				}
 
+				selectedUnit = value;
+			}
 		}
-		public EntityManager(Texture2D defaultSpritesheet) {
+		#endregion
+
+		public EntityManager(Texture2D etcTextures) {
+			this.EtcTextures = etcTextures;
+		}
+		public EntityManager(Texture2D etcTextures, Texture2D defaultSpritesheet) {
+			this.EtcTextures = etcTextures;
 			this.DefaultSpritesheet = defaultSpritesheet;
 		}
 
@@ -41,7 +61,11 @@ namespace Project_WB.Framework.Entities {
 		public void Draw(GameTime gameTime, ScreenManager screenManager) {
 			foreach (var entity in entities) {
 				if (SelectedUnit == entity) {
-					screenManager.SpriteBatch.Draw(screenManager.BlankTexture, entity.Bounds, Color.Red * .5f);
+					Unit unit = (Unit)entity;
+					Vector2 origin = new Vector2(haloSrcRec.Width / 2, haloSrcRec.Height / 2);
+					Vector2 offset = new Vector2(unit.Bounds.Width / 2, unit.Bounds.Height / 2);
+					float rotation = (float)gameTime.TotalGameTime.TotalSeconds;
+					screenManager.SpriteBatch.Draw(EtcTextures, unit.Position + offset, haloSrcRec, Color.White, rotation, origin, 1, 0, 0);
 				}
 				entity.Draw(gameTime, screenManager);
 			}

@@ -12,9 +12,6 @@ namespace Project_WB.Framework.Entities {
 		bool isSelected = false;
 		public float Speed = 1;
 		public LinkedList<Point> Waypoints = new LinkedList<Point>();
-
-		//remove?
-		int haloOrbPadding = 5;
 		#endregion
 
 		#region Properties
@@ -97,14 +94,16 @@ namespace Project_WB.Framework.Entities {
 		}
 
 		public override void Draw(GameTime gameTime, ScreenManager screenManager) {
-			//remove?
-			if (ContainsMouse) {
-				int haloX = (int)(Position.X - haloOrbPadding + (Math.Cos(gameTime.TotalGameTime.TotalSeconds * 2) + 1) * (Bounds.Width / 2 + haloOrbPadding));
-				int haloY = (int)(Position.Y - haloOrbPadding + (Math.Sin(gameTime.TotalGameTime.TotalSeconds * 2) + 1) * (Bounds.Height / 2 + haloOrbPadding));
+			if (IsSelected && Waypoints.Count > 0 && DownSourceRectangles.Count > 0) {
+				int ts = EntityManager.tileSize;
 
-				Rectangle rect = new Rectangle(haloX, haloY, 3, 3);
+				foreach (var waypoint in Waypoints) {
+					Rectangle dotPosition = new Rectangle((int)(waypoint.X * ts + ts / 2), (int)(waypoint.Y * ts + ts / 2), 4, 4);
+					screenManager.SpriteBatch.Draw(screenManager.BlankTexture, dotPosition, null, Color.DarkBlue, (float)gameTime.TotalGameTime.TotalSeconds * 4, new Vector2(.5f), 0, 0);
+				}
 
-				screenManager.SpriteBatch.Draw(screenManager.BlankTexture, rect, Color.White);
+				Vector2 ghostPosition = new Vector2(Waypoints.Last.Value.X, Waypoints.Last.Value.Y) * ts;
+				screenManager.SpriteBatch.Draw(spriteSheet, ghostPosition, DownSourceRectangles[0], new Color(255, 255, 255, 100));
 			}
 
 			base.Draw(gameTime, screenManager);

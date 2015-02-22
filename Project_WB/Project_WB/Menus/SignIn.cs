@@ -44,11 +44,16 @@ namespace Project_WB.Menus {
 
 			base.Activate(instancePreserved);
 		}
+		public override void Unload() {			
+			base.Unload();
+		}
 		#endregion
 
 		#region Overridden Methods
 		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) {
-			Gui.Update(gameTime);
+			if (!coveredByOtherScreen) {
+				Gui.Update(gameTime);
+			}
 
 			if (!coveredByOtherScreen && Gui.Screen != scrn) {
 				Gui.Screen = scrn;
@@ -176,7 +181,9 @@ namespace Project_WB.Menus {
 			loginButton.Text = Strings.SignIn;
 			loginButton.Bounds = new UniRectangle(10, 170, 160, 35);
 			loginButton.Pressed += delegate {
+				Gui.Screen.Desktop.Children.Clear();
 				ScreenManager.AddScreen(new Gameplay.TestThing(), null);
+				ExitScreen();
 			};
 
 			registerButton = new ButtonControl();

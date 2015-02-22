@@ -234,8 +234,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="textures\halo.png">
-      <Name>halo</Name>
+    <Compile Include="textures\etc.png">
+      <Name>etc</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textures\baker1.png">
+      <Name>baker1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

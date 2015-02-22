@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using GameStateManagement;
-using Project_WB.Framework.Squared.Tiled;
-using Project_WB.Framework.Pathfinding;
-using Project_WB.Framework;
-using Project_WB.Framework.Audio;
-using Project_WB.Framework.Particles;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Project_WB.Framework;
+using Project_WB.Framework.Audio;
 using Project_WB.Framework.Entities;
-using Microsoft.Xna.Framework.Audio;
 using Project_WB.Framework.Entities.Units;
+using Project_WB.Framework.Particles;
+using Project_WB.Framework.Pathfinding;
+using Project_WB.Framework.Squared.Tiled;
 
 namespace Project_WB.Gameplay {
 	class TestThing : GameScreen {
@@ -25,7 +23,7 @@ namespace Project_WB.Gameplay {
 		EnvironmentSound testSound;
 		MouseState mouse = new MouseState();
 		Point mouseTile = Point.Zero;
-		Texture2D maru;
+		Texture2D maru, baker;
 		Texture2D vignette;
 		Effect testEffect;
 		TimeSpan searchTime = TimeSpan.Zero;
@@ -65,6 +63,7 @@ namespace Project_WB.Gameplay {
 			map = Map.Load(@"maps\test.tmx", ScreenManager.Game.Content);
 
 			maru = ScreenManager.Game.Content.Load<Texture2D>("textures/maru1");
+			baker = ScreenManager.Game.Content.Load<Texture2D>("textures/baker1");
 			vignette = ScreenManager.Game.Content.Load<Texture2D>("textures/vignette");
 
 			testEffect = ScreenManager.Game.Content.Load<Effect>("effects/radialLight");
@@ -145,7 +144,7 @@ namespace Project_WB.Gameplay {
 				new Rectangle(224, 320, 32, 32)
 			});
 
-			entityManager = new EntityManager(ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"));
+			entityManager = new EntityManager(ScreenManager.Game.Content.Load<Texture2D>("textures/etc"), ScreenManager.Game.Content.Load<Texture2D>("textures/sprites"));
 			//TODO note to me- remove the constructor dependency on the spritesheet, since the entitymanager will automatically set if if it's null to the entity manager's default.
 			// this will clear things upo and allow bettter constructor parameters, like position.
 			Sango sango = new Sango(entityManager.DefaultSpritesheet);
@@ -153,8 +152,6 @@ namespace Project_WB.Gameplay {
 			sango.Position = new Vector2(128, 352);
 			guy.Position = new Vector2(128 + 32, 352);
 			entityManager.AddEntities(sango, guy);
-
-			ScreenManager.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
 
 			mainTarget = new RenderTarget2D(ScreenManager.GraphicsDevice, Stcs.XRes, Stcs.YRes);
 			lightMask = new RenderTarget2D(ScreenManager.GraphicsDevice, Stcs.XRes, Stcs.YRes);
@@ -271,7 +268,17 @@ namespace Project_WB.Gameplay {
 			if (input.IsNewKeyPress(Keys.F, null, out p)) {
 				follow = !follow;
 			}
+			if (input.IsNewKeyPress(Keys.B, null, out p)) {
+				BakerBot temp = new BakerBot(entityManager.DefaultSpritesheet, baker);
+				temp.Position = new Vector2(mouseTile.X * 32, mouseTile.Y * 32);
+				entityManager.AddEntities(temp);
+			}
 			if (input.IsNewKeyPress(Keys.N, null, out p)) {
+				Centurion temp = new Centurion(entityManager.DefaultSpritesheet);
+				temp.Position = new Vector2(mouseTile.X * 32, mouseTile.Y * 32);
+				entityManager.AddEntities(temp);
+			}
+			if (input.IsKeyPressed(Keys.M, null, out p)) {
 				Centurion temp = new Centurion(entityManager.DefaultSpritesheet);
 				temp.Position = new Vector2(mouseTile.X * 32, mouseTile.Y * 32);
 				entityManager.AddEntities(temp);
@@ -385,6 +392,7 @@ namespace Project_WB.Gameplay {
 
 			if (input.IsNewKeyPress(Keys.F10, null, out p)) {
 				ExitScreen();
+				ScreenManager.AddScreen(new Menus.SignIn(), null);
 			}
 
 			base.HandleInput(gameTime, input);
@@ -393,7 +401,9 @@ namespace Project_WB.Gameplay {
 		public override void Draw(GameTime gameTime) {
 			ScreenManager.GraphicsDevice.SetRenderTarget(mainTarget);
 			ScreenManager.GraphicsDevice.Clear(Color.Black);
-			
+			ScreenManager.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+			ScreenManager.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
+
 			//testEffect.Parameters["mousePos"].SetValue(new Vector2(mouse.X / Stcs.XRes, mouse.Y / Stcs.YRes));
 
 			ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, RasterizerState.CullNone, null, cam.GetMatrixTransformation());

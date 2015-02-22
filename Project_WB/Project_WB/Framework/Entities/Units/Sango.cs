@@ -34,6 +34,8 @@ namespace Project_WB.Framework.Entities.Units {
 
 			SetSourceRectangles(usr, dsr, lsr, rsr);
 			#endregion
+
+			Name = "Sango";
 		}
 	}
 }

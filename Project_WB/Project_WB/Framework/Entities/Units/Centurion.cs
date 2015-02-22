@@ -51,11 +51,12 @@ namespace Project_WB.Framework.Entities.Units {
 			SetSourceRectangles(usr, dsr, lsr, rsr);
 			#endregion
 
+			Name = "Centurion";
 			Speed = 2;
 
 			var radialLights = new List<RadialLight>();
-			radialLights.Add(new RadialLight(new Vector2(3, -1), new Vector2(.06f, .15f), Color.CornflowerBlue));
-			radialLights.Add(new RadialLight(new Vector2(7, -2), new Vector2(.15f, .12f), Color.CornflowerBlue));
+			radialLights.Add(new RadialLight(new Vector2(0, -5), new Vector2(.11f, .2f), Color.CornflowerBlue));
+			radialLights.Add(new RadialLight(new Vector2(4, -6), new Vector2(.2f, .19f), Color.CornflowerBlue));
 
 			EntityData.Add("radialLights", radialLights);
 		}

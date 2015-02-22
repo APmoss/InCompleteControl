@@ -1,11 +1,18 @@
 texture lightMask;
-sampler mainSampler : register(s0);
+sampler mainSampler : register(s0) = sampler_state {
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
+
+	AddressU = Clamp;
+	AddressV = Clamp;
+};
 sampler lightSampler = sampler_state {
 	Texture = lightMask;
 
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 
 	AddressU = Clamp;
 	AddressV = Clamp;
