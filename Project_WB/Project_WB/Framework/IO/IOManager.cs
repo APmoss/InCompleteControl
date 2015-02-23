@@ -35,6 +35,10 @@ namespace Project_WB.Framework.IO {
 		public static SettingsFile LoadSettings() {
 			XmlSerializer serializer = new XmlSerializer(typeof(SettingsFile));
 
+			if (!Directory.Exists(SettingsPath)) {
+				Directory.CreateDirectory(SettingsPath);
+			}
+
 			// If the file does not exist, create it with default values
 			if (!File.Exists(SettingsPath + "\\settings.xml")) {
 				SaveSettings(new SettingsFile());
