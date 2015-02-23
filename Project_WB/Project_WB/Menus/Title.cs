@@ -13,14 +13,15 @@ namespace Project_WB.Menus {
 		SoundEffectInstance music;
 
 		public Title() {
-			TransitionOnTime = TimeSpan.FromSeconds(.5);
+			TransitionOnTime = TimeSpan.FromSeconds(0);
 			TransitionOffTime = TimeSpan.FromSeconds(.5);
 		}
 
 		public override void Activate(bool instancePreserved) {
 			title = ScreenManager.Game.Content.Load<Texture2D>("textures/title");
 			music = ScreenManager.SoundLibrary.GetSound("dicksInDetention").CreateInstance();
-			music.Play();
+			if(music.State != SoundState.Playing)
+				music.Play();
 			music.Volume = IOManager.LoadSettings().MusicVolume;
 
 			base.Activate(instancePreserved);

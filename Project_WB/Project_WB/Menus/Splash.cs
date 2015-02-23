@@ -27,7 +27,7 @@ namespace Project_WB.Menus {
 
 		public Splash() {
 			TransitionOnTime = TimeSpan.FromSeconds(.5);
-			TransitionOffTime = TimeSpan.FromSeconds(.5);
+			TransitionOffTime = TimeSpan.FromSeconds(0);
 		}
 
 		public override void Activate(bool instancePreserved) {

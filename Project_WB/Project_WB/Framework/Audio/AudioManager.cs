@@ -249,7 +249,8 @@ namespace Project_WB.Framework.Audio {
 		/// </summary>
 		public void StopAll() {
 			audioItems.Clear();
-			currentSong.SoundInstance.Stop();
+			if(currentSong != null)
+				currentSong.SoundInstance.Stop();
 		}
 		#endregion
 	}
